@@ -1,0 +1,31 @@
+2-1:
+*Install cnpm using:npm install cnpm -g --registry=https://registry.npm.taobao.org
+*Set defalut npm address to cnpm: npm config set registry https://registry.npm.taobao.org
+*npm install -g @angular/cli
+*Using cnpm install -g @angular/cli if you are in China and didn't set npm address to https://registry.npm.taobao.org
+*Create angular project using: ng new ng-NeteaseCloudMusic --style==less --routing -s --skip-install
+*Don't need to add --skip-install, but it could take more time if you are in China, use cnpm install afterwards.
+*Using: npm install or cnpm install if you used --skip-install
+*Using Visual Studio Code to open this project folder
+*Use ng add ng-zorro-antd to install ng-zorro
+*Create new folder styles in src/assets/ and copy styles.less into this folder. rename it to index.less
+*Edit angular.json. Change root:"styles" to src/assets/styles/index.less, also test:"styles" to src/assets/styless/index.less
+*Copy .less file from source code into assets folder
+*Add h1 and button(<button nz-button nzType="primary">button</button>) to test
+
+2-2:
+*Create module core using: ng g m core
+*Core module is used to help app.module, we can import other modules in core module
+*Import core module in app.module.ts
+*Move (CommonModule,BrowserModule,AppRoutingModule,HttpClientModule,BrowserAnimationsModule) into core module
+*(NgZorroAntdModule,FormsModule) will be put into a shared module, because these two modules are used globally
+*Create module share using: ng g m share
+*Move (NgZorroAntdModule,FormsModule) into share module, add exports for other modules to use these two modules
+*Create module pages using:ng g m pages, pages module is used for manage all page modules
+*import share module into pages module
+*Create services module using: ng g services, this module is used for http services. Import this module in core module
+*Import new modules into core module, move AppRoutingModule to the end, otherwise it make cause error when setting routing;
+*We can move registerLocaleData to core module, don't forget to import(2 lines)
+*Edit core module
+*2-2 12:00
+
