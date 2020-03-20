@@ -27,5 +27,28 @@
 *Import new modules into core module, move AppRoutingModule to the end, otherwise it make cause error when setting routing;
 *We can move registerLocaleData to core module, don't forget to import(2 lines)
 *Edit core module
-*2-2 12:00
+*Dont' forget to exports shareModule in core module, otherwise app module can't access NgZorroAntdModule(in share module),the button element won't have style on it
+*Aslo AppRoutingModule! After exports these two module, the button element has style on it now.
+*We can move provider into core module aswell
 
+3-1:
+*Edit app.component.html, create header and footer
+*alt+shift+down to copy current line to next line
+*Create new module home using: ng g m pages/home -routing
+*Edit home routing Routes = [{path:'home',component: HomeComponent,data:{title:"Find"}}];
+*Edit app-routing Routes = [{path:'',redirectTo:'/home',pathMatch:'full'}]; redirct to home routing when path is empty
+
+3-2:
+*Clone NeteaseCloudMusicApi and install using:npm i; run this using: node app.js
+*Create home services in folder services using:ng g s services/home
+*Edit home services, write method getBanners(), need to import HttpClient and map
+*Exports API_CONFIG in services.module, inject it in home.service's constructor
+*Inject home.service in home.component.ts constructor
+*Call getBanners() in HomeComponent to test.
+
+3-3:
+*Edit home.component.html, added <nz-carousel nzAutoPlay="true" nzEffect="fade">
+*Make sure home.module import NgZorroAntdModule and CommonModule
+
+3-4:
+*5:20

@@ -13,6 +13,7 @@ import { FormsModule } from '@angular/forms';
     FormsModule,
   ],
   exports:[
+    CommonModule,
     NgZorroAntdModule,
     FormsModule
   ]
