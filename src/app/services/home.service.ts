@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@angular/core';
 import { ServicesModule, API_CONFIG } from './services.module';
 import { Observable } from 'rxjs';
-import { Banner } from './data-types/common-types';
+import { Banner, HotTag } from './data-types/common-types';
 import { HttpClient } from '@angular/common/http';
 import {map} from 'rxjs/internal/operators'
 
@@ -15,5 +15,14 @@ export class HomeService {
   getBanners():Observable<Banner[]>{
     return this.http.get(this.url + 'banner')
     .pipe(map((res:{banners:Banner[]}) => res.banners));
+  }
+
+  getHotTags():Observable<HotTag[]>{
+    return this.http.get(this.url+'playlist/hot')
+    .pipe(map((res:{tags:HotTag[]})=>res.tags));
+  }
+
+  getPersonalList(){
+
   }
 }

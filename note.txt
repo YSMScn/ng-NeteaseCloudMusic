@@ -51,4 +51,16 @@
 *Make sure home.module import NgZorroAntdModule and CommonModule
 
 3-4:
-*5:20
+*Create wy-carousel component under home component
+*Edit wy-carousel.component.html and home.component.html
+*Copy banner.png and wy-carousel.component.less
+*Use [nzDotRender] and ng-template to set style(dot) for carousel 
+*Bind click event with right and left icon
+*Bind (click)="onChangeSlide('pre')" and ('next') for right and left icon. Create output event with parameter pre or next. Bind this event in home.component with new method to run function nzCarouselComponent[diretction]()
+*In wy-carousel.component.ts, we can change the type of EventEmitter from string to 'pre' | 'next'. Now, the function nzCarouselComponent[diretction]() will only have pre and next two options.
+*In home.component.ts, set changeDetection: ChangeDetectionStrategy.OnPush. 3-4 22:00 //There is not this line in source code, but mentioned in video
+
+3-5:
+*Get hot tags and personal list. Similar with get banner, create and export data type, write a method to use http.get to get HotTag/PersonalList[].
+*3-5 4:30
+
