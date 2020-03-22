@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@angular/core';
 import { ServicesModule, API_CONFIG } from './services.module';
 import { Observable } from 'rxjs';
-import { Banner, HotTag } from './data-types/common-types';
+import { Banner, HotTag, SongList } from './data-types/common-types';
 import { HttpClient } from '@angular/common/http';
 import {map} from 'rxjs/internal/operators'
 
@@ -9,6 +9,7 @@ import {map} from 'rxjs/internal/operators'
   providedIn: ServicesModule
 })
 export class HomeService {
+  [x: string]: any;
 
   constructor(private http:HttpClient, @Inject(API_CONFIG) private url:string) { }
 
@@ -19,10 +20,17 @@ export class HomeService {
 
   getHotTags():Observable<HotTag[]>{
     return this.http.get(this.url+'playlist/hot')
-    .pipe(map((res:{tags:HotTag[]})=>res.tags));
+    .pipe(map((res:{tags:HotTag[]})=>{
+      return res.tags.sort((x:HotTag,y:HotTag)=>{
+        return x.position - y.position;
+      }).slice(0,5);
+    }));
   }
 
-  getPersonalList(){
-
+  getPersonalizedList():Observable<SongList[]>{
+    return this.http.get(this.url+'personalized')
+    .pipe(map((res:{result:SongList[]})=>res.result.slice(0,16)));
   }
+
+
 }

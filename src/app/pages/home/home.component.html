@@ -13,4 +13,49 @@
             </div>
         </nz-carousel>
     </app-wy-carousel>
+    <div class="main">
+        <div class="wrap">
+            <div class="left">
+                <div class="sec">
+                    <div class="up">
+                        <div class="navs">
+                            <h2>
+                                <i></i>
+                                <a>Hot category</a>
+                            </h2>
+                            <nav>
+                                <a *ngFor="let item of hotTags">{{item.name}}</a>
+                            </nav>
+                        </div>
+                        <a>More<i nz-icon nzType="arrow-right" nzTheme="outline"></i></a>
+                    </div>
+                    <div class="down">
+                        <div class="down-wrap">
+                            <app-song-list class="sheet-item" *ngFor="let item of personalizedLists" [songList] = "item">
+
+                            </app-song-list>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="right">
+                <app-member-card></app-member-card>
+                <div class="settled-singer">
+                    <div class="tit"><b>Settled Singer</b></div>
+                    <div class="list">
+                        <div class="card" *ngFor="let item of settledSinger">
+                            <div class="pic">
+                                <img [src]="item.picUrl" [alt]="item.name">
+                            </div>
+                            <div class="txt">
+                                <b class="ellipsis">{{item.name}}</b>
+                                <span>Album: {{item.albumSize}}</span>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

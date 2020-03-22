@@ -9,3 +9,17 @@ export type HotTag = {
     name: string;
     position: number;
 }
+
+export type SongList = {
+    id: number;
+    name: string;
+    playCount: number;
+    picUrl: string;
+}
+
+export type Singer = {
+    id:number;
+    name:string;
+    picUrl:string;
+    albumSize:number;
+}
