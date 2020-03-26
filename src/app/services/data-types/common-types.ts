@@ -15,6 +15,8 @@ export type SongList = {
     name: string;
     playCount: number;
     picUrl: string;
+    tracks:Song[];
+    
 }
 
 export type Singer = {
@@ -23,3 +25,13 @@ export type Singer = {
     picUrl:string;
     albumSize:number;
 }
+
+export type Song = {
+    id:number;
+    name:string;
+    url:string;
+    ar:Singer[];
+    al:{id:number;name:string;picUrl:string}
+    dt:number;
+}
+

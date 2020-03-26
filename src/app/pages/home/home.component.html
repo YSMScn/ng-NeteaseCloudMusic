@@ -31,7 +31,12 @@
                     </div>
                     <div class="down">
                         <div class="down-wrap">
-                            <app-song-list class="sheet-item" *ngFor="let item of personalizedLists" [songList] = "item">
+                            <app-song-list 
+                            class="sheet-item" 
+                            *ngFor="let item of personalizedLists" 
+                            [songList] = "item"
+                            (onPlay) = "onPlayList($event)"
+                            >
 
                             </app-song-list>
                         </div>

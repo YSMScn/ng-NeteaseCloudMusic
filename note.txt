@@ -72,4 +72,23 @@
 *Create member-card.component and use it in home.component.html
 
 3-7:
-*3-7
+*Using provider to pervent data lost or empty component while page loading and get data from API. E.g. At the first time of loading a page, there could be a delay when the web asking API to return datas. At this condition, the component that didn't recived data from API may be empty 
+*Create home-resolve.services and copy source code from angular api, edit it to return test to see how it works
+*Add provider in home-routing.modules and resolve:{homeDatas:HomeResolverService} in Route
+*Add private route: ActivatedRoute into home-components' constructor, use pipe(map()).subscribe and console.log to test if this resolve worked.
+*Create HomeDataType, inject homeService and singerService in home-resolve.service's constructor.
+*Use forkJoin to create a observable<HomeDataType> and return it.
+*Rewrite home.component.ts, all codes in annotation were old without resolve.
+
+4-1:
+*Fill wy-player.component.html
+
+4-2:
+*Create song-list service and add new type to commen type(song and singer)
+*Song-list service is similar with singer service and home service, use http.get to get data from api.
+*Import and bind songListserve in HomeComponent
+*Warning: import EventEmitter from angular/core not protractor
+*https://www.jianshu.com/p/7c7b25adf636
+
+4-3:
+*

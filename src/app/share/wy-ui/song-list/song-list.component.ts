@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { SongList } from 'src/app/services/data-types/common-types';
 
 @Component({
@@ -9,9 +9,13 @@ import { SongList } from 'src/app/services/data-types/common-types';
 export class SongListComponent implements OnInit {
 
   @Input()songList: SongList;
+  @Output()onPlay = new EventEmitter<number>();
   constructor() { }
 
   ngOnInit(): void {
   }
 
+  playList(id:number){
+    this.onPlay.emit(id);
+  }
 }
