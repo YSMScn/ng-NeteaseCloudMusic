@@ -91,4 +91,8 @@
 *https://www.jianshu.com/p/7c7b25adf636
 
 4-3:
-*
+*Because we can't get url for music use one Api, we need to use playlist/detail to get id for each song, then we use song/url to get the url for musci to play.
+*Create song service and add method:getSongUrl(),getSongList(),generateSongList()
+*Add playList() method in song-list.service
+*17:00
+

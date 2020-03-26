@@ -35,3 +35,7 @@ export type Song = {
     dt:number;
 }
 
+export type SongUrl = {
+    id:number;
+    url:string;
+}

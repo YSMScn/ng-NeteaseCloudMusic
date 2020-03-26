@@ -77,7 +77,7 @@ export class HomeComponent implements OnInit {
 
   onPlayList(id:number){
     console.log('id ',id);
-    this.songListServe.getSongListDetail(id).subscribe(res=>{
+    this.songListServe.playList(id).subscribe(res=>{
       console.log('res: ', res);
     })
   }
