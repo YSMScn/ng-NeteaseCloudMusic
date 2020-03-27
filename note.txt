@@ -103,5 +103,6 @@
 *Because the doms in these two components are very short, we can rewrite templateUrl to template and add dom rather than html file
 *Delete useless file and move these two components into folder wy-slider
 *Add encapsulation: ViewEncapsulation.None to set style for <app-wy-slider-track> and <app-wy-slider-handle>, otherwise the styles in less stylesheet won't work for these two components
+*
 
 
