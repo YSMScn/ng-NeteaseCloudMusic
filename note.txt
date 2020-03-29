@@ -103,6 +103,28 @@
 *Because the doms in these two components are very short, we can rewrite templateUrl to template and add dom rather than html file
 *Delete useless file and move these two components into folder wy-slider
 *Add encapsulation: ViewEncapsulation.None to set style for <app-wy-slider-track> and <app-wy-slider-handle>, otherwise the styles in less stylesheet won't work for these two components
-*
 
+4-5:
+*For track and handle's movenment: Horizontal, track: width, handle: left; Vertical, track: height, handle: bottom
+*Implement onChange interface and wrtie the code to detect changes of track and handle
+*Create wy-slider-style.ts
+*Set changeDetection:ChangeDetectionStrategy.OnPush
+
+4-6:
+*constructor(private el:ElementRef) { }
+
+  ngOnInit(): void {
+    console.log('el: ', this.el.nativeElement);
+  }
+  One way to get dom from html, but we use a different way to do this
+  @ViewChild("wySlider",{static:true}) private wySlider:ElementRef;
+*Events that are needed to bind for wy-slider:
+ PC:
+    mousedown mousemove mouseup
+ Phone:
+    touchstart touchmove touchend
+
+4-7:
+*16:00 write getElementOffset method in wy-slider-helper.ts(Used the method with same name from ng-zorro-antd)
+*29:30 create limitNumberInRangg in new file number.ts(Not done yet)
 
