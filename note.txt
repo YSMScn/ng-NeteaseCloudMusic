@@ -128,3 +128,7 @@
 *16:00 write getElementOffset method in wy-slider-helper.ts(Used the method with same name from ng-zorro-antd)
 *29:30 create limitNumberInRangg in new file number.ts(Not done yet)
 
+
+4-8:
+*4:50 write slidervalue type in wy-slider-type.ts(Imported from ng-zorro-antd)
+*Use ChangeDetectorRef.markForCheck() to check if the track or handle moved;
