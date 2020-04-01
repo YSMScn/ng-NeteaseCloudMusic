@@ -23,6 +23,7 @@ export class WySliderComponent implements OnInit, OnDestroy, ControlValueAccesso
   @Input() wyVertical = false;
   @Input() wyMin = 0;
   @Input() wyMax = 100;
+  @Input() bufferOffset:SliderValue = 0;
 
   private isDragging = false;
   value:SliderValue=null;
@@ -108,15 +109,15 @@ export class WySliderComponent implements OnInit, OnDestroy, ControlValueAccesso
   }
 
   private unSubscribeDrag(events:string[]=['start','move','end']){
-    if(events.indexOf('start') !== -1 && !this.dragStart_){
+    if(events.indexOf('start') !== -1 && this.dragStart_){
       this.dragStart_.unsubscribe();
       this.dragStart_ = null;
     }
-    else if(events.indexOf('move') !== -1 && !this.dragMove_){
+    else if(events.indexOf('move') !== -1 && this.dragMove_){
       this.dragMove_.unsubscribe();
       this.dragMove_ = null;
     }
-    else if(events.indexOf('end') !== -1 && !this.dragEnd_){
+    else if(events.indexOf('end') !== -1 && this.dragEnd_){
       this.dragEnd_.unsubscribe();
       this.dragEnd_ = null;
     }

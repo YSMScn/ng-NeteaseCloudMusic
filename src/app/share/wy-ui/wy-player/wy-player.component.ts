@@ -7,6 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class WyPlayerComponent implements OnInit {
   sliderValue = 35;
+  bufferOffset1 = 55;
   constructor() { }
 
   ngOnInit(): void {

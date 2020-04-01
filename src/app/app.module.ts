@@ -3,6 +3,9 @@ import { AppComponent } from './app.component';
 import { NZ_I18N, zh_CN } from 'ng-zorro-antd';
 
 import { CoreModule } from './core/core.module';
+import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { environment } from '../environments/environment';
 
 
 
@@ -11,7 +14,9 @@ import { CoreModule } from './core/core.module';
     AppComponent
   ],
   imports: [
-    CoreModule
+    CoreModule,
+    StoreModule.forRoot({}, {}),
+    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production })
   ],
 
   bootstrap: [AppComponent]

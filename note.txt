@@ -132,3 +132,32 @@
 4-8:
 *4:50 write slidervalue type in wy-slider-type.ts(Imported from ng-zorro-antd)
 *Use ChangeDetectorRef.markForCheck() to check if the track or handle moved;
+
+4-9 4-10:
+*Need to watch again
+
+4-11:
+*NGRX--state management
+*ng add @ngrx/store and ng add @ngrx/store-devtools to install ngrx
+*create module store and rename to index.ts(AppStoreModule)
+*Create 3 folders(reducers,actions,selectors) inside store module
+*Create player.action.ts and player.reducer.ts and edit them
+*State management in Web Frontend:https://www.jianshu.com/p/f5dc75902a5e
+*   on(SetPlaying,(state,{playing})=>({...state,playing})),
+    on(SetPlayList,(state,{list})=>({...state,playList:list})),
+    on(SetPlayMode,(state,{mode})=>({...state,playMode:mode})),
+    on(SetSongList,(state,{songList})=>({...state,songList})),
+    on(SetCurrentIndex,(state,{index})=>({...state,currentIndex:index})),
+    export const SetPlaying = createAction('[player] Set playing',props<{playing:boolean}>()) ;
+    export const SetPlayList = createAction('[player] Set playList',props<{list:Song[]}>()) ;
+    export const SetPlayMode = createAction('[player] Set playMode',props<{mode:PlayMode}>()) ;
+    export const SetSongList = createAction('[player] Set songList',props<{songList:Song[]}>()) ;
+    export const SetCurrentIndex = createAction('[player] Set currentIndex',props<{index:number}>()) ;
+*29:20 changed to:
+    on(SetPlaying,(state,{playing})=>({...state,playing})),
+    on(SetPlayList,(state,{playList})=>({...state,playList})),
+    on(SetPlayMode,(state,{playMode})=>({...state,playMode})),
+    on(SetSongList,(state,{songList})=>({...state,songList})),
+    on(SetCurrentIndex,(state,{currentIndex})=>({...state,currentIndex})),
+*Create player.selector.ts
+*Need to instal redux in browser to use devtools
