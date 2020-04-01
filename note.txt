@@ -161,3 +161,13 @@
     on(SetCurrentIndex,(state,{currentIndex})=>({...state,currentIndex})),
 *Create player.selector.ts
 *Need to instal redux in browser to use devtools
+
+4-12:
+*7:33 Add export const getPlayer = createFeatureSelector<AppStoreModule>('player'); in player.selector
+  Add const appStore$ = this.store$.pipe(select(getPlayer));  in wy-components
+  The error was caused by different ngrx version
+*12:00     stateArr.forEach(item=>{
+      appStore$.pipe(select(item.type)).subscribe(item.cb);
+    })
+    this way has error with item.type, checked with the source code, used another way to do this
+*15:30
