@@ -5,7 +5,7 @@ import { getSongList, getPlayList, getCurrentIndex, getPlayer, getPlayMode, getC
 import { Song } from 'src/app/services/data-types/common-types';
 import { collapseMotion } from 'ng-zorro-antd';
 import { PlayMode } from './player-types';
-import { SetPlayList } from 'src/app/store/actions/player.action';
+import { SetPlayList, SetCurrentIndex } from 'src/app/store/actions/player.action';
 
 @Component({
   selector: 'app-wy-player',
@@ -13,8 +13,9 @@ import { SetPlayList } from 'src/app/store/actions/player.action';
   styleUrls: ['wy-player.component.less']
 })
 export class WyPlayerComponent implements OnInit {
-  sliderValue = 35;
-  bufferOffset1 = 55;
+  percent = 0;
+  bufferOffset1 = 0;
+  volumnPercent = 0;
   songList:Song[];
   playList:Song[];
   currentIndex:number;
@@ -22,6 +23,10 @@ export class WyPlayerComponent implements OnInit {
   currentSong:Song;
   duration:number;
   currentTime:number;
+  //playing status
+  playing = false;
+  //Is the song ready to play
+  songReady = false;
   
   @ViewChild('audio',{static:true}) private audio:ElementRef;
   private audioEl:HTMLAudioElement;
@@ -92,12 +97,65 @@ export class WyPlayerComponent implements OnInit {
     console.log('currentSong: ',this.currentSong);
   }
 
+  //play or pause
+  onToggle(){
+    if(!this.currentSong){
+      if(this.playList.length){
+        this.updateIndex(0);
+        console.log('..............................................');
+      }
+    }else{
+      if(this.songReady){
+        this.playing = !this.playing;
+        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+        if(this.playing){
+          this.audioEl.play();
+        }else{
+          this.audioEl.pause();
+        }
+      }
+    }
+    
+  }
+
+  onPrev(index:number){
+    if(!this.songReady) return;
+    if(this.playList.length === 1){
+      this.loop();
+    }
+    const newIndex = index<0?this.playList.length-1:index;
+    this.updateIndex(newIndex);
+
+  }
+
+  onNext(index:number){
+    if(!this.songReady) return;
+    if(this.playList.length === 1){
+      this.loop();
+    }
+    const newIndex = index>=this.playList.length?0:index;
+    this.updateIndex(newIndex);
+    
+  }
+
+  loop(){
+    this.audioEl.currentTime = 0;
+    this.play();
+  }
+
+  updateIndex(index:number){
+    this.store$.dispatch(SetCurrentIndex({currentIndex:index}));
+    this.songReady=false;
+  }
+
   onCanPlay(){
+    this.songReady=true;
     this.play();
   }
 
   private play(){
     this.audioEl.play();
+    this.playing=true;
   }
 
   get picUrl():string{
@@ -105,7 +163,23 @@ export class WyPlayerComponent implements OnInit {
   }
 
   onTimeUpdate(e:Event){
-    //this.currentTime=(<HTMLAudioElement>e.target).currentTime;
+    this.currentTime=(<HTMLAudioElement>e.target).currentTime;
+    console.log('currentTime:',this.currentTime);
+    
+    const buffered = this.audioEl.buffered;
+    if(buffered.length && this.bufferOffset1 < 100){
+      this.bufferOffset1 = (buffered.end(0))/this.duration*100;
+    }
+    
+    this.percent=(this.currentTime/this.duration)*100;
+    console.log('percent:',(this.percent));
+    
   }
 
+  onPercentChange(per){
+    if(this.currentSong){
+      this.audioEl.currentTime=this.duration*(per/100);
+    }
+    
+  }
 }

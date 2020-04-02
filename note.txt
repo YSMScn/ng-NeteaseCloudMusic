@@ -171,3 +171,12 @@
     })
     this way has error with item.type, checked with the source code, used another way to do this
 *html audio element <audio src=""></audio>, add (canplay)="onCanplay()"
+
+
+4-15:
+*6:00
+*Have problem when <app-wy-slider [bufferOffset]= "bufferOffset1" [(ngModel)]="sliderValue" (ngModelChange)="onPercentChange($event)"> is changed to 
+                   <app-wy-slider [bufferOffset]= "bufferOffset1" [(ngModel)]="sliderValue" (wyOnAfterChange)="onPercentChange($event)">
+*Keep it in <app-wy-slider [bufferOffset]= "bufferOffset1" [(ngModel)]="sliderValue" (ngModelChange)="onPercentChange($event)"> first
+*change to wyOnAfterChange will cause "double click" on toggle and first time click on slider won't change currentTime
+*Add this line //this.percent=(this.currentTime/this.duration)*100; handle won't move when is clicked(move to position and back to 0), currentTime will change

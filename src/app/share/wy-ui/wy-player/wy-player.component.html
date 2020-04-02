@@ -7,9 +7,9 @@
         <div class="container">
             <div class="wrap">
                 <div class="btns">
-                    <i class="prev"></i>
-                    <i class="toggle"></i>
-                    <i class="next"></i>
+                    <i class="prev"(click)="onPrev(currentIndex - 1)"></i>
+                    <i class="toggle" [class.playing]="playing" (click)="onToggle()"></i>
+                    <i class="next"(click)="onNext(currentIndex + 1)"></i>
                 </div>
                 <div class="head">
                     <img [src]='picUrl'>
@@ -27,10 +27,10 @@
                     </div>
                     <div class="bar">
                         <div class="slider-wrap">
-                            <app-wy-slider [bufferOffset]= "bufferOffset1" [(ngModel)]="sliderValue"></app-wy-slider>
+                            <app-wy-slider [bufferOffset]= "bufferOffset1" [(ngModel)]="percent" (ngModelChange)="onPercentChange($event)"></app-wy-slider>
                         </div>
                         <span class="time">
-                            <em>{{currentTime}}</em> /{{duration}}
+                            <em>{{currentTime | formatTime}}</em> /{{duration | formatTime}}
                         </span>
                     </div>
                 </div>
@@ -45,7 +45,7 @@
                         <span></span>
                     </p>
                     <div class="control-vol">
-                        <app-wy-slider [(ngModel)]="sliderValue" [wyVertical]='true'></app-wy-slider>
+                        <app-wy-slider [(ngModel)]="percent" [wyVertical]='true'></app-wy-slider>
                     </div>
                 </div>
             </div>
