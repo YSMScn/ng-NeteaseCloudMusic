@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { AppStoreModule } from 'src/app/store';
 import { getSongList, getPlayList, getCurrentIndex, getPlayer, getPlayMode, getCurrentSong } from 'src/app/store/selectors/player.selector';
@@ -20,6 +20,11 @@ export class WyPlayerComponent implements OnInit {
   currentIndex:number;
   currentMode:PlayMode;
   currentSong:Song;
+  duration:number;
+  currentTime:number;
+  
+  @ViewChild('audio',{static:true}) private audio:ElementRef;
+  private audioEl:HTMLAudioElement;
   constructor(
     private store$:Store<AppStoreModule>
   ) {
@@ -50,6 +55,7 @@ export class WyPlayerComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.audioEl=this.audio.nativeElement;
   }
 
   private watchList(list: Song[],type:string){
@@ -79,11 +85,27 @@ export class WyPlayerComponent implements OnInit {
   private watchCurrentSong(song: Song) {
     this.currentSong = song;
     // this.bufferPercent = 0;
-    // if (song) {
-    //   this.duration = song.dt / 1000;
-    // }
+    if (song) {
+      this.duration = song.dt / 1000;
+    }
     //for later on
     console.log('currentSong: ',this.currentSong);
+  }
+
+  onCanPlay(){
+    this.play();
+  }
+
+  private play(){
+    this.audioEl.play();
+  }
+
+  get picUrl():string{
+    return this.currentSong?this.currentSong.al.picUrl:'//s4.music.126.net/style/web2/img/default/default_album.jpg';
+  }
+
+  onTimeUpdate(e:Event){
+    //this.currentTime=(<HTMLAudioElement>e.target).currentTime;
   }
 
 }

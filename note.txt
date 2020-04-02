@@ -170,4 +170,4 @@
       appStore$.pipe(select(item.type)).subscribe(item.cb);
     })
     this way has error with item.type, checked with the source code, used another way to do this
-*15:30
+*html audio element <audio src=""></audio>, add (canplay)="onCanplay()"
