@@ -10,7 +10,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 @Component({
   selector: 'app-wy-slider',
   templateUrl: './wy-slider.component.html',
-  styleUrls: ['./wy-slider.component.less'],
+  styleUrls: ['wy-slider.component.less'],
   encapsulation: ViewEncapsulation.None,
   changeDetection:ChangeDetectionStrategy.OnPush,
   providers:[{
@@ -36,9 +36,9 @@ export class WySliderComponent implements OnInit, OnDestroy, ControlValueAccesso
   private dragStart$:Observable<number>;
   private dragMove$:Observable<number>;
   private dragEnd$:Observable<Event>;
-  private dragStart_:Subscription|null;
-  private dragMove_:Subscription|null;
-  private dragEnd_:Subscription|null;
+  private dragStart_:Subscription;
+  private dragMove_:Subscription;
+  private dragEnd_:Subscription;
   constructor(@Inject(DOCUMENT) private doc: Document, private cdr:ChangeDetectorRef) { }
 
   ngOnInit(): void {
@@ -101,10 +101,10 @@ export class WySliderComponent implements OnInit, OnDestroy, ControlValueAccesso
     if(events.indexOf('start') !== -1 && this.dragStart$ && !this.dragStart_){
       this.dragStart_ = this.dragStart$.subscribe(this.onDragStart.bind(this));
     }
-    if(events.indexOf('move') !== -1 && this.dragMove$ && !this.dragMove_){
+    else if(events.indexOf('move') !== -1 && this.dragMove$ && !this.dragMove_){
       this.dragMove_ = this.dragMove$.subscribe(this.onDragMove.bind(this));
     }
-    if(events.indexOf('end') !== -1 && this.dragEnd$ && !this.dragEnd_){
+    else if(events.indexOf('end') !== -1 && this.dragEnd$ && !this.dragEnd_){
       this.dragEnd_= this.dragEnd$.subscribe(this.onDragEnd.bind(this));
     }
   }
@@ -114,11 +114,11 @@ export class WySliderComponent implements OnInit, OnDestroy, ControlValueAccesso
       this.dragStart_.unsubscribe();
       this.dragStart_ = null;
     }
-    if(events.indexOf('move') !== -1 && this.dragMove_){
+    else if(events.indexOf('move') !== -1 && this.dragMove_){
       this.dragMove_.unsubscribe();
       this.dragMove_ = null;
     }
-    if(events.indexOf('end') !== -1 && this.dragEnd_){
+    else if(events.indexOf('end') !== -1 && this.dragEnd_){
       this.dragEnd_.unsubscribe();
       this.dragEnd_ = null;
     }
@@ -144,7 +144,7 @@ export class WySliderComponent implements OnInit, OnDestroy, ControlValueAccesso
     this.cdr.markForCheck();
   }
 
-  private setValue(value:SliderValue,needCheck = false){
+  private setValue(value:number,needCheck = false){
     if(needCheck){
       if(this.isDragging){return;}
       this.value=this.formatValue(value);
@@ -156,7 +156,7 @@ export class WySliderComponent implements OnInit, OnDestroy, ControlValueAccesso
       this.onValueChange(this.value);
     }
     // if (needCheck) {
-    //   if (!this.isDragging) { return; }
+    //   if (this.isDragging) { return; }
     //   this.value = this.formatValue(value);
     //   this.updateTrackAndHandles();
     // } else if (!this.valuesEqual(this.value, value)) {
@@ -176,7 +176,7 @@ export class WySliderComponent implements OnInit, OnDestroy, ControlValueAccesso
 
   private formatValue(value:SliderValue):SliderValue{
     let res = value;
-    if(this.assertValueValid(value)){
+    if(!this.asserValueValid(value)){
       res = this.wyMin;
     }
     else{
@@ -185,7 +185,7 @@ export class WySliderComponent implements OnInit, OnDestroy, ControlValueAccesso
     return res;
   }
 
-  private assertValueValid(value:SliderValue):boolean{
+  private asserValueValid(value:SliderValue):boolean{
     return isNaN(typeof value !=='number' ? parseFloat(value):value);
   }
 

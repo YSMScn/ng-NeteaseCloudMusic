@@ -1,8 +1,9 @@
-<div class="m-player">
+<div class="m-player" (click)="selfClick = true">
     <div class="lock">
         <div class="left">
             <i></i>
         </div>
+    </div>
         <div class="hand"></div>
         <div class="container">
             <div class="wrap">
@@ -27,7 +28,7 @@
                     </div>
                     <div class="bar">
                         <div class="slider-wrap">
-                            <app-wy-slider [bufferOffset]= "bufferOffset1" [(ngModel)]="percent" (ngModelChange)="onPercentChange($event)"></app-wy-slider>
+                            <app-wy-slider [bufferOffset]= "bufferOffset1" [(ngModel)]="percent" (wyOnAfterChange)="onPercentChange($event)"></app-wy-slider>
                         </div>
                         <span class="time">
                             <em>{{currentTime | formatTime}}</em> /{{duration | formatTime}}
@@ -39,22 +40,23 @@
                     <i class="share" title="share"></i>
                 </div>
                 <div class="ctrl">
-                    <i class="volume" title="volume"></i>
-                    <i class="loop" title="loop"></i>
+                    <i class="volume" title="volume" (click)="toggleVolPanel($event)"></i>
+                    <i [ngClass]="currentMode.type" [title]="currentMode.label"(click)="changeMode()"></i>
                     <p class="open">
                         <span></span>
                     </p>
-                    <div class="control-vol">
-                        <app-wy-slider [(ngModel)]="percent" [wyVertical]='true'></app-wy-slider>
+                    <div class="control-vol" [hidden]="!showVolumnPanel">
+                        <app-wy-slider [(ngModel)]="volumnPercent" [wyVertical]='true' (ngModelChange)="onVolumnChange($event)"></app-wy-slider>
                     </div>
                 </div>
+                <app-wy-player-panel [songList]="songList" [currentSong]="currentSong"></app-wy-player-panel>
             </div>
-        </div>
     </div>
     <audio 
     [src]="currentSong?.url" 
     (canplay)="onCanPlay()"
     #audio
     (timeupdate)="onTimeUpdate($event)"
+    (ended)="onEnded()"
     ></audio>
 </div>

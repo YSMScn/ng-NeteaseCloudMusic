@@ -1,12 +1,24 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Inject } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { AppStoreModule } from 'src/app/store';
 import { getSongList, getPlayList, getCurrentIndex, getPlayer, getPlayMode, getCurrentSong } from 'src/app/store/selectors/player.selector';
 import { Song } from 'src/app/services/data-types/common-types';
-import { collapseMotion } from 'ng-zorro-antd';
 import { PlayMode } from './player-types';
-import { SetPlayList, SetCurrentIndex } from 'src/app/store/actions/player.action';
+import { SetCurrentIndex, SetPlayMode, SetPlayList } from 'src/app/store/actions/player.action';
+import { Subscription, fromEvent } from 'rxjs';
+import { DOCUMENT } from '@angular/common';
+import { shuffle } from 'src/app/utils/array';
 
+const modeTypes:PlayMode[]= [{
+  type:'loop',
+  label:'Loop'
+},{
+  type:'random',
+  label:'Random'
+},{
+  type:'singleLoop',
+  label:'Single Loop'
+}]
 @Component({
   selector: 'app-wy-player',
   templateUrl: './wy-player.component.html',
@@ -15,7 +27,8 @@ import { SetPlayList, SetCurrentIndex } from 'src/app/store/actions/player.actio
 export class WyPlayerComponent implements OnInit {
   percent = 0;
   bufferOffset1 = 0;
-  volumnPercent = 0;
+  volumnPercent = 60;
+  showVolumnPanel=false;
   songList:Song[];
   playList:Song[];
   currentIndex:number;
@@ -23,15 +36,21 @@ export class WyPlayerComponent implements OnInit {
   currentSong:Song;
   duration:number;
   currentTime:number;
+  modeCount = 0;
   //playing status
   playing = false;
   //Is the song ready to play
   songReady = false;
+  //check if we are clicking volPanel itself
+  selfClick = false;
+  private winClick:Subscription;
+  
   
   @ViewChild('audio',{static:true}) private audio:ElementRef;
   private audioEl:HTMLAudioElement;
   constructor(
-    private store$:Store<AppStoreModule>
+    private store$:Store<AppStoreModule>,
+    @Inject(DOCUMENT) private doc:Document
   ) {
     const appStore$ = this.store$.pipe(select(getPlayer)); 
     appStore$.pipe(select(getSongList)).subscribe(list => this.watchList(list, 'songList'));
@@ -41,18 +60,18 @@ export class WyPlayerComponent implements OnInit {
     appStore$.pipe(select(getCurrentSong)).subscribe(song => this.watchCurrentSong(song));
     // appStore$.pipe(select(getCurrentAction)).subscribe(action => this.watchCurrentAction(action));
 
-    const stateArr = [{
-      type:getSongList,
-      cb: list=>this.watchList(list,'songList')
-    },
-    {
-      type:getPlayList,
-      cb: list=>this.watchList(list,'playList')
-    },
-    {
-      type:getCurrentIndex,
-      cb: index=>this.watchCurrentIndex(index)
-    }];
+    // const stateArr = [{
+    //   type:getSongList,
+    //   cb: list=>this.watchList(list,'songList')
+    // },
+    // {
+    //   type:getPlayList,
+    //   cb: list=>this.watchList(list,'playList')
+    // },
+    // {
+    //   type:getCurrentIndex,
+    //   cb: index=>this.watchCurrentIndex(index)
+    // }];
 
     // stateArr.forEach(item=>{
     //   appStore$.pipe(select(item.type)).subscribe(item.cb);
@@ -75,15 +94,15 @@ export class WyPlayerComponent implements OnInit {
 
   private watchPlayMode(mode: PlayMode) {
      this.currentMode = mode;
-    // if (this.songList) {
-    //   let list = this.songList.slice();
-    //   if (mode.type === 'random') {
-    //     list = shuffle(this.songList);
-    //   }
-    //   this.updateCurrentIndex(list, this.currentSong);
-    //   this.store$.dispatch(SetPlayList({ playList: list }));
-    // }
-    // for later on
+    if (this.songList) {
+      let list = this.songList.slice();
+      if (mode.type === 'random') {
+        list = shuffle(this.songList);
+        this.updateCurrentIndex(list, this.currentSong);
+        this.store$.dispatch(SetPlayList({ playList: list }));
+      }
+      
+    }
     console.log('currentMode: ',this.currentMode);
   }
 
@@ -97,6 +116,10 @@ export class WyPlayerComponent implements OnInit {
     console.log('currentSong: ',this.currentSong);
   }
 
+  updateCurrentIndex(list:Song[],currentSong:Song){
+    const newIndex = list.findIndex(item => item.id === currentSong.id);
+    this.store$.dispatch(SetCurrentIndex({currentIndex:newIndex}));
+  }
   //play or pause
   onToggle(){
     if(!this.currentSong){
@@ -119,7 +142,7 @@ export class WyPlayerComponent implements OnInit {
   }
 
   onPrev(index:number){
-    if(!this.songReady) return;
+    if(!this.songReady) {return;}
     if(this.playList.length === 1){
       this.loop();
     }
@@ -129,7 +152,7 @@ export class WyPlayerComponent implements OnInit {
   }
 
   onNext(index:number){
-    if(!this.songReady) return;
+    if(!this.songReady) {return;}
     if(this.playList.length === 1){
       this.loop();
     }
@@ -163,23 +186,80 @@ export class WyPlayerComponent implements OnInit {
   }
 
   onTimeUpdate(e:Event){
-    this.currentTime=(<HTMLAudioElement>e.target).currentTime;
-    console.log('currentTime:',this.currentTime);
+    // this.currentTime=(<HTMLAudioElement>e.target).currentTime;
+    // console.log('currentTime:',this.currentTime);
+    // this.percent=(this.currentTime/this.duration)*100;
+    // console.log('percent:',(this.percent));
     
+    
+    
+    
+    this.currentTime = (e.target as HTMLAudioElement).currentTime;
+    this.percent = (this.currentTime / this.duration) * 100;
+
     const buffered = this.audioEl.buffered;
     if(buffered.length && this.bufferOffset1 < 100){
       this.bufferOffset1 = (buffered.end(0))/this.duration*100;
     }
-    
-    this.percent=(this.currentTime/this.duration)*100;
-    console.log('percent:',(this.percent));
-    
   }
 
-  onPercentChange(per){
+  onPercentChange(per:number){
     if(this.currentSong){
-      this.audioEl.currentTime=this.duration*(per/100);
+      const currentTime =  this.duration * (per / 100);
+      this.audioEl.currentTime=currentTime;
     }
     
+  }
+  onVolumnChange(per:number){
+    this.audioEl.volume = per/100;
+  }
+
+  togglePanel(){
+    this.showVolumnPanel = !this.showVolumnPanel;
+    if(this.showVolumnPanel){
+      this.bindDocumentClickListener();
+    }else{
+      this.unbindDocumentClickListener();
+    }
+  }
+
+  private bindDocumentClickListener(){
+    if(!this.winClick){
+      this.winClick = fromEvent(this.doc,'click').subscribe(()=>{
+        if(!this.selfClick){//clicked outside player panel
+          this.showVolumnPanel = false;
+          this.unbindDocumentClickListener();
+        }
+        this.selfClick = false;
+      });
+    }
+  }
+
+  private unbindDocumentClickListener(){
+    if(this.winClick){
+      this.winClick.unsubscribe();
+      this.winClick = null;
+    }
+  }
+
+  toggleVolPanel(evt:MouseEvent){
+    //evt.stopPropagation(); Added <div class="m-player" (click)="selfClick = true"> to block, we don't need this line now
+    this.togglePanel();
+  }
+
+  changeMode(){
+    const temp= modeTypes[++this.modeCount%3];
+    this.store$.dispatch(SetPlayMode({playMode:temp}));
+  }
+
+  onEnded(){
+    console.log('onEnded!!!!!!!!!!!');
+    this.playing =false;
+    if(this.currentMode.type === 'singleLoop'){
+      this.loop();
+    }
+    else{
+      this.onNext(this.currentIndex+1);
+    }
   }
 }

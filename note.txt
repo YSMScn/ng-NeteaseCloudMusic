@@ -180,3 +180,48 @@
 *Keep it in <app-wy-slider [bufferOffset]= "bufferOffset1" [(ngModel)]="sliderValue" (ngModelChange)="onPercentChange($event)"> first
 *change to wyOnAfterChange will cause "double click" on toggle and first time click on slider won't change currentTime
 *Add this line //this.percent=(this.currentTime/this.duration)*100; handle won't move when is clicked(move to position and back to 0), currentTime will change
+*Found the reson and changed different codes, the line that cause error is marked with ***:
+  different codes:
+  styleUrls: ['./wy-slider.component.less'],
+  private dragStart_: Subscription | null;
+  private dragMove_: Subscription | null;
+  private dragEnd_: Subscription | null;
+  private subscribeDrag(events: string[] = ['start', 'move', 'end']) {
+    if (events.indexOf('start') !== -1&& this.dragStart$ && !this.dragStart_) {
+      this.dragStart_ = this.dragStart$.subscribe(this.onDragStart.bind(this));
+    }
+    if (events.indexOf('move') !== -1&& this.dragMove$ && !this.dragMove_) {
+      this.dragMove_ = this.dragMove$.subscribe(this.onDragMove.bind(this));
+    }
+    if (events.indexOf('end') !== -1&& this.dragEnd$ && !this.dragEnd_) {
+      this.dragEnd_ = this.dragEnd$.subscribe(this.onDragEnd.bind(this));
+    }
+  }
+  private unsubscribeDrag(events: string[] = ['start', 'move', 'end']) {
+    if (events.indexOf('start') !== -1&& this.dragStart_) {
+      this.dragStart_.unsubscribe();
+      this.dragStart_ = null;
+    }
+    if (events.indexOf('move') !== -1&& this.dragMove_) {
+      this.dragMove_.unsubscribe();
+      this.dragMove_ = null;
+    }
+    if (events.indexOf('end') !== -1&& this.dragEnd_) {
+      this.dragEnd_.unsubscribe();
+      this.dragEnd_ = null;
+    }
+  }
+    private setValue(value: SliderValue, needCheck = false) {
+//////////////////////////////////////////
+  private formatValue(value: SliderValue): SliderValue {
+    let res = value;
+****if (this.assertValueValid(value)) {
+      res = this.wyMin;
+    } else {
+      res = limitNumberInRange(value, this.wyMin, this.wyMax);
+    }
+    return res;
+  }
+
+5-1:
+*9:00
