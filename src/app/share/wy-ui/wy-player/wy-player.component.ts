@@ -29,6 +29,7 @@ export class WyPlayerComponent implements OnInit {
   bufferOffset1 = 0;
   volumnPercent = 60;
   showVolumnPanel=false;
+  showPanel=false;
   songList:Song[];
   playList:Song[];
   currentIndex:number;
@@ -214,9 +215,9 @@ export class WyPlayerComponent implements OnInit {
     this.audioEl.volume = per/100;
   }
 
-  togglePanel(){
-    this.showVolumnPanel = !this.showVolumnPanel;
-    if(this.showVolumnPanel){
+  togglePanel(type:string){
+    this[type] = !this[type];
+    if(this.showVolumnPanel||this.showPanel){
       this.bindDocumentClickListener();
     }else{
       this.unbindDocumentClickListener();
@@ -228,6 +229,7 @@ export class WyPlayerComponent implements OnInit {
       this.winClick = fromEvent(this.doc,'click').subscribe(()=>{
         if(!this.selfClick){//clicked outside player panel
           this.showVolumnPanel = false;
+          this.showPanel = false;
           this.unbindDocumentClickListener();
         }
         this.selfClick = false;
@@ -244,7 +246,14 @@ export class WyPlayerComponent implements OnInit {
 
   toggleVolPanel(evt:MouseEvent){
     //evt.stopPropagation(); Added <div class="m-player" (click)="selfClick = true"> to block, we don't need this line now
-    this.togglePanel();
+    this.togglePanel("showVolumnPanel");
+  }
+
+  toggleListPanel(){
+    if(this.songList.length){
+      this.togglePanel('showPanel');
+    }
+    
   }
 
   changeMode(){
@@ -261,5 +270,12 @@ export class WyPlayerComponent implements OnInit {
     else{
       this.onNext(this.currentIndex+1);
     }
+  }
+
+  onChangeSong(song:Song){
+    // this.currentSong=song;
+    // this.currentIndex = this.songList.indexOf(song);
+    this.updateCurrentIndex(this.playList,song);
+    this.play();
   }
 }
