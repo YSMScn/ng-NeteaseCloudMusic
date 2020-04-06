@@ -1,14 +1,21 @@
-import { NgModule, InjectionToken } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { NgModule, InjectionToken, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 
 export const API_CONFIG = new InjectionToken('ApiConfigToken');
+export const WINDOW = new InjectionToken('WindowToken');
 
 @NgModule({
   declarations: [],
   imports: [
   ],
   providers:[
-    {provide: API_CONFIG, useValue:'http://localhost:3000/'}
+    {provide: API_CONFIG, useValue:'http://localhost:3000/'},
+    {provide: WINDOW,
+      useFactory(plateformId:object):Window|object{
+        return isPlatformBrowser(plateformId)? window:{}
+      },
+    deps:[PLATFORM_ID]
+    }
   ]
 })
 export class ServicesModule { }

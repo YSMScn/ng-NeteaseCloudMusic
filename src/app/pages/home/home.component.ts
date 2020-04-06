@@ -8,8 +8,11 @@ import { ActivatedRoute } from '@angular/router';
 import { map } from 'rxjs/internal/operators';
 import { SongListService } from 'src/app/services/song-list.service';
 import { AppStoreModule } from 'src/app/store';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { SetSongList, SetPlayList, SetCurrentIndex } from 'src/app/store/actions/player.action';
+import { PlayState } from 'src/app/store/reducers/player.reducer';
+import { getPlayer } from 'src/app/store/selectors/player.selector';
+import { findIndex, shuffle } from 'src/app/utils/array';
 
 @Component({
   selector: 'app-home',
@@ -22,6 +25,7 @@ export class HomeComponent implements OnInit {
   hotTags: HotTag[];
   personalizedLists: SongList[];
   settledSinger: Singer[];
+  private playerState:PlayState;
   @ViewChild(NzCarouselComponent,{static:true}) private nzCarousel:NzCarouselComponent;
   constructor(
     // private homeServe:HomeService,
@@ -35,7 +39,9 @@ export class HomeComponent implements OnInit {
       this.hotTags =hotTags;
       this.personalizedLists =personalizedLists;
       this.settledSinger =settledSinger;
-    })
+    });
+
+    this.store$.pipe(select(getPlayer)).subscribe(res=>this.playerState = res)
     // this.getBanners();
     // this.getHotTags();
     // this.getPersonalizedList();
@@ -83,8 +89,14 @@ export class HomeComponent implements OnInit {
     console.log('id ',id);
     this.songListServe.playList(id).subscribe(list=>{
       this.store$.dispatch(SetSongList({songList:list}));
-      this.store$.dispatch(SetPlayList({playList:list}));
-      this.store$.dispatch(SetCurrentIndex({currentIndex:0}));
+      let trueIndex = 0;
+      let trueList = list.slice();
+      if(this.playerState.playMode.type==='random'){
+        trueList = shuffle(list || []);
+        trueIndex = findIndex(trueList,list[trueIndex]);
+      }
+      this.store$.dispatch(SetPlayList({playList:trueList}));
+      this.store$.dispatch(SetCurrentIndex({currentIndex:trueIndex}));
     })
   }
 

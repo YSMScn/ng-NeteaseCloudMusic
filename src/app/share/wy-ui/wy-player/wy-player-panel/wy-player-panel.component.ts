@@ -1,6 +1,9 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter, ViewChildren, QueryList } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter, ViewChildren, QueryList, Inject } from '@angular/core';
 import { Song } from 'src/app/services/data-types/common-types';
 import { WyScrollComponent } from '../wy-scroll/wy-scroll.component';
+import { findIndex } from 'src/app/utils/array';
+import { timer } from 'rxjs';
+import { WINDOW } from 'src/app/services/services.module';
 
 @Component({
   selector: 'app-wy-player-panel',
@@ -10,19 +13,23 @@ import { WyScrollComponent } from '../wy-scroll/wy-scroll.component';
 export class WyPlayerPanelComponent implements OnInit,OnChanges {
   @Input()songList:Song[];
   @Input()currentSong:Song;
-  @Input()currentIndex:number;
+  // currentIndex = 0;
+  currentIndex:number;
   @Input()show:boolean;
   @Output()onClose = new EventEmitter<void>();
   @Output()onChangeSong = new EventEmitter<Song>();
   @ViewChildren(WyScrollComponent)private wyScroll:QueryList<WyScrollComponent>;
   scrollY = 0;
-  constructor() { }
+  constructor(@Inject(WINDOW)private win:Window) { }
   ngOnChanges(changes: SimpleChanges): void {
     if(changes['songList']){
       console.log('songList',this.songList);
+      this.currentIndex = 0;
+      // this.currentIndex = findIndex(this.songList,this.currentSong);
     }
     if(changes['currentSong']){
       if(this.currentSong){
+        this.currentIndex = findIndex(this.songList,this.currentSong);
         if(this.show){
           this.scrollToCurrent();
         }
@@ -33,20 +40,24 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
     }
     if(changes['show']){
       if(!changes['show'].firstChange&&this.show){
-        console.log('wyScroll',this.wyScroll);
         this.wyScroll.first.refreshScroll();
-        setTimeout(()=>{
+        // timer(80).subscribe(()=>{
+        //   if(this.currentSong){
+        //     this.scrollToCurrent(0);
+        //   }
+        // });
+        this.win.setTimeout(()=>{
           if(this.currentSong){
-            this.scrollToCurrent();
+            this.scrollToCurrent(0);
           }
         },80)
-        //this.wyScroll.last.refreshScroll();
+        this.wyScroll.last.refreshScroll();
       }
       console.log('currentSong',this.currentSong);
     }
   }
 
-  private scrollToCurrent(){
+  private scrollToCurrent(speed=300){
     const songListRef = this.wyScroll.first.el.nativeElement.querySelectorAll("ul li");
     if(songListRef.length){
       const currentLi = <HTMLElement>songListRef[this.currentIndex || 0];
@@ -55,7 +66,7 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
       // console.log("this.scrollY: ",this.scrollY);
       // console.log("offsetTop: ",offsetTop);
       if((offsetTop - Math.abs(this.scrollY)) > offsetHeight * 5|| (offsetTop < Math.abs(this.scrollY))){
-        this.wyScroll.first.scrollToElement(currentLi, 300, false, false);
+        this.wyScroll.first.scrollToElement(currentLi, speed, false, false);
       }
 
     }

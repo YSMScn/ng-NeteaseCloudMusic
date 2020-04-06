@@ -232,3 +232,26 @@
 *wy-player-panel.component.html line 20: <ul class="list-wrap"> vs <ul>,scroll works and doesn't work
 *it only show 12 songs
 *Solved: remove class="list-wrap" will show all songs in the playList, didn't added a single dot in: styles: ['.wy-scroll{width:100%;height:100%; overflow:hidden;}']
+
+5-3:
+*8:48 write in this way:this.store$.pipe(select(getPlayer)).subscribe(res=>this.playerState = res) not this.store$.pipe(select('player')).subscribe(res=>this.playerState = res)
+
+5-5:
+*used timer() replace setTimeout();
+*tried 3 ways:
+  this.win.setTimeout(()=>{
+          if(this.currentSong){
+            this.scrollToCurrent(0);
+          }
+        },80)
+
+  timer(80).subscribe(()=>{
+   if(this.currentSong){
+    this.scrollToCurrent(0);
+    }});
+
+  setTimeout(()=>{
+          if(this.currentSong){
+            this.scrollToCurrent(0);
+          }
+        },80)
