@@ -50,7 +50,8 @@
                     </div>
                 </div>
                 <app-wy-player-panel 
-                [songList]="songList" 
+                [songList]="songList"
+                [playing]='playing' 
                 [currentSong]="currentSong" 
                 [show]="showPanel" 
                 (onClose)="showPanel = false"

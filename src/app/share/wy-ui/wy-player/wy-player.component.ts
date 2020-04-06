@@ -84,12 +84,10 @@ export class WyPlayerComponent implements OnInit {
   }
 
   private watchList(list: Song[],type:string){
-    console.log('list: ',type,list); 
     this[type]=list;
     //First time see this way! this[]
   }
   private watchCurrentIndex(index: number){
-    console.log('index: ',index);
     this.currentIndex = index; 
   }
 
@@ -104,7 +102,6 @@ export class WyPlayerComponent implements OnInit {
       }
       
     }
-    console.log('currentMode: ',this.currentMode);
   }
 
   private watchCurrentSong(song: Song) {
@@ -114,7 +111,6 @@ export class WyPlayerComponent implements OnInit {
       this.duration = song.dt / 1000;
     }
     //for later on
-    console.log('currentSong: ',this.currentSong);
   }
 
   updateCurrentIndex(list:Song[],currentSong:Song){

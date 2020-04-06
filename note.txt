@@ -255,3 +255,8 @@
             this.scrollToCurrent(0);
           }
         },80)
+
+5-9:
+*Error with currentNum when change songs
+*use resetLyric() method
+*Need to rewatch.
