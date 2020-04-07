@@ -29,6 +29,7 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
   private lyric:WYLyric;
   currentLineNum:number;
   lyricRefs:NodeList;
+  private startLine:number = 2;
   constructor(@Inject(WINDOW)private win:Window, private songServe:SongService) { }
   ngOnChanges(changes: SimpleChanges): void {
     if(changes['playing']){
@@ -69,6 +70,9 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
           if(this.currentSong){
             this.scrollToCurrent(0);
           }
+          if(this.lyricRefs){
+            this.scrollToCurrentLyric(0);
+          }
         },80)
       }
       //console.log('currentSong',this.currentSong);
@@ -83,8 +87,8 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
     this.songServe.getLyric(this.currentSong.id).subscribe(res=>{
       this.lyric = new WYLyric(res);
       this.currentLyric = this.lyric.lines;
-      const startLine = res.tlyric?0:2;
-      this.handleLyric(startLine);
+      this.startLine = res.tlyric?0:2;
+      this.handleLyric();
       this.wyScroll.last.scrollTo(0,0);
       if(this.playing){
         this.lyric.play();
@@ -109,7 +113,7 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
     }
   }
 
-  private handleLyric(startLine = 2){
+  private handleLyric(){
     this.lyric.handler.subscribe(({lineNum})=>{
       //console.log('lineNum: ',lineNum);
       if(!this.lyricRefs){
@@ -117,11 +121,8 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
       }
       if(this.lyricRefs.length){
         this.currentLineNum = lineNum;
-        if(lineNum>startLine){
-          const targetLine = this.lyricRefs[lineNum - startLine];
-          if(targetLine){
-            this.wyScroll.last.scrollToElement(targetLine,300,false,false);
-          }
+        if(lineNum>this.startLine){
+          this.scrollToCurrentLyric(300);
         }
         else{
           this.wyScroll.last.scrollTo(0,0);
@@ -137,14 +138,20 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
       const currentLi = <HTMLElement>songListRef[this.currentIndex || 0];
       const offsetTop = currentLi.offsetTop;
       const offsetHeight = currentLi.offsetHeight;
-      // console.log("this.scrollY: ",this.scrollY);
-      // console.log("offsetTop: ",offsetTop);
       if((offsetTop - Math.abs(this.scrollY)) > offsetHeight * 5|| (offsetTop < Math.abs(this.scrollY))){
         this.wyScroll.first.scrollToElement(currentLi, speed, false, false);
       }
 
     }
   }
+
+  private scrollToCurrentLyric(speed=300){
+    const targetLine = this.lyricRefs[this.currentLineNum - this.startLine];
+    if(targetLine){
+      this.wyScroll.last.scrollToElement(targetLine,speed,false,false);
+    }
+  }
+
 
   ngOnInit(): void {
   }

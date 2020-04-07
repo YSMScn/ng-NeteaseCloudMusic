@@ -10,6 +10,7 @@ import { DOCUMENT } from '@angular/common';
 import { shuffle, findIndex } from 'src/app/utils/array';
 import { WyPlayerPanelComponent } from './wy-player-panel/wy-player-panel.component';
 import { NzModalService } from 'ng-zorro-antd';
+import { BatchActionsService } from 'src/app/store/batch-actions.service';
 
 const modeTypes:PlayMode[]= [{
   type:'loop',
@@ -45,7 +46,7 @@ export class WyPlayerComponent implements OnInit {
   //Is the song ready to play
   songReady = false;
   //check if we are clicking volPanel itself
-  selfClick = false;
+  bindFlag = false;
   private winClick:Subscription;
   
   
@@ -55,7 +56,8 @@ export class WyPlayerComponent implements OnInit {
   constructor(
     private store$:Store<AppStoreModule>,
     @Inject(DOCUMENT) private doc:Document,
-    private nzModalServe:NzModalService
+    private nzModalServe:NzModalService,
+    private batchActionServe:BatchActionsService
   ) {
     const appStore$ = this.store$.pipe(select(getPlayer)); 
     appStore$.pipe(select(getSongList)).subscribe(list => this.watchList(list, 'songList'));
@@ -101,9 +103,9 @@ export class WyPlayerComponent implements OnInit {
       let list = this.songList.slice();
       if (mode.type === 'random') {
         list = shuffle(this.songList);
-        this.updateCurrentIndex(list, this.currentSong);
-        this.store$.dispatch(SetPlayList({ playList: list }));
       }
+      this.updateCurrentIndex(list, this.currentSong);
+      this.store$.dispatch(SetPlayList({ playList: list }));
       
     }
   }
@@ -195,10 +197,6 @@ export class WyPlayerComponent implements OnInit {
     // console.log('currentTime:',this.currentTime);
     // this.percent=(this.currentTime/this.duration)*100;
     // console.log('percent:',(this.percent));
-    
-    
-    
-    
     this.currentTime = (e.target as HTMLAudioElement).currentTime;
     this.percent = (this.currentTime / this.duration) * 100;
 
@@ -226,24 +224,24 @@ export class WyPlayerComponent implements OnInit {
   togglePanel(type:string){
     this[type] = !this[type];
     if(this.showVolumnPanel||this.showPanel){
-      this.bindDocumentClickListener();
+      this.bindFlag = true;
     }else{
-      this.unbindDocumentClickListener();
+      this.bindFlag = false;
     }
   }
 
-  private bindDocumentClickListener(){
-    if(!this.winClick){
-      this.winClick = fromEvent(this.doc,'click').subscribe(()=>{
-        if(!this.selfClick){//clicked outside player panel
-          this.showVolumnPanel = false;
-          this.showPanel = false;
-          this.unbindDocumentClickListener();
-        }
-        this.selfClick = false;
-      });
-    }
-  }
+  // private bindDocumentClickListener(){
+  //   if(!this.winClick){
+  //     this.winClick = fromEvent(this.doc,'click').subscribe(()=>{
+  //       if(!this.selfClick){//clicked outside player panel
+  //         this.showVolumnPanel = false;
+  //         this.showPanel = false;
+  //         this.unbindDocumentClickListener();
+  //       }
+  //       this.selfClick = false;
+  //     });
+  //   }
+  // }
 
   private unbindDocumentClickListener(){
     if(this.winClick){
@@ -281,36 +279,26 @@ export class WyPlayerComponent implements OnInit {
   }
 
   onChangeSong(song:Song){
-    // this.currentSong=song;
-    // this.currentIndex = this.songList.indexOf(song);
     this.updateCurrentIndex(this.playList,song);
-    //this.play();
   }
 
   onDeleteSong(song:Song){
-    const songList = this.songList.slice();
-    const playList = this.playList.slice();
-    let currentIndex = this.currentIndex;
-    const songIndex = findIndex(songList,song);
-    songList.splice(songIndex,1)
-    const playIndex = findIndex(playList,song);
-    playList.splice(playIndex,1)
-    if(currentIndex > playIndex || currentIndex == playList.length){
-      currentIndex--;
-    }
-    this.store$.dispatch(SetSongList({songList:songList}));
-    this.store$.dispatch(SetPlayList({playList:playList}));
-    this.store$.dispatch(SetCurrentIndex({currentIndex:currentIndex}));
+    this.batchActionServe.deleteSong(song);
   }
   onClearSong(){
     this.nzModalServe.confirm({
       nzTitle:'Do you want to clear this list?',
       nzOnOk:()=>{
-        this.store$.dispatch(SetSongList({songList:null}));
-        this.store$.dispatch(SetPlayList({playList:null}));
-        this.store$.dispatch(SetCurrentIndex({currentIndex:-1}));
+        this.batchActionServe.clearSong();
       }
-    })
-    
+    })  
+  }
+
+  onClickOutside(){
+    console.log("onClickOutside");
+    this.showVolumnPanel = false;
+    this.showPanel = false;
+    this.bindFlag = false;
+    //this.unbindDocumentClickListener();
   }
 }

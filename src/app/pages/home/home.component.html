@@ -24,7 +24,7 @@
                                 <a>Hot category</a>
                             </h2>
                             <nav>
-                                <a *ngFor="let item of hotTags">{{item.name}}</a>
+                                <a *ngFor="let item of hotTags" routerLink="/sheet"[queryParams]="{cat:item.name}">{{item.name}}</a>
                             </nav>
                         </div>
                         <a>More<i nz-icon nzType="arrow-right" nzTheme="outline"></i></a>

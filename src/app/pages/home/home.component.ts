@@ -13,6 +13,7 @@ import { SetSongList, SetPlayList, SetCurrentIndex } from 'src/app/store/actions
 import { PlayState } from 'src/app/store/reducers/player.reducer';
 import { getPlayer } from 'src/app/store/selectors/player.selector';
 import { findIndex, shuffle } from 'src/app/utils/array';
+import { BatchActionsService } from 'src/app/store/batch-actions.service';
 
 @Component({
   selector: 'app-home',
@@ -32,7 +33,7 @@ export class HomeComponent implements OnInit {
     // private singerServe:SingerService,
     private route: ActivatedRoute,
     private songListServe:SongListService,
-    private store$:Store<AppStoreModule>
+    private batchActionServe: BatchActionsService
     ) {
     this.route.data.pipe(map(res => res.homeDatas)).subscribe(([banners,hotTags,personalizedLists,settledSinger]) => {
       this.banners =banners;
@@ -41,7 +42,7 @@ export class HomeComponent implements OnInit {
       this.settledSinger =settledSinger;
     });
 
-    this.store$.pipe(select(getPlayer)).subscribe(res=>this.playerState = res)
+    
     // this.getBanners();
     // this.getHotTags();
     // this.getPersonalizedList();
@@ -86,17 +87,8 @@ export class HomeComponent implements OnInit {
   }
 
   onPlayList(id:number){
-    console.log('id ',id);
     this.songListServe.playList(id).subscribe(list=>{
-      this.store$.dispatch(SetSongList({songList:list}));
-      let trueIndex = 0;
-      let trueList = list.slice();
-      if(this.playerState.playMode.type==='random'){
-        trueList = shuffle(list || []);
-        trueIndex = findIndex(trueList,list[trueIndex]);
-      }
-      this.store$.dispatch(SetPlayList({playList:trueList}));
-      this.store$.dispatch(SetCurrentIndex({currentIndex:trueIndex}));
+      this.batchActionServe.selectPlayList({list,index:0});
     })
   }
 
