@@ -260,3 +260,6 @@
 *Error with currentNum when change songs
 *use resetLyric() method
 *Need to rewatch.
+
+5-12:
+*setTimeout to timer$:Subscription

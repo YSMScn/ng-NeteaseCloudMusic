@@ -21,6 +21,8 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
   @Input()show:boolean;
   @Output()onClose = new EventEmitter<void>();
   @Output()onChangeSong = new EventEmitter<Song>();
+  @Output()onDeleteSong = new EventEmitter<Song>();
+  @Output()onClearSong = new EventEmitter<void>();
   @ViewChildren(WyScrollComponent)private wyScroll:QueryList<WyScrollComponent>;
   scrollY = 0;
   currentLyric:BaseLyricLine[];
@@ -39,12 +41,12 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
     }
     if(changes['songList']){
       //console.log('songList',this.songList);
-      this.currentIndex = 0;
+      this.updateCurrentIndex();
       // this.currentIndex = findIndex(this.songList,this.currentSong);
     }
     if(changes['currentSong']){
       if(this.currentSong){
-        this.currentIndex = findIndex(this.songList,this.currentSong);
+        this.updateCurrentIndex();
         this.updateLyric();
         if(this.show){
           this.scrollToCurrent();
@@ -73,7 +75,9 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
     }
   }
 
-
+  private updateCurrentIndex(){
+    this.currentIndex = findIndex(this.songList,this.currentSong);
+  }
   private updateLyric(){
     this.resetLyric();
     this.songServe.getLyric(this.currentSong.id).subscribe(res=>{
@@ -96,6 +100,12 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
       this.currentLyric = null;
       this.currentLineNum=0;
       this.lyricRefs = null;
+    }
+  }
+
+  seekLyric(time:number){
+    if(this.lyric){
+      this.lyric.seek(time);
     }
   }
 

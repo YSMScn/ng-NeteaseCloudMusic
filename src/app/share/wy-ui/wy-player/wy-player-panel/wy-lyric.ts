@@ -1,6 +1,6 @@
 import { Lyric } from 'src/app/services/data-types/common-types';
-import { skip } from 'rxjs/internal/operators';
-import { from, zip, Subject } from 'rxjs';
+import { skip, timeout } from 'rxjs/internal/operators';
+import { from, zip, Subject, Subscription, timer } from 'rxjs';
 
 export interface BaseLyricLine{
     txt:string;
@@ -24,7 +24,7 @@ export class WYLyric{
     private currentNum:number;
     private startStamp:number;
     handler = new Subject<Handler>();
-    private timer:any;
+    private timer$:Subscription;
     private pauseTime:number
     constructor(lrc:Lyric){
         this.lrc = lrc;
@@ -101,20 +101,27 @@ export class WYLyric{
         }
     }
 
-    play(startTime = 0){
+    play(startTime = 0,skip = false){
         if(!this.lines.length) return;
         if(!this.playing){
             this.playing = true;
-        }
+        }   
         this.currentNum = this.findCurrentNum(startTime);
         this.startStamp = Date.now() - startTime;
-        // this.callHandler()
+        if(!skip){
+            this.callHandler(this.currentNum - 1);
+        }
         if(this.currentNum < this.lines.length){
-            clearTimeout(this.timer);
+            //clearTimeout(this.timer);
+            this.clearTimer();
             this.playReset();
 
         }
         
+    }
+
+    private clearTimer(){
+        this.timer$ && this.timer$.unsubscribe();
     }
 
     findCurrentNum(time:number):number{
@@ -125,14 +132,20 @@ export class WYLyric{
     private playReset(){
         let line = this.lines[this.currentNum];
         const delay = line.time - (Date.now()-this.startStamp);
-        this.timer = setTimeout(()=>{
+        this.timer$ = timer(delay).subscribe(()=>{
             this.callHandler(this.currentNum++);
-            console.log('this.currentNum: ',this.currentNum);
-            console.log('line.time: ',line.time);
             if(this.currentNum < this.lines.length && this.playing){
                 this.playReset();
             }
-        },delay)
+        })
+        // this.timer = setTimeout(()=>{
+        //     this.callHandler(this.currentNum++);
+        //     console.log('this.currentNum: ',this.currentNum);
+        //     console.log('line.time: ',line.time);
+        //     if(this.currentNum < this.lines.length && this.playing){
+        //         this.playReset();
+        //     }
+        // },delay)
     }
 
     private callHandler(i:number){
@@ -151,7 +164,7 @@ export class WYLyric{
         this.playing = playing;
         if(playing){
             const startTime = (this.pauseTime || now) - (this.startStamp || now);
-            this.play(startTime)
+            this.play(startTime,true);
         }else{
             this.stop();
             this.pauseTime = now
@@ -163,7 +176,12 @@ export class WYLyric{
             this.playing = false;
             
         }
-        clearTimeout(this.timer);
+        //clearTimeout(this.timer);
+        this.clearTimer();
+    }
+
+    seek(time:number){
+        this.play(time);
     }
 }
     

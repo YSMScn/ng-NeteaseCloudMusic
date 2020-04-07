@@ -4,10 +4,12 @@ import { AppStoreModule } from 'src/app/store';
 import { getSongList, getPlayList, getCurrentIndex, getPlayer, getPlayMode, getCurrentSong } from 'src/app/store/selectors/player.selector';
 import { Song } from 'src/app/services/data-types/common-types';
 import { PlayMode } from './player-types';
-import { SetCurrentIndex, SetPlayMode, SetPlayList } from 'src/app/store/actions/player.action';
+import { SetCurrentIndex, SetPlayMode, SetPlayList, SetSongList } from 'src/app/store/actions/player.action';
 import { Subscription, fromEvent } from 'rxjs';
 import { DOCUMENT } from '@angular/common';
 import { shuffle, findIndex } from 'src/app/utils/array';
+import { WyPlayerPanelComponent } from './wy-player-panel/wy-player-panel.component';
+import { NzModalService } from 'ng-zorro-antd';
 
 const modeTypes:PlayMode[]= [{
   type:'loop',
@@ -48,10 +50,12 @@ export class WyPlayerComponent implements OnInit {
   
   
   @ViewChild('audio',{static:true}) private audio:ElementRef;
+  @ViewChild(WyPlayerPanelComponent,{static:false}) private playerPanel:WyPlayerPanelComponent;
   private audioEl:HTMLAudioElement;
   constructor(
     private store$:Store<AppStoreModule>,
-    @Inject(DOCUMENT) private doc:Document
+    @Inject(DOCUMENT) private doc:Document,
+    private nzModalServe:NzModalService
   ) {
     const appStore$ = this.store$.pipe(select(getPlayer)); 
     appStore$.pipe(select(getSongList)).subscribe(list => this.watchList(list, 'songList'));
@@ -162,6 +166,9 @@ export class WyPlayerComponent implements OnInit {
   loop(){
     this.audioEl.currentTime = 0;
     this.play();
+    if(this.playerPanel){
+      this.playerPanel.seekLyric(0);
+    }
   }
 
   updateIndex(index:number){
@@ -205,6 +212,10 @@ export class WyPlayerComponent implements OnInit {
     if(this.currentSong){
       const currentTime =  this.duration * (per / 100);
       this.audioEl.currentTime=currentTime;
+      if(this.playerPanel){
+        this.playerPanel.seekLyric(currentTime * 1000);
+      }
+      
     }
     
   }
@@ -273,6 +284,33 @@ export class WyPlayerComponent implements OnInit {
     // this.currentSong=song;
     // this.currentIndex = this.songList.indexOf(song);
     this.updateCurrentIndex(this.playList,song);
-    this.play();
+    //this.play();
+  }
+
+  onDeleteSong(song:Song){
+    const songList = this.songList.slice();
+    const playList = this.playList.slice();
+    let currentIndex = this.currentIndex;
+    const songIndex = findIndex(songList,song);
+    songList.splice(songIndex,1)
+    const playIndex = findIndex(playList,song);
+    playList.splice(playIndex,1)
+    if(currentIndex > playIndex || currentIndex == playList.length){
+      currentIndex--;
+    }
+    this.store$.dispatch(SetSongList({songList:songList}));
+    this.store$.dispatch(SetPlayList({playList:playList}));
+    this.store$.dispatch(SetCurrentIndex({currentIndex:currentIndex}));
+  }
+  onClearSong(){
+    this.nzModalServe.confirm({
+      nzTitle:'Do you want to clear this list?',
+      nzOnOk:()=>{
+        this.store$.dispatch(SetSongList({songList:null}));
+        this.store$.dispatch(SetPlayList({playList:null}));
+        this.store$.dispatch(SetCurrentIndex({currentIndex:-1}));
+      }
+    })
+    
   }
 }
