@@ -19,4 +19,10 @@ export class SongListComponent implements OnInit {
   playList(id:number){
     this.onPlay.emit(id);
   }
+
+  get coverImg():string{
+    return this.songList.picUrl || this.songList.coverImgUrl;
+  }
+
+
 }

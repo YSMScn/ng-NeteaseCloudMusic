@@ -14,9 +14,19 @@ export type HotTag = {
 
 export type SongList = {
     id: number;
+    userId:number;
     name: string;
     playCount: number;
     picUrl: string;
+    coverImgUrl:string;
+    tags:string[];
+    createTime:number;
+    creator:{nickname:string;avatarUrl:string};
+    description:string;
+    subscribedCount:number;
+    shareCount:number;
+    commentCount:number;
+    subscribed:boolean;
     tracks:Song[];
     
 }

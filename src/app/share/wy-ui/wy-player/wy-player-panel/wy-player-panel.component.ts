@@ -87,7 +87,7 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
     this.songServe.getLyric(this.currentSong.id).subscribe(res=>{
       this.lyric = new WYLyric(res);
       this.currentLyric = this.lyric.lines;
-      this.startLine = res.tlyric?0:2;
+      this.startLine = res.tlyric?0:3;
       this.handleLyric();
       this.wyScroll.last.scrollTo(0,0);
       if(this.playing){

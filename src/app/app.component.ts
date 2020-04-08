@@ -7,4 +7,12 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'ng-NeteaseCloudMusic';
+  menu=[{
+    label:'Find',
+    path:'/home'
+  },{
+    label:'List',
+    path:'/sheet'
+  }
+  ]
 }

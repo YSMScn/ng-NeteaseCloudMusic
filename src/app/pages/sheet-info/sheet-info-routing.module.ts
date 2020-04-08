@@ -1,0 +1,19 @@
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+import { SheetInfoComponent } from './sheet-info.component';
+import { SheetInfoResolverService } from './sheet-info-resolver.service';
+
+
+const routes: Routes = [{
+  path:'sheetInfo/:id',
+  component:SheetInfoComponent,
+  data:{title:'Song List Info'},
+  resolve:{sheetInfo:SheetInfoResolverService}
+}];
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule],
+  providers:[SheetInfoResolverService]
+})
+export class SheetInfoRoutingModule { }

@@ -36,6 +36,7 @@
                             *ngFor="let item of personalizedLists" 
                             [songList] = "item"
                             (onPlay) = "onPlayList($event)"
+                            (click)="toInfo(item.id)"
                             >
 
                             </app-song-list>

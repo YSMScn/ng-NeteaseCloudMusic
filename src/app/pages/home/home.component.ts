@@ -4,7 +4,7 @@ import { Banner, HotTag, SongList, Singer } from 'src/app/services/data-types/co
 import { NzCarouselComponent } from 'ng-zorro-antd';
 import { ChangeDetectionStrategy } from '@angular/compiler/src/core';
 import {SingerService} from 'src/app/services/Singer.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs/internal/operators';
 import { SongListService } from 'src/app/services/song-list.service';
 import { AppStoreModule } from 'src/app/store';
@@ -32,6 +32,7 @@ export class HomeComponent implements OnInit {
     // private homeServe:HomeService,
     // private singerServe:SingerService,
     private route: ActivatedRoute,
+    private router: Router,
     private songListServe:SongListService,
     private batchActionServe: BatchActionsService
     ) {
@@ -90,6 +91,10 @@ export class HomeComponent implements OnInit {
     this.songListServe.playList(id).subscribe(list=>{
       this.batchActionServe.selectPlayList({list,index:0});
     })
+  }
+
+  toInfo(id:number){
+    this.router.navigate(['/sheetInfo',id]);
   }
 
 }

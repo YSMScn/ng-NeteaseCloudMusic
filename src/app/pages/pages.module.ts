@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ShareModule } from '../share/share.module';
 import { HomeModule } from './home/home.module';
 import { SheetListModule } from './sheet-list/sheet-list.module';
+import { SheetInfoModule } from './sheet-info/sheet-info.module';
 
 
 
@@ -10,11 +11,13 @@ import { SheetListModule } from './sheet-list/sheet-list.module';
   declarations: [],
   imports: [
     HomeModule,
-    SheetListModule
+    SheetListModule,
+    SheetInfoModule
   ]
   ,exports:[
     HomeModule,
-    SheetListModule
+    SheetListModule,
+    SheetInfoModule
   ]
 })
 export class PagesModule { }

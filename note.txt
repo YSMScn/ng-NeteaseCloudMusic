@@ -263,3 +263,10 @@
 
 5-12:
 *setTimeout to timer$:Subscription
+
+6-4:
+*res: undefined
+*Solved:double checked the route variable in sheet-info-routing.module.ts
+*29:00 two ways:[innerHTML]="description.long"
+                 {{description.long}}
+*use the innerHTML way, because <br> needed in html for the description
