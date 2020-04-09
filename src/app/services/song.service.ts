@@ -37,6 +37,12 @@ export class SongService {
     
   }
 
+  getSongDetail(ids:string):Observable<Song>{
+    const params = new HttpParams().set('ids',ids);
+    return this.http.get(this.url+'song/detail',{params})
+    .pipe(map((res:{songs:Song})=>res.songs[0]));
+  }
+
   generateSongList(songs: Song[], urls:SongUrl[]):Song[]{
     const result = [];
     songs.forEach(song =>{
@@ -67,5 +73,6 @@ export class SongService {
       
     }));
   }
+  
 }
 

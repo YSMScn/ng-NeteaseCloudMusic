@@ -4,6 +4,7 @@ import { ShareModule } from '../share/share.module';
 import { HomeModule } from './home/home.module';
 import { SheetListModule } from './sheet-list/sheet-list.module';
 import { SheetInfoModule } from './sheet-info/sheet-info.module';
+import { SongInfoModule } from './song-info/song-info.module';
 
 
 
@@ -12,12 +13,14 @@ import { SheetInfoModule } from './sheet-info/sheet-info.module';
   imports: [
     HomeModule,
     SheetListModule,
-    SheetInfoModule
+    SheetInfoModule,
+    SongInfoModule
   ]
   ,exports:[
     HomeModule,
     SheetListModule,
-    SheetInfoModule
+    SheetInfoModule,
+    SongInfoModule
   ]
 })
 export class PagesModule { }

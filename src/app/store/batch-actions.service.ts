@@ -47,6 +47,43 @@ export class BatchActionsService {
     this.store$.dispatch(SetSongList({songList:null}));
     this.store$.dispatch(SetPlayList({playList:null}));
     this.store$.dispatch(SetCurrentIndex({currentIndex:-1}));    
-}
+  }
+
+  insertSong(song:Song,isPlay:boolean){
+    const songList = this.playerState.songList.slice();
+    const playList = this.playerState.playList.slice();
+    let insertIndex = this.playerState.currentIndex;
+    const playListIndex = findIndex(songList,song);
+    if(playListIndex>-1){
+      if(isPlay){
+        insertIndex = playListIndex;
+      }
+    }else{
+      songList.push(song);
+      playList.push(song);
+      if(isPlay){
+        insertIndex = songList.length -1;
+      }
+      this.store$.dispatch(SetSongList({songList:songList}));
+      this.store$.dispatch(SetPlayList({playList:playList}));
+    }
+    if(insertIndex!==this.playerState.currentIndex){
+      this.store$.dispatch(SetCurrentIndex({currentIndex:insertIndex})); 
+    }
+  }
+  //Insert a song list
+  insertSongs(songs:Song[]){
+    const songList = this.playerState.songList.slice();
+    const playList = this.playerState.playList.slice();
+    songs.forEach(item=>{
+      const playListIndex = findIndex(playList,item);
+      if(playListIndex === -1){
+        songList.push(item);
+        playList.push(item);
+      }
+    });
+    this.store$.dispatch(SetSongList({songList:songList}));
+    this.store$.dispatch(SetPlayList({playList:playList}));
+  }
 
 }

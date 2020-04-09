@@ -42,7 +42,10 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
     }
     if(changes['songList']){
       //console.log('songList',this.songList);
-      this.updateCurrentIndex();
+      if(this.currentSong){
+        this.updateCurrentIndex();
+      }
+      
       // this.currentIndex = findIndex(this.songList,this.currentSong);
     }
     if(changes['currentSong']){
