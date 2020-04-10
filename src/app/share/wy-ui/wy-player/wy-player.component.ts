@@ -11,6 +11,7 @@ import { shuffle, findIndex } from 'src/app/utils/array';
 import { WyPlayerPanelComponent } from './wy-player-panel/wy-player-panel.component';
 import { NzModalService } from 'ng-zorro-antd';
 import { BatchActionsService } from 'src/app/store/batch-actions.service';
+import { Router } from '@angular/router';
 
 const modeTypes:PlayMode[]= [{
   type:'loop',
@@ -57,7 +58,8 @@ export class WyPlayerComponent implements OnInit {
     private store$:Store<AppStoreModule>,
     @Inject(DOCUMENT) private doc:Document,
     private nzModalServe:NzModalService,
-    private batchActionServe:BatchActionsService
+    private batchActionServe:BatchActionsService,
+    private router:Router
   ) {
     const appStore$ = this.store$.pipe(select(getPlayer)); 
     appStore$.pipe(select(getSongList)).subscribe(list => this.watchList(list, 'songList'));
@@ -300,5 +302,15 @@ export class WyPlayerComponent implements OnInit {
     this.showPanel = false;
     this.bindFlag = false;
     //this.unbindDocumentClickListener();
+  }
+
+  toInfo(path:[string,number]){
+    console.log('toInfo: ', path);
+    if(path[1]){
+      this.showVolumnPanel = false;
+      this.showPanel = false;
+      this.router.navigate(path);
+    }
+    
   }
 }

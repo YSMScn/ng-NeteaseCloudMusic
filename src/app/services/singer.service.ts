@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@angular/core';
 import { ServicesModule, API_CONFIG } from './services.module';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Singer } from './data-types/common-types';
+import { Singer, SingerDetail } from './data-types/common-types';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/internal/operators';
 import queryString from 'query-string';
@@ -29,5 +29,15 @@ export class SingerService {
     const params = new HttpParams({fromString: queryString.stringify(args)});
     return this.http.get(this.url+'artist/list',{params})
     .pipe(map((res:{artists:Singer[]})=>res.artists));
+  }
+
+  getSingerDetail(id:string):Observable<SingerDetail>{
+    const params = new HttpParams().set('id',id);
+    return this.http.get(this.url+'artists',{params}).pipe(map(res=> res as SingerDetail));
+  }
+
+  getSimiSinger(id:string):Observable<Singer[]>{
+    const params = new HttpParams().set('id',id);
+    return this.http.get(this.url+'simi/artist',{params}).pipe(map((res:{artist:Singer[]})=> res.artist));
   }
 }

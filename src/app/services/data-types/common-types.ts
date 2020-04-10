@@ -34,8 +34,15 @@ export type SongList = {
 export type Singer = {
     id:number;
     name:string;
+    alias:string[];
     picUrl:string;
     albumSize:number;
+}
+
+export type SingerDetail = {
+    artist:Singer;
+    hotSongs:Song[];
+
 }
 
 export type Song = {
@@ -60,4 +67,11 @@ export type Lyric = {
 export type PlayList={
     playlists:SongList[];
     total:NumberValueAccessor;
+}
+
+export type SearchResult={
+    artists?:Singer[];
+    playlists?:SongList[];
+    songs?:Song[];
+
 }

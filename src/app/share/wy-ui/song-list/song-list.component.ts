@@ -16,7 +16,8 @@ export class SongListComponent implements OnInit {
   ngOnInit(): void {  
   }
 
-  playList(id:number){
+  playList(evt:MouseEvent,id:number){
+    evt.stopPropagation();
     this.onPlay.emit(id);
   }
 

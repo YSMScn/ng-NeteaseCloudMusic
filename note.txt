@@ -270,3 +270,12 @@
 *29:00 two ways:[innerHTML]="description.long"
                  {{description.long}}
 *use the innerHTML way, because <br> needed in html for the description
+
+7-1:
+*If we import ShareModule in wy-search.module.ts, there is a ERROR in Maximum call stack size exceeded
+*To solve this problem, don't import shareModule, import NgZorroAntdModule
+*Because we don't need everything from NgZorroAntdModule, we can only import NzInputModule and NzIconModule
+*Around 14:00, using ng-container and ng-template
+
+7-3:
+*Around 10:00 angular matierail overlay

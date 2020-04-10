@@ -23,6 +23,7 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
   @Output()onChangeSong = new EventEmitter<Song>();
   @Output()onDeleteSong = new EventEmitter<Song>();
   @Output()onClearSong = new EventEmitter<void>();
+  @Output()onToInfo = new EventEmitter<[string,number]>();
   @ViewChildren(WyScrollComponent)private wyScroll:QueryList<WyScrollComponent>;
   scrollY = 0;
   currentLyric:BaseLyricLine[];
@@ -159,4 +160,8 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
   ngOnInit(): void {
   }
 
+  toInfo(evt:MouseEvent,path:[string,number]){
+    evt.stopPropagation();
+    this.onToInfo.emit(path);
+  }
 }

@@ -49,7 +49,7 @@
                 <div class="settled-singer">
                     <div class="tit"><b>Settled Singer</b></div>
                     <div class="list">
-                        <div class="card" *ngFor="let item of settledSinger">
+                        <div class="card" *ngFor="let item of settledSinger" [routerLink]="['/singer',item.id]">
                             <div class="pic">
                                 <img [src]="item.picUrl" [alt]="item.name">
                             </div>

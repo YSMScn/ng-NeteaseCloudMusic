@@ -15,16 +15,16 @@
                     </div>
                     <div class="user f-cb">
                         <div class="singers clearfix">
-                            <span>Artist</span>
+                            <span>Artist: </span>
                             <ul class="clearfix">
                                 <li *ngFor="let singer of song.ar;last as isLast">
-                                    <a [href]="'//music.163.com/artist?id=' + singer.id">{{singer.name}}</a>
+                                    <a [routerLink]="['/singer',+singer.id]">{{singer.name}}</a>
                                     <i [hidden]='isLast'>/</i>
                                 </li>
                             </ul>
                         </div>
                         <div class="al">
-                            <span>Track Name</span>
+                            <span>Track Name: </span>
                             <span class="al-name">{{song.al.name}}</span>
                         </div>
                     </div>
