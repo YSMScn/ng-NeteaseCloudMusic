@@ -1,11 +1,16 @@
 <div class="m-player"
   appClickoutside
+  [@showHide]="showPlayer"
   (onClickOutside)="onClickOutside()"
   [bindFlag] = "bindFlag"
+  (mouseenter) = "togglePlayer('show')"
+  (mouseleave) = "togglePlayer('hide')"
+  (@showHide.start)="animating = true"
+  (@showHide.done)="onAnimationDone($event)"
   >
-    <div class="lock">
+    <div class="lock" (click)="isLocked = !isLocked">
         <div class="left">
-            <i></i>
+            <i [class.locked]="isLocked"></i>
         </div>
     </div>
         <div class="hand"></div>
@@ -18,7 +23,7 @@
                 </div>
                 <div class="head">
                     <img [src]='picUrl'>
-                    <i class="mask" (click)="toInfo(['/songInfo',currentSong && currentSong.id])"></i>  
+                    <i class="mask" (click)="toInfo(['/songInfo',currentSong && currentSong.id])"></i>
                 </div>
                 <div class="play">
                     <div class="words clearfix" [hidden]="false">
@@ -46,28 +51,28 @@
                 <div class="ctrl">
                     <i class="volume" title="volume" (click)="toggleVolPanel($event)"></i>
                     <i [ngClass]="currentMode.type" [title]="currentMode.label"(click)="changeMode()"></i>
-                    <p class="open" (click)="toggleListPanel()">
+                    <p class="open" nz-tooltip [nzTooltipTitle]="controlTooltip.title" nzOverlayClassName="tip-bg" [nzVisible]="controlTooltip.show"(click)="toggleListPanel()">
                         <span></span>
                     </p>
                     <div class="control-vol" [hidden]="!showVolumnPanel">
                         <app-wy-slider [(ngModel)]="volumnPercent" [wyVertical]='true' (ngModelChange)="onVolumnChange($event)"></app-wy-slider>
                     </div>
                 </div>
-                <app-wy-player-panel 
+                <app-wy-player-panel
                 [songList]="songList"
-                [playing]='playing' 
-                [currentSong]="currentSong" 
-                [show]="showPanel" 
+                [playing]='playing'
+                [currentSong]="currentSong"
+                [show]="showPanel"
                 (onClose)="showPanel = false"
-                (onChangeSong)="onChangeSong($event)" 
+                (onChangeSong)="onChangeSong($event)"
                 (onDeleteSong)="onDeleteSong($event)"
                 (onClearSong)="onClearSong() "
                 (onToInfo)="toInfo($event)"
                 ></app-wy-player-panel>
             </div>
     </div>
-    <audio 
-    [src]="currentSong?.url" 
+    <audio
+    [src]="currentSong?.url"
     (canplay)="onCanPlay()"
     #audio
     (timeupdate)="onTimeUpdate($event)"

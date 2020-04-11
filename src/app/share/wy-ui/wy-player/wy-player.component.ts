@@ -1,17 +1,19 @@
 import { Component, OnInit, ViewChild, ElementRef, Inject } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { AppStoreModule } from 'src/app/store';
-import { getSongList, getPlayList, getCurrentIndex, getPlayer, getPlayMode, getCurrentSong } from 'src/app/store/selectors/player.selector';
+import { getSongList, getPlayList, getCurrentIndex, getPlayer, getPlayMode, getCurrentSong, getCurrentAction } from 'src/app/store/selectors/player.selector';
 import { Song } from 'src/app/services/data-types/common-types';
 import { PlayMode } from './player-types';
-import { SetCurrentIndex, SetPlayMode, SetPlayList, SetSongList } from 'src/app/store/actions/player.action';
-import { Subscription, fromEvent } from 'rxjs';
+import { SetCurrentIndex, SetPlayMode, SetPlayList, SetSongList, SetCurrentAction } from 'src/app/store/actions/player.action';
+import { Subscription, fromEvent, timer } from 'rxjs';
 import { DOCUMENT } from '@angular/common';
 import { shuffle, findIndex } from 'src/app/utils/array';
 import { WyPlayerPanelComponent } from './wy-player-panel/wy-player-panel.component';
 import { NzModalService } from 'ng-zorro-antd';
 import { BatchActionsService } from 'src/app/store/batch-actions.service';
 import { Router } from '@angular/router';
+import { trigger, transition, animate, state, style, AnimationEvent } from '@angular/animations';
+import { CurrentActions } from 'src/app/store/reducers/player.reducer';
 
 const modeTypes:PlayMode[]= [{
   type:'loop',
@@ -23,12 +25,31 @@ const modeTypes:PlayMode[]= [{
   type:'singleLoop',
   label:'Single Loop'
 }]
+
+enum TipTitles {
+  Add = 'Added to current list',
+  Play = 'Its playing now~'
+}
 @Component({
   selector: 'app-wy-player',
   templateUrl: './wy-player.component.html',
-  styleUrls: ['wy-player.component.less']
+  styleUrls: ['wy-player.component.less'],
+  animations: [trigger('showHide',[
+    state('show',style({bottom:0})),
+    state('hide',style({bottom:-71})),
+    transition('show=>hide',[animate('0.3s')]),
+    transition('hide=>show',[animate('0.1s')])
+  ])]
 })
 export class WyPlayerComponent implements OnInit {
+  controlTooltip = {
+    title:'',
+    show:false
+  }
+
+  showPlayer = 'hide';
+  isLocked = false;
+  animating = false;
   percent = 0;
   bufferOffset1 = 0;
   volumnPercent = 60;
@@ -49,8 +70,8 @@ export class WyPlayerComponent implements OnInit {
   //check if we are clicking volPanel itself
   bindFlag = false;
   private winClick:Subscription;
-  
-  
+
+
   @ViewChild('audio',{static:true}) private audio:ElementRef;
   @ViewChild(WyPlayerPanelComponent,{static:false}) private playerPanel:WyPlayerPanelComponent;
   private audioEl:HTMLAudioElement;
@@ -61,12 +82,13 @@ export class WyPlayerComponent implements OnInit {
     private batchActionServe:BatchActionsService,
     private router:Router
   ) {
-    const appStore$ = this.store$.pipe(select(getPlayer)); 
+    const appStore$ = this.store$.pipe(select(getPlayer));
     appStore$.pipe(select(getSongList)).subscribe(list => this.watchList(list, 'songList'));
     appStore$.pipe(select(getPlayList)).subscribe(list => this.watchList(list, 'playList'));
     appStore$.pipe(select(getCurrentIndex)).subscribe(index => this.watchCurrentIndex(index));
     appStore$.pipe(select(getPlayMode)).subscribe(mode => this.watchPlayMode(mode));
     appStore$.pipe(select(getCurrentSong)).subscribe(song => this.watchCurrentSong(song));
+    appStore$.pipe(select(getCurrentAction)).subscribe(currentAction => this.watchCurrentAction(currentAction));
     // appStore$.pipe(select(getCurrentAction)).subscribe(action => this.watchCurrentAction(action));
 
     // const stateArr = [{
@@ -96,7 +118,7 @@ export class WyPlayerComponent implements OnInit {
     //First time see this way! this[]
   }
   private watchCurrentIndex(index: number){
-    this.currentIndex = index; 
+    this.currentIndex = index;
   }
 
   private watchPlayMode(mode: PlayMode) {
@@ -108,7 +130,7 @@ export class WyPlayerComponent implements OnInit {
       }
       this.updateCurrentIndex(list, this.currentSong);
       this.store$.dispatch(SetPlayList({ playList: list }));
-      
+
     }
   }
 
@@ -119,6 +141,37 @@ export class WyPlayerComponent implements OnInit {
       this.duration = song.dt / 1000;
     }
     //for later on
+  }
+
+  private watchCurrentAction(action:CurrentActions){
+    const title = TipTitles[CurrentActions[action]];
+
+    console.log('title: ',title);
+    if(title){
+      this.controlTooltip.title = title;
+      if(this.showPlayer === 'hide'){
+        this.togglePlayer('show');
+      }else{
+        this.showToolTip();
+      }
+    }
+    this.store$.dispatch(SetCurrentAction({currentAction:CurrentActions.Other}));
+  }
+
+  onAnimationDone(event:AnimationEvent){
+    this.animating=false;
+    if(event.toState === 'show' && this.controlTooltip.title){
+      this.showToolTip();
+    }
+  }
+  private showToolTip(){
+    this.controlTooltip.show = true;
+    timer(1500).subscribe(()=>{
+      this.controlTooltip = {
+        title:'',
+        show:false
+      }
+    })
   }
 
   updateCurrentIndex(list:Song[],currentSong:Song){
@@ -144,7 +197,7 @@ export class WyPlayerComponent implements OnInit {
         }
       }
     }
-    
+
   }
 
   onPrev(index:number){
@@ -164,7 +217,7 @@ export class WyPlayerComponent implements OnInit {
     }
     const newIndex = index>=this.playList.length?0:index;
     this.updateIndex(newIndex);
-    
+
   }
 
   loop(){
@@ -215,9 +268,9 @@ export class WyPlayerComponent implements OnInit {
       if(this.playerPanel){
         this.playerPanel.seekLyric(currentTime * 1000);
       }
-      
+
     }
-    
+
   }
   onVolumnChange(per:number){
     this.audioEl.volume = per/100;
@@ -261,7 +314,7 @@ export class WyPlayerComponent implements OnInit {
     if(this.songList.length){
       this.togglePanel('showPanel');
     }
-    
+
   }
 
   changeMode(){
@@ -293,7 +346,7 @@ export class WyPlayerComponent implements OnInit {
       nzOnOk:()=>{
         this.batchActionServe.clearSong();
       }
-    })  
+    })
   }
 
   onClickOutside(){
@@ -311,6 +364,12 @@ export class WyPlayerComponent implements OnInit {
       this.showPanel = false;
       this.router.navigate(path);
     }
-    
+
+  }
+
+  togglePlayer(type:string){
+    if(!this.isLocked && !this.animating){
+      this.showPlayer=type;
+    }
   }
 }

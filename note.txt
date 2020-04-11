@@ -54,7 +54,7 @@
 *Create wy-carousel component under home component
 *Edit wy-carousel.component.html and home.component.html
 *Copy banner.png and wy-carousel.component.less
-*Use [nzDotRender] and ng-template to set style(dot) for carousel 
+*Use [nzDotRender] and ng-template to set style(dot) for carousel
 *Bind click event with right and left icon
 *Bind (click)="onChangeSlide('pre')" and ('next') for right and left icon. Create output event with parameter pre or next. Bind this event in home.component with new method to run function nzCarouselComponent[diretction]()
 *In wy-carousel.component.ts, we can change the type of EventEmitter from string to 'pre' | 'next'. Now, the function nzCarouselComponent[diretction]() will only have pre and next two options.
@@ -72,7 +72,7 @@
 *Create member-card.component and use it in home.component.html
 
 3-7:
-*Using provider to pervent data lost or empty component while page loading and get data from API. E.g. At the first time of loading a page, there could be a delay when the web asking API to return datas. At this condition, the component that didn't recived data from API may be empty 
+*Using provider to pervent data lost or empty component while page loading and get data from API. E.g. At the first time of loading a page, there could be a delay when the web asking API to return datas. At this condition, the component that didn't recived data from API may be empty
 *Create home-resolve.services and copy source code from angular api, edit it to return test to see how it works
 *Add provider in home-routing.modules and resolve:{homeDatas:HomeResolverService} in Route
 *Add private route: ActivatedRoute into home-components' constructor, use pipe(map()).subscribe and console.log to test if this resolve worked.
@@ -175,7 +175,7 @@
 
 4-15:
 *6:00
-*Have problem when <app-wy-slider [bufferOffset]= "bufferOffset1" [(ngModel)]="sliderValue" (ngModelChange)="onPercentChange($event)"> is changed to 
+*Have problem when <app-wy-slider [bufferOffset]= "bufferOffset1" [(ngModel)]="sliderValue" (ngModelChange)="onPercentChange($event)"> is changed to
                    <app-wy-slider [bufferOffset]= "bufferOffset1" [(ngModel)]="sliderValue" (wyOnAfterChange)="onPercentChange($event)">
 *Keep it in <app-wy-slider [bufferOffset]= "bufferOffset1" [(ngModel)]="sliderValue" (ngModelChange)="onPercentChange($event)"> first
 *change to wyOnAfterChange will cause "double click" on toggle and first time click on slider won't change currentTime
@@ -279,3 +279,11 @@
 
 7-3:
 *Around 10:00 angular matierail overlay
+
+7-4:
+*When {blur} is faster than (click), we can use (mousedown).
+
+7-8:
+*In the video, he used nz-ToolTip and nz-title, he said the nzTooltipTitle doesn't work because the version of ng-zorro he used
+*But the reason for that is because we already bind a click event on this <p> element, and the nz-ToolTip's defalut trigger is 'click'
+*If we set nzTooltipTrigger="hover", we can use nzTooltipTitle now.

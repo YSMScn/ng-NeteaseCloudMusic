@@ -1,7 +1,7 @@
 <ng-template #defaultView>
     <div class="search" #search>
         <nz-input-group nzSuffixIcon="search">
-          <input nz-input #nzInput placeholder="List/Singer/Song">
+          <input nz-input #nzInput placeholder="List/Singer/Song" (focus)="onFocus()" (blur)="onBlur()">
         </nz-input-group>
     </div>
 </ng-template>

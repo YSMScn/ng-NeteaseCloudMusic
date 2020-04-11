@@ -3,8 +3,8 @@ import { AppStoreModule } from '.';
 import { Song } from '../services/data-types/common-types';
 import { Store, select } from '@ngrx/store';
 import { getPlayer } from './selectors/player.selector';
-import { PlayState } from './reducers/player.reducer';
-import { SetSongList, SetPlayList, SetCurrentIndex } from './actions/player.action';
+import { PlayState, CurrentActions } from './reducers/player.reducer';
+import { SetSongList, SetPlayList, SetCurrentIndex, SetCurrentAction } from './actions/player.action';
 import { shuffle, findIndex } from '../utils/array';
 
 @Injectable({
@@ -12,7 +12,7 @@ import { shuffle, findIndex } from '../utils/array';
 })
 export class BatchActionsService {
   private playerState:PlayState;
-  constructor(private store$:Store<AppStoreModule>) { 
+  constructor(private store$:Store<AppStoreModule>) {
     this.store$.pipe(select(getPlayer)).subscribe(res=>this.playerState = res)
   }
 
@@ -26,6 +26,7 @@ export class BatchActionsService {
     }
     this.store$.dispatch(SetPlayList({playList:trueList}));
     this.store$.dispatch(SetCurrentIndex({currentIndex:trueIndex}));
+    this.store$.dispatch(SetCurrentAction({currentAction:CurrentActions.Play}));
   }
 
   deleteSong(song:Song){
@@ -42,11 +43,13 @@ export class BatchActionsService {
     this.store$.dispatch(SetSongList({songList:songList}));
     this.store$.dispatch(SetPlayList({playList:playList}));
     this.store$.dispatch(SetCurrentIndex({currentIndex:currentIndex}));
+    this.store$.dispatch(SetCurrentAction({currentAction:CurrentActions.Delete}));
   }
   clearSong(){
     this.store$.dispatch(SetSongList({songList:null}));
     this.store$.dispatch(SetPlayList({playList:null}));
-    this.store$.dispatch(SetCurrentIndex({currentIndex:-1}));    
+    this.store$.dispatch(SetCurrentIndex({currentIndex:-1}));
+    this.store$.dispatch(SetCurrentAction({currentAction:CurrentActions.Clear}));
   }
 
   insertSong(song:Song,isPlay:boolean){
@@ -68,7 +71,10 @@ export class BatchActionsService {
       this.store$.dispatch(SetPlayList({playList:playList}));
     }
     if(insertIndex!==this.playerState.currentIndex){
-      this.store$.dispatch(SetCurrentIndex({currentIndex:insertIndex})); 
+      this.store$.dispatch(SetCurrentIndex({currentIndex:insertIndex}));
+      this.store$.dispatch(SetCurrentAction({currentAction:CurrentActions.Play}));
+    }else{
+      this.store$.dispatch(SetCurrentAction({currentAction:CurrentActions.Add}));
     }
   }
   //Insert a song list
@@ -84,6 +90,7 @@ export class BatchActionsService {
     });
     this.store$.dispatch(SetSongList({songList:songList}));
     this.store$.dispatch(SetPlayList({playList:playList}));
+    this.store$.dispatch(SetCurrentAction({currentAction:CurrentActions.Add}));
   }
 
 }
