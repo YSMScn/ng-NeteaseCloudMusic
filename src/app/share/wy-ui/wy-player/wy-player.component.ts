@@ -136,7 +136,7 @@ export class WyPlayerComponent implements OnInit {
 
   private watchCurrentSong(song: Song) {
     this.currentSong = song;
-    // this.bufferPercent = 0;
+    this.bufferOffset1 = 0;
     if (song) {
       this.duration = song.dt / 1000;
     }
@@ -349,11 +349,12 @@ export class WyPlayerComponent implements OnInit {
     })
   }
 
-  onClickOutside(){
-    console.log("onClickOutside");
-    this.showVolumnPanel = false;
-    this.showPanel = false;
-    this.bindFlag = false;
+  onClickOutside(target:HTMLElement){
+    if(target.dataset.act !== 'delete'){
+      this.showVolumnPanel = false;
+      this.showPanel = false;
+      this.bindFlag = false;
+    }
     //this.unbindDocumentClickListener();
   }
 
@@ -371,5 +372,11 @@ export class WyPlayerComponent implements OnInit {
     if(!this.isLocked && !this.animating){
       this.showPlayer=type;
     }
+  }
+
+  onError(){
+    console.log("onError");
+    this.playing = false;
+    this.bufferOffset1 = 0;
   }
 }

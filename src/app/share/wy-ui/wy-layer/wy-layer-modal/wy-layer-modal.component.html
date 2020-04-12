@@ -1,0 +1,8 @@
+<div class="m-layer" [style.visibility]="showModal?'visiable':'hidden'" #modalContainer>
+  <div class="zbar">
+    <div class="zttl f-thide">TITLE</div>
+  </div>
+  <ng-content></ng-content>
+  <div class="zcls" title="CLOSE" (click)="hide()"></div>
+
+</div>

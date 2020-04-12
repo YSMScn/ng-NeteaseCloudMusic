@@ -287,3 +287,8 @@
 *In the video, he used nz-ToolTip and nz-title, he said the nzTooltipTitle doesn't work because the version of ng-zorro he used
 *But the reason for that is because we already bind a click event on this <p> element, and the nz-ToolTip's defalut trigger is 'click'
 *If we set nzTooltipTrigger="hover", we can use nzTooltipTitle now.
+
+8-4:
+*Clicking login button won't show new panel with error:
+*Can't bind to 'ngIf' since it isn't a known property of 'div'.
+*Don't forget to import CommonModule!

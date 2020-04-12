@@ -1,8 +1,8 @@
 <div class="home">
     <app-wy-carousel #wyCarousel [activeIndex] = "carouselActiveIndex" (changeSlide)="onChangeSlide($event)">
-        <nz-carousel 
-        nzAutoPlay 
-        nzEffect="fade" 
+        <nz-carousel
+        nzAutoPlay
+        nzEffect="fade"
         [nzDotRender]="wyCarousel.dotRef"
         (nzBeforeChange)="beforeChange($event)"
         >
@@ -31,9 +31,9 @@
                     </div>
                     <div class="down">
                         <div class="down-wrap">
-                            <app-song-list 
-                            class="sheet-item" 
-                            *ngFor="let item of personalizedLists" 
+                            <app-song-list
+                            class="sheet-item"
+                            *ngFor="let item of personalizedLists"
                             [songList] = "item"
                             (onPlay) = "onPlayList($event)"
                             (click)="toInfo(item.id)"
@@ -45,7 +45,7 @@
                 </div>
             </div>
             <div class="right">
-                <app-member-card></app-member-card>
+                <app-member-card (openModal)="openModal()"></app-member-card>
                 <div class="settled-singer">
                     <div class="tit"><b>Settled Singer</b></div>
                     <div class="list">

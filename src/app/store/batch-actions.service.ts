@@ -6,14 +6,19 @@ import { getPlayer } from './selectors/player.selector';
 import { PlayState, CurrentActions } from './reducers/player.reducer';
 import { SetSongList, SetPlayList, SetCurrentIndex, SetCurrentAction } from './actions/player.action';
 import { shuffle, findIndex } from '../utils/array';
+import { getMember } from './selectors/member.selector';
+import { MemberState, ModalTypes } from './reducers/member.reducer';
+import { SetModalType, SetModalVisiable } from './actions/member.action';
 
 @Injectable({
   providedIn: AppStoreModule
 })
 export class BatchActionsService {
   private playerState:PlayState;
+  private memberState:MemberState;
   constructor(private store$:Store<AppStoreModule>) {
-    this.store$.pipe(select(getPlayer)).subscribe(res=>this.playerState = res)
+    this.store$.pipe(select(getPlayer)).subscribe(res=>this.playerState = res);
+    this.store$.pipe(select(getMember)).subscribe(res=>this.memberState = res);
   }
 
   selectPlayList({list,index}:{list:Song[],index:number}){
@@ -46,8 +51,8 @@ export class BatchActionsService {
     this.store$.dispatch(SetCurrentAction({currentAction:CurrentActions.Delete}));
   }
   clearSong(){
-    this.store$.dispatch(SetSongList({songList:null}));
-    this.store$.dispatch(SetPlayList({playList:null}));
+    this.store$.dispatch(SetSongList({songList:[]}));
+    this.store$.dispatch(SetPlayList({playList:[]}));
     this.store$.dispatch(SetCurrentIndex({currentIndex:-1}));
     this.store$.dispatch(SetCurrentAction({currentAction:CurrentActions.Clear}));
   }
@@ -93,4 +98,9 @@ export class BatchActionsService {
     this.store$.dispatch(SetCurrentAction({currentAction:CurrentActions.Add}));
   }
 
+  //login and show new panel
+  controlModal(visiable = true, type = ModalTypes.default){
+    this.store$.dispatch(SetModalType({modalType:type}));
+    this.store$.dispatch(SetModalVisiable({modalVisiable:visiable}));
+  }
 }

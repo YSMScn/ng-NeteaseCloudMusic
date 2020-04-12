@@ -43,13 +43,13 @@ export class HomeComponent implements OnInit {
       this.settledSinger =settledSinger;
     });
 
-    
+
     // this.getBanners();
     // this.getHotTags();
     // this.getPersonalizedList();
     // this.getSettledSinger();
    }
-  
+
   // private getBanners(){
   //   this.homeServe.getBanners().subscribe(banners => {
   //     this.banners =banners;
@@ -97,4 +97,8 @@ export class HomeComponent implements OnInit {
     this.router.navigate(['/sheetInfo',id]);
   }
 
+  openModal(){
+    console.log("openModal");
+    this.batchActionServe.controlModal();
+  }
 }
