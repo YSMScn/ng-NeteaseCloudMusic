@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-wy-layer-default',
@@ -10,8 +10,8 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
             <img src="../../../../../assets/images/platform.png"/>
           </div>
           <div class="methods">
-            <button nz-button nzType="primary" nzSize="large" nzBlock="true">Login with Phone</button>
-            <button nz-button nzType="primary" nzSize="large" nzBlock="true">Sign Up</button>
+            <button nz-button nzType="primary" nzSize="large" nzBlock="true" (click)="onChangeModalType.emit('loginByPhone')">Login with Phone</button>
+            <button nz-button nzType="primary" nzSize="large" nzBlock="true" (click)="onChangeModalType.emit('register')">Sign Up</button>
           </div>
         </div>
       </div>
@@ -21,7 +21,7 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WyLayerDefaultComponent implements OnInit {
-
+  @Output() onChangeModalType = new EventEmitter<string|void>();
   constructor() { }
 
   ngOnInit(): void {

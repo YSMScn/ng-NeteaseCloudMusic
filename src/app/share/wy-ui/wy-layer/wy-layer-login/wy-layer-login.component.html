@@ -1,0 +1,35 @@
+<div class="login-phone modal-content">
+  <div class="modal-wrap">
+    <form nz-form class="login-form" [formGroup]="formModel" (ngSubmit)="onSubmit()">
+      <nz-form-item>
+        <nz-form-control nzHasFeedback nzErrorTip="Please enter correct phone number">
+          <nz-input-group nzPrefixIcon="mobile">
+            <input nz-input type="tel" placeholder="Please enter phone number" formControlName="phone">
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control nzHasFeedback nzErrorTip="Please enter correct password">
+          <nz-input-group nzPrefixIcon="lock">
+            <input nz-input type="password" placeholder="Please enter password" formControlName="password">
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <div class="tools">
+            <label nz-checkbox class="remember" formControlName="remember">
+              <span>Memerise Password</span>
+            </label>
+          </div>
+          <button nz-button class="login-form-button" [disabled]="!formModel.valid" nzType="primary" nzBlock="true">Log in</button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </div>
+</div>
+
+<div class="m-footer clearfix">
+  <a (click)="onChangeModalType.emit('default')">Other way to log in</a>
+  <a (click)="onChangeModalType.emit('register')">Need an Acount?</a>
+</div>

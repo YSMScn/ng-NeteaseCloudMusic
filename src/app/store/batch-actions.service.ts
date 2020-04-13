@@ -99,8 +99,11 @@ export class BatchActionsService {
   }
 
   //login and show new panel
-  controlModal(visiable = true, type = ModalTypes.default){
-    this.store$.dispatch(SetModalType({modalType:type}));
+  controlModal(visiable = true, type?:ModalTypes){
+    if(type){
+      console.log('batchActions',typeof(type));
+      this.store$.dispatch(SetModalType({modalType:type}));
+    }
     this.store$.dispatch(SetModalVisiable({modalVisiable:visiable}));
   }
 }

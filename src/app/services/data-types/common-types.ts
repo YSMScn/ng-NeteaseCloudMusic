@@ -28,7 +28,7 @@ export type SongList = {
     commentCount:number;
     subscribed:boolean;
     tracks:Song[];
-    
+
 }
 
 export type Singer = {
@@ -74,4 +74,10 @@ export type SearchResult={
     playlists?:SongList[];
     songs?:Song[];
 
+}
+
+export type LoginParams = {
+  phone:number;
+  password:string;
+  remember:boolean;
 }

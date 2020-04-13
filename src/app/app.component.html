@@ -19,11 +19,11 @@
                                         <i nz-icon nzType="down" nzTheme="outline"></i>
                                     </div>
                                     <ul>
-                                        <li nz-menu-item>
+                                        <li nz-menu-item (click)="openModal('loginByPhone')">
                                             <i nz-icon nzType="mobile" nzTheme="outline"></i>
                                             Login using Phone Num
                                         </li>
-                                        <li nz-menu-item>
+                                        <li nz-menu-item (click)="openModal('register')">
                                             <i nz-icon nzType="user-add" nzTheme="outline"></i>
                                             Sign Up
                                         </li>
@@ -46,5 +46,6 @@
 
 <app-wy-player></app-wy-player>
 <app-wy-layer-modal>
-  <app-wy-layer-default></app-wy-layer-default>
+  <app-wy-layer-login name="login" (onChangeModalType)="onChangeModalType($event)" (onLogin)="onLogin($event)"></app-wy-layer-login>
+  <app-wy-layer-default (onChangeModalType)="onChangeModalType($event)"></app-wy-layer-default>
 </app-wy-layer-modal>

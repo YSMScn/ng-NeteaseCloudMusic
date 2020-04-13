@@ -292,3 +292,15 @@
 *Clicking login button won't show new panel with error:
 *Can't bind to 'ngIf' since it isn't a known property of 'div'.
 *Don't forget to import CommonModule!
+
+8-8:
+*app.html:<li nz-menu-item (click)="openModal('loginByPhone')"> has error Argument of type '"loginByPhone"' is not assignable to parameter of type 'ModalTypes'.
+*openModal(type: any){
+    console.log(typeof(type));
+    this.batchActionsServe.controlModal(true,type);
+  }
+*change type: ModalTypes to type:any will work
+*Double checked the typeof type: string, in batchAction.service, typeof(type) is alse string.
+*Still don't know why it's not working when openModal(type: ModalTypes){
+*Forget to import FormsModule in wy-layer.module, this cause NodeInjector: NOT_FOUND [ControlContainer]. Both FormsModule and ReactiveFormsModule are needed.
+*After import FormsModule,i tried to change openModal(type: ModalTypes){ back to test, it works in website but still has error message.
