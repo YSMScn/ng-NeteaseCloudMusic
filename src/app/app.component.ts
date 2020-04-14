@@ -10,6 +10,8 @@ import { BatchActionsService } from './store/batch-actions.service';
 import { MemberService } from './services/member.service';
 import { User } from './services/data-types/member-types';
 import { NzMessageBaseService, NzMessageService } from 'ng-zorro-antd';
+import { codeJson } from './utils/base64';
+import { StorageService } from './services/storage.service';
 
 @Component({
   selector: 'app-root',
@@ -29,13 +31,23 @@ export class AppComponent {
 
   searchResult:SearchResult;
   user:User;
-
+  wyRememberLogin:LoginParams;
   constructor(private searchServe:SearchService,
     private store$:Store<AppStoreModule>,
     private batchActionsServe:BatchActionsService,
     private memberServe:MemberService,
-    private message:NzMessageService
-    ){}
+    private message:NzMessageService,
+    private storageServe:StorageService
+    ){
+      const userId = storageServe.getStorage('wyUserId');
+      if(userId){
+        this.memberServe.getUserDetail(userId).subscribe(res=>this.user = res);
+      }
+      const wyRememberLogin = storageServe.getStorage('wyRememberLogin');
+      if(wyRememberLogin){
+        this.wyRememberLogin = JSON.parse(wyRememberLogin);
+      }
+    }
   onSearch(keywords:string){
     console.log("keyword: ", keywords);
     if(keywords){
@@ -65,7 +77,7 @@ export class AppComponent {
     this.store$.dispatch(SetModalType({modalType:type}));
   }
 
-  openModal(type: ModalTypes){
+  openModal(type: any){
     console.log(typeof(type));
     this.batchActionsServe.controlModal(true,type);
   }
@@ -75,10 +87,37 @@ export class AppComponent {
       this.user = user;
       this.batchActionsServe.controlModal(false);
       this.alertMessage('success',"Log in Successed");
+      this.storageServe.setStorage({
+        key:'wyUserId',
+        value:user.profile.userId
+      })
+      if(params.remember){
+        this.storageServe.setStorage({
+          key:'wyRememberLogin',
+          value: JSON.stringify(codeJson(params))
+        })
+        //localStorage.setItem('wyRememberLogin',JSON.stringify(codeJson(params)));
+      }
+      else{
+        this.storageServe.removeStorage('wyRememberLogin');
+        // localStorage.removeItem('wyRememberLogin');
+      }
+    },({error}) =>{
+      this.alertMessage('error', error.message || "Login failed");
     })
   }
 
   private alertMessage(type:string,msg:string){
     this.message.create(type,msg);
+  }
+
+  onLogout(){
+    this.memberServe.logout().subscribe(res => {
+      this.user = null;
+      this.storageServe.removeStorage('wyUserId');
+      // localStorage.removeItem('wyUserId');
+      this.alertMessage('success',"Logout Successed");
+    },({error}) =>{
+      this.alertMessage('error', error.message || "Logout failed")});
   }
 }

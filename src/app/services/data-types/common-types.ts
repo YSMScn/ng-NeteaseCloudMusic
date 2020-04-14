@@ -81,3 +81,11 @@ export type LoginParams = {
   password:string;
   remember:boolean;
 }
+
+export interface SimpleBack extends AnyJson{
+  code:number;
+}
+
+export interface AnyJson {
+  [key:string]:any;
+}
