@@ -5,7 +5,7 @@ import { isEmptyObject } from './utils/tools';
 import { ModalTypes } from './store/reducers/member.reducer';
 import { Store } from '@ngrx/store';
 import { AppStoreModule } from './store';
-import { SetModalType } from './store/actions/member.action';
+import { SetModalType, SetUserId } from './store/actions/member.action';
 import { BatchActionsService } from './store/batch-actions.service';
 import { MemberService } from './services/member.service';
 import { User } from './services/data-types/member-types';
@@ -41,6 +41,7 @@ export class AppComponent {
     ){
       const userId = storageServe.getStorage('wyUserId');
       if(userId){
+        this.store$.dispatch(SetUserId({userId:userId}));
         this.memberServe.getUserDetail(userId).subscribe(res=>this.user = res);
       }
       const wyRememberLogin = storageServe.getStorage('wyRememberLogin');
@@ -91,6 +92,7 @@ export class AppComponent {
         key:'wyUserId',
         value:user.profile.userId
       })
+      this.store$.dispatch(SetUserId({userId:user.profile.userId.toString()}));
       if(params.remember){
         this.storageServe.setStorage({
           key:'wyRememberLogin',
@@ -118,6 +120,8 @@ export class AppComponent {
       // localStorage.removeItem('wyUserId');
       this.alertMessage('success',"Logout Successed");
     },({error}) =>{
-      this.alertMessage('error', error.message || "Logout failed")});
+      this.alertMessage('error', error.message || "Logout failed")
+    });
+    this.store$.dispatch(SetUserId({userId:''}));
   }
 }

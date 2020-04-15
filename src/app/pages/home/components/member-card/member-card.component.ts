@@ -1,4 +1,7 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { User } from 'src/app/services/data-types/member-types';
+import { MemberService } from 'src/app/services/member.service';
+import { timer } from 'rxjs';
 
 @Component({
   selector: 'app-member-card',
@@ -7,9 +10,28 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 })
 export class MemberCardComponent implements OnInit {
   @Output() openModal = new EventEmitter<void>();
-  constructor() { }
+  @Input() user:User;
+  point:number;
+  showTip = false;
+  tipTitle = '';
+  constructor(
+    private memberServe:MemberService
+  ) { }
 
   ngOnInit(): void {
   }
 
+  onCheckin(){
+    this.memberServe.checkin().subscribe(res=>{
+      console.log('res: ',res);
+      this.tipTitle = '+' + res.point;
+      this.showTip = true;
+      timer(1500).subscribe(() => {
+        this.showTip = false;
+        this.tipTitle = '';
+      });
+    },error=>{
+      console.log('error: ',error);
+    });
+  }
 }

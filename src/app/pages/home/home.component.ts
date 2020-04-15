@@ -15,6 +15,10 @@ import { getPlayer } from 'src/app/store/selectors/player.selector';
 import { findIndex, shuffle } from 'src/app/utils/array';
 import { BatchActionsService } from 'src/app/store/batch-actions.service';
 import { ModalTypes } from 'src/app/store/reducers/member.reducer';
+import { StorageService } from 'src/app/services/storage.service';
+import { User } from 'src/app/services/data-types/member-types';
+import { getMember, getUserId } from 'src/app/store/selectors/member.selector';
+import { MemberService } from 'src/app/services/member.service';
 
 @Component({
   selector: 'app-home',
@@ -27,6 +31,7 @@ export class HomeComponent implements OnInit {
   hotTags: HotTag[];
   personalizedLists: SongList[];
   settledSinger: Singer[];
+  user:User;
   private playerState:PlayState;
   @ViewChild(NzCarouselComponent,{static:true}) private nzCarousel:NzCarouselComponent;
   constructor(
@@ -35,7 +40,9 @@ export class HomeComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private songListServe:SongListService,
-    private batchActionServe: BatchActionsService
+    private batchActionServe: BatchActionsService,
+    private store$:Store<AppStoreModule>,
+    private memberServe:MemberService
     ) {
     this.route.data.pipe(map(res => res.homeDatas)).subscribe(([banners,hotTags,personalizedLists,settledSinger]) => {
       this.banners =banners;
@@ -43,12 +50,19 @@ export class HomeComponent implements OnInit {
       this.personalizedLists =personalizedLists;
       this.settledSinger =settledSinger;
     });
-
-
     // this.getBanners();
     // this.getHotTags();
     // this.getPersonalizedList();
     // this.getSettledSinger();
+    this.store$.pipe(select(getMember),select(getUserId)).subscribe(id=>{
+      console.log(id);
+      if(id){
+        this.getUserDetail(id);
+      }
+      else{
+        this.user=null;
+      }
+    })
    }
 
   // private getBanners(){
@@ -78,6 +92,10 @@ export class HomeComponent implements OnInit {
   //   });
   // }
   ngOnInit(): void {
+  }
+
+  private getUserDetail(id:string){
+    this.memberServe.getUserDetail(id).subscribe(user=>this.user=user);
   }
 
   beforeChange({to}){

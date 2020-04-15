@@ -25,3 +25,9 @@ export interface User {
     eventCount: number;
   };
 }
+
+export type Checkin = {
+  code:number;
+  point?:number;
+  msg?:string;
+}

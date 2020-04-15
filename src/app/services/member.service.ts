@@ -5,7 +5,7 @@ import { Banner, HotTag, SongList, LoginParams, SimpleBack } from './data-types/
 import { HttpClient, HttpParams } from '@angular/common/http';
 import {map} from 'rxjs/internal/operators';
 import queryString from 'query-string';
-import { User } from './data-types/member-types';
+import { User, Checkin } from './data-types/member-types';
 
 @Injectable({
   providedIn: ServicesModule
@@ -30,5 +30,10 @@ export class MemberService {
   logout():Observable<SimpleBack>{
     return this.http.get(this.url + 'logout')
     .pipe(map((res =>res as SimpleBack)));
+  }
+
+  checkin():Observable<Checkin>{
+    const params = new HttpParams({fromString:queryString.stringify({type:1})});
+    return this.http.get(this.url + 'daily_signin',{params}).pipe(map(res => res as Checkin));
   }
 }
