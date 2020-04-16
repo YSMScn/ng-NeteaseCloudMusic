@@ -2,6 +2,7 @@ import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { User } from 'src/app/services/data-types/member-types';
 import { MemberService } from 'src/app/services/member.service';
 import { timer } from 'rxjs';
+import { NzMessageService } from 'ng-zorro-antd';
 
 @Component({
   selector: 'app-member-card',
@@ -15,7 +16,8 @@ export class MemberCardComponent implements OnInit {
   showTip = false;
   tipTitle = '';
   constructor(
-    private memberServe:MemberService
+    private memberServe:MemberService,
+    private message:NzMessageService,
   ) { }
 
   ngOnInit(): void {
@@ -31,7 +33,11 @@ export class MemberCardComponent implements OnInit {
         this.tipTitle = '';
       });
     },error=>{
-      console.log('error: ',error);
+        this.alertMessage('error', error.message || "Checkin failed");
     });
+  }
+
+  private alertMessage(type:string,msg:string){
+    this.message.create(type,msg);
   }
 }

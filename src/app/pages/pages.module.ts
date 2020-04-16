@@ -6,6 +6,7 @@ import { SheetListModule } from './sheet-list/sheet-list.module';
 import { SheetInfoModule } from './sheet-info/sheet-info.module';
 import { SongInfoModule } from './song-info/song-info.module';
 import { SingerModule } from './singer/singer.module';
+import { MemberModule } from './member/member.module';
 
 
 
@@ -16,14 +17,16 @@ import { SingerModule } from './singer/singer.module';
     SheetListModule,
     SheetInfoModule,
     SongInfoModule,
-    SingerModule
+    SingerModule,
+    MemberModule,
   ]
   ,exports:[
     HomeModule,
     SheetListModule,
     SheetInfoModule,
     SongInfoModule,
-    SingerModule
+    SingerModule,
+    MemberModule,
   ]
 })
 export class PagesModule { }

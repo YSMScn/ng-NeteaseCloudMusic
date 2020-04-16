@@ -1,0 +1,84 @@
+<div class="user-center wrap feature-wrap">
+  <div class="page-wrap">
+    <div class="m-proifo clearfix">
+      <div class="f-pr">
+        <img [src]="user.profile.avatarUrl" [alt]="user.profile.nickname">
+      </div>
+      <div class="f-r">
+        <div class="name">
+          <h2 class="clearfix">
+            <span class="tit ellipsis">{{user.profile.nickname}}</span>
+            <p class="lv">
+              <span class="u-lv u-icn2">
+                {{user.level}}<i class="lvright u-icon2"></i>
+              </span>
+            </p>
+            <div class="icon-gender"></div>
+          </h2>
+        </div>
+
+        <ul class="dny clearfix">
+          <li class="fst">
+            <strong class="ellipsis">{{user.profile.eventCount}}</strong>
+            <span>Active</span>
+          </li>
+          <li>
+            <strong class="ellipsis">{{user.profile.follows}}</strong>
+            <span>Follows</span>
+          </li>
+          <li class="lst">
+            <strong class="ellipsis">{{user.profile.followeds}}</strong>
+            <span>Fans</span>
+          </li>
+        </ul>
+        <div class="inf f-brk">{{user.profile.signature}}</div>
+      </div>
+    </div>
+
+    <app-records
+    [records]="userRecord"
+    [recordType]="recordType"
+    [listenSongs]="user.listenSongs"
+    [currentIndex]="currentIndex"
+    (onChangeType)="onChangeType($event)"
+    (onAddSong)="onAddSong($event)"
+    ></app-records>
+    <a class="look-more">See More</a>
+    <div class="wy-sec sheets">
+      <div class="u-title wy-sec-wrap clearfix">
+        <h3 class="wy-sec-tit">
+          <span>The Song List I Created</span>
+          <span class="sub s-fc3"> ({{userSongList.self.length}})</span>
+        </h3>
+      </div>
+      <div class="sheet-list clearfix">
+        <app-song-list
+        class="sheet-item"
+        *ngFor="let item of userSongList.self"
+        [songList]="item"
+        [routerLink]="['/sheetInfo/' , item.id]"
+        (onPlay)="onPlayList($event)"
+        >
+        </app-song-list>
+      </div>
+    </div>
+    <div class="wy-sec sheets">
+      <div class="u-title wy-sec-wrap clearfix">
+        <h3 class="wy-sec-tit">
+          <span>The Song List I Liked</span>
+          <span class="sub s-fc3"> ({{userSongList.subscribed.length}})</span>
+        </h3>
+      </div>
+      <div class="sheet-list clearfix">
+        <app-song-list
+        class="sheet-item"
+        *ngFor="let item of userSongList.subscribed"
+        [songList]="item"
+        [routerLink]="['/sheetInfo/', item.id]"
+        (onPlay)="onPlayList($event)"
+        >
+        </app-song-list>
+      </div>
+    </div>
+  </div>
+</div>

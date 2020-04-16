@@ -85,26 +85,31 @@ export class AppComponent {
 
   onLogin(params:LoginParams){
     this.memberServe.login(params).subscribe(user =>{
-      this.user = user;
-      this.batchActionsServe.controlModal(false);
-      this.alertMessage('success',"Log in Successed");
-      this.storageServe.setStorage({
-        key:'wyUserId',
-        value:user.profile.userId
-      })
-      this.store$.dispatch(SetUserId({userId:user.profile.userId.toString()}));
-      if(params.remember){
+      if(user.code === 200){
+        this.user = user;
+        this.batchActionsServe.controlModal(false);
+        this.alertMessage('success',"Log in Successed");
         this.storageServe.setStorage({
-          key:'wyRememberLogin',
-          value: JSON.stringify(codeJson(params))
+          key:'wyUserId',
+          value:user.profile.userId
         })
-        //localStorage.setItem('wyRememberLogin',JSON.stringify(codeJson(params)));
+        this.store$.dispatch(SetUserId({userId:user.profile.userId.toString()}));
+        if(params.remember){
+          this.storageServe.setStorage({
+            key:'wyRememberLogin',
+            value: JSON.stringify(codeJson(params))
+          })
+          //localStorage.setItem('wyRememberLogin',JSON.stringify(codeJson(params)));
+        }
+        else{
+          this.storageServe.removeStorage('wyRememberLogin');
+          // localStorage.removeItem('wyRememberLogin');
+        }
       }
-      else{
-        this.storageServe.removeStorage('wyRememberLogin');
-        // localStorage.removeItem('wyRememberLogin');
+      if(user.code === 502){
+        this.alertMessage('error', "Wrong Password");
       }
-    },({error}) =>{
+    },error =>{
       this.alertMessage('error', error.message || "Login failed");
     })
   }
@@ -119,7 +124,7 @@ export class AppComponent {
       this.storageServe.removeStorage('wyUserId');
       // localStorage.removeItem('wyUserId');
       this.alertMessage('success',"Logout Successed");
-    },({error}) =>{
+    },error =>{
       this.alertMessage('error', error.message || "Logout failed")
     });
     this.store$.dispatch(SetUserId({userId:''}));

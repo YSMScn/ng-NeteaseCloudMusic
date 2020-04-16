@@ -5,7 +5,13 @@ import { Banner, HotTag, SongList, LoginParams, SimpleBack } from './data-types/
 import { HttpClient, HttpParams } from '@angular/common/http';
 import {map} from 'rxjs/internal/operators';
 import queryString from 'query-string';
-import { User, Checkin } from './data-types/member-types';
+import { User, Checkin, recordVal, UserRecord, UserSongList } from './data-types/member-types';
+
+export enum RecordType{
+  allData,
+  weekData
+}
+
 
 @Injectable({
   providedIn: ServicesModule
@@ -35,5 +41,21 @@ export class MemberService {
   checkin():Observable<Checkin>{
     const params = new HttpParams({fromString:queryString.stringify({type:1})});
     return this.http.get(this.url + 'daily_signin',{params}).pipe(map(res => res as Checkin));
+  }
+
+  getUserRecord(uid:string,type = RecordType.weekData):Observable<recordVal[]>{
+    const params = new HttpParams({fromString:queryString.stringify({uid,type})});
+    return this.http.get(this.url + 'user/record' , {params}).pipe(map((res:UserRecord)=>res[RecordType[type]] ));
+  }
+
+  getUserSongList(uid:string):Observable<UserSongList>{
+    const params = new HttpParams({fromString:queryString.stringify({uid})});
+    return this.http.get(this.url + 'user/playlist' ,{params}).pipe(map((res:{playlist:SongList[]})=>{
+      const list = res.playlist;
+      return{
+        self:list.filter(item => !item.subscribed),
+        subscribed:list.filter(item => item.subscribed)
+      }
+    }));
   }
 }

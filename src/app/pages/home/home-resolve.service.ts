@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Resolve, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { Resolve} from '@angular/router';
 import { Observable, forkJoin, of } from 'rxjs';
 import { HomeService } from 'src/app/services/home.service';
 import { SingerService } from 'src/app/services/Singer.service';
@@ -7,7 +7,6 @@ import { Banner, HotTag, SongList, Singer } from 'src/app/services/data-types/co
 import { first } from 'rxjs/internal/operators';
 import { MemberService } from 'src/app/services/member.service';
 import { StorageService } from 'src/app/services/storage.service';
-import { User } from 'src/app/services/data-types/member-types';
 
 type HomeDataType=[
   Banner[],HotTag[],SongList[],Singer[]
