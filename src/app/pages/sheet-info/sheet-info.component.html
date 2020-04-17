@@ -62,15 +62,15 @@
                 </h3>
                 <span class="sub s-fc3">{{songListInfo.tracks.length}} songs</span>
                 <div class="more s-fc3">
-                    Played 
+                    Played
                     <strong class="s-fc6">{{songListInfo.playCount}}</strong>
                     times
                 </div>
             </div>
-            <nz-table 
-            class="wy-table" 
-            #basicTable 
-            [nzData]="songListInfo.tracks" 
+            <nz-table
+            class="wy-table"
+            #basicTable
+            [nzData]="songListInfo.tracks"
             [nzFrontPagination]="false"
             nzBordered="true"
             nzNoResult="There aren't any songs in this list"
@@ -97,7 +97,7 @@
                         <span>{{item.dt/1000 | formatTime}}</span>
                         <p class="icons">
                             <i class="ico add" title="Add" (click)="onAddSong(item)"></i>
-                            <i class="ico like" title="Like"></i>
+                            <i class="ico like" title="Like" (click)="onLikeSong(item.id.toString())"></i>
                             <i class="ico share" title="Share"></i>
                         </p>
                     </td>
@@ -106,7 +106,7 @@
                             <a [routerLink]="['/singer',singer.id]">{{singer.name}}</a>
                             <em [hidden]="isLast">/</em>
                         </ng-container>
-                        
+
                     </td>
                     <td>{{item.al.name}}</td>
                 </tr>

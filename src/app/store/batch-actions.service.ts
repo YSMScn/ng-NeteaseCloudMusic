@@ -8,7 +8,7 @@ import { SetSongList, SetPlayList, SetCurrentIndex, SetCurrentAction } from './a
 import { shuffle, findIndex } from '../utils/array';
 import { getMember } from './selectors/member.selector';
 import { MemberState, ModalTypes } from './reducers/member.reducer';
-import { SetModalType, SetModalVisiable } from './actions/member.action';
+import { SetModalType, SetModalVisiable, SetLikeId } from './actions/member.action';
 
 @Injectable({
   providedIn: AppStoreModule
@@ -105,5 +105,11 @@ export class BatchActionsService {
       this.store$.dispatch(SetModalType({modalType:type}));
     }
     this.store$.dispatch(SetModalVisiable({modalVisiable:visiable}));
+  }
+
+  //like Songs
+  likeSong(id:string){
+      this.store$.dispatch(SetModalType({modalType:ModalTypes.Like}));
+      this.store$.dispatch(SetLikeId({likeId:id}));
   }
 }

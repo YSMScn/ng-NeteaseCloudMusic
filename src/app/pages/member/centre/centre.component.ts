@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { map, takeUntil } from 'rxjs/internal/operators';
 import { User, recordVal, UserSongList } from 'src/app/services/data-types/member-types';
@@ -12,19 +12,22 @@ import { AppStoreModule } from 'src/app/store';
 import { Store, select } from '@ngrx/store';
 import { findIndex } from 'src/app/utils/array';
 import { getPlayer, getCurrentSong } from 'src/app/store/selectors/player.selector';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-centre',
   templateUrl: './centre.component.html',
-  styleUrls: ['center.component.less']
+  styleUrls: ['center.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CentreComponent implements OnInit {
+export class CentreComponent implements OnInit, OnDestroy {
   user:User;
   userRecord:recordVal[];
   userSongList:UserSongList;
   recordType=RecordType.weekData;
   private currentSong:Song;
   currentIndex = -1;
+  private destory$ = new Subject();
   constructor(
     private route:ActivatedRoute,
     private songListServe:SongListService,
@@ -33,6 +36,7 @@ export class CentreComponent implements OnInit {
     private songServe:SongService,
     private nzMessageServe:NzMessageService,
     private store$:Store<AppStoreModule>,
+    private cdr:ChangeDetectorRef
     ) {
     this.route.data.pipe(map(res =>res.user)).subscribe(([user,userRecord,userSongList]) => {
       this.user = user;
@@ -44,6 +48,10 @@ export class CentreComponent implements OnInit {
       this.listenCurrent();
     })
    }
+  ngOnDestroy(): void {
+    this.destory$.next();
+    this.destory$.complete();
+  }
 
   ngOnInit(): void {
   }
@@ -51,6 +59,7 @@ export class CentreComponent implements OnInit {
   onPlayList(id:number){
     this.songListServe.playList(id).subscribe(list=>{
       this.batchActionServe.selectPlayList({list,index:0});
+      this.cdr.markForCheck();
     })
   }
 
@@ -59,6 +68,7 @@ export class CentreComponent implements OnInit {
       this.recordType = type;
       this.memberServe.getUserRecord(this.user.profile.userId.toString(), type).subscribe(res =>{
         this.userRecord = res.slice(0,10);
+        this.cdr.markForCheck();
       })
     }
   }
@@ -79,7 +89,7 @@ export class CentreComponent implements OnInit {
   }
 
   private listenCurrent(){
-    this.store$.pipe(select(getPlayer),select(getCurrentSong)).subscribe(song=>{
+    this.store$.pipe(select(getPlayer),select(getCurrentSong),takeUntil(this.destory$)).subscribe(song=>{
       this.currentSong = song;
       if(song){
         const songs = this.userRecord.map(item => item.song);
@@ -88,6 +98,7 @@ export class CentreComponent implements OnInit {
       else{
         this.currentIndex = -1;
       }
+      this.cdr.markForCheck();
     })
   }
 }

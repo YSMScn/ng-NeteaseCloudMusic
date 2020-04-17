@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { SearchService } from './services/search.service';
-import { SearchResult, LoginParams } from './services/data-types/common-types';
+import { SearchResult, LoginParams, SongList } from './services/data-types/common-types';
 import { isEmptyObject } from './utils/tools';
 import { ModalTypes } from './store/reducers/member.reducer';
 import { Store } from '@ngrx/store';
 import { AppStoreModule } from './store';
-import { SetModalType, SetUserId } from './store/actions/member.action';
+import { SetModalType, SetUserId, SetModalVisiable } from './store/actions/member.action';
 import { BatchActionsService } from './store/batch-actions.service';
 import { MemberService } from './services/member.service';
 import { User } from './services/data-types/member-types';
@@ -32,6 +32,7 @@ export class AppComponent {
   searchResult:SearchResult;
   user:User;
   wyRememberLogin:LoginParams;
+  mySheets:SongList[];
   constructor(private searchServe:SearchService,
     private store$:Store<AppStoreModule>,
     private batchActionsServe:BatchActionsService,
@@ -128,5 +129,16 @@ export class AppComponent {
       this.alertMessage('error', error.message || "Logout failed")
     });
     this.store$.dispatch(SetUserId({userId:''}));
+  }
+
+  onLoadMySheets(){
+    if(this.user){
+      this.memberServe.getUserSongList(this.user.profile.userId.toString()).subscribe(sheets => {
+        this.mySheets = sheets.self;
+        this.store$.dispatch(SetModalVisiable({modalVisiable:true}));
+      })
+    }else{
+      this.openModal(ModalTypes.default);
+    }
   }
 }

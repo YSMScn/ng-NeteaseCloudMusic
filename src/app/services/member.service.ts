@@ -58,4 +58,9 @@ export class MemberService {
       }
     }));
   }
+
+  likeSong(pid:string,tracks,op='add'):Observable<number>{
+    const params = new HttpParams({fromString:queryString.stringify({pid,tracks,op})});
+    return this.http.get(this.url + 'playlist/tracks',{params}).pipe(map((res:SimpleBack) => res.code));
+  }
 }

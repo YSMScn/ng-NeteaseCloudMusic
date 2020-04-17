@@ -21,10 +21,10 @@
                     </nz-button-group>
                     <button class="btn like" nz-button><span>Like</span>{{singerDetail.hotSongs.length}}</button>
                 </div>
-                <nz-table 
-            class="wy-table" 
-            #basicTable 
-            [nzData]="singerDetail.hotSongs" 
+                <nz-table
+            class="wy-table"
+            #basicTable
+            [nzData]="singerDetail.hotSongs"
             [nzFrontPagination]="false"
             nzBordered="true"
             nzNoResult="There aren't any songs in this list"
@@ -64,6 +64,14 @@
     <div class="dt-right">
         <div class="right-wrap">
             <h3>similar singer</h3>
+            <ul class="clearfix">
+              <li *ngFor="let singer of similarSingers" [routerLink]="['/singer',singer.id]">
+                <div class="pic">
+                  <img [src]="singer.picUrl" [alt]="singer.name">
+                </div>
+                <p class="ellipsis">{{singer.name}}</p>
+              </li>
+            </ul>
         </div>
     </div>
 </div>

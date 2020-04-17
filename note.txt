@@ -307,3 +307,8 @@
 
 8-17:
 *HttpInterceptor!!!!!!!!
+
+9-6:
+*Having problem with changing between weeData and allData, there is not a problem with network http get
+*Reason for this is, we setted changeDetection: ChangeDetectionStrategy.OnPush
+*Need to add private cdr:ChangeDetectorRef in constructor and add this.cdr.markForCheck() in onChangeType method;

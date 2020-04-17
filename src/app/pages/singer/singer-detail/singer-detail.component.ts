@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { map, takeUntil } from 'rxjs/internal/operators';
-import { SingerDetail, Song } from 'src/app/services/data-types/common-types';
+import { SingerDetail, Song, Singer } from 'src/app/services/data-types/common-types';
 import { AppStoreModule } from 'src/app/store';
 import { Store, select } from '@ngrx/store';
 import { SongService } from 'src/app/services/song.service';
@@ -20,6 +20,7 @@ export class SingerDetailComponent implements OnInit,OnDestroy {
   singerDetail:SingerDetail;
   currentSong:Song;
   currentIndex:number;
+  similarSingers:Singer[];
   private destory$ = new Subject<void>();
   constructor(private route:ActivatedRoute,
     private store$:Store<AppStoreModule>,
@@ -27,11 +28,14 @@ export class SingerDetailComponent implements OnInit,OnDestroy {
     private batchActionServe:BatchActionsService,
     private nzMessageServe:NzMessageService
     ) {
-    this.route.data.pipe(map(res=>res.singerDetail)).subscribe(res=>{
-      this.singerDetail = res;
+    this.route.data.pipe(map(res=>res.singerDetail)).subscribe(([detail,similarSingers])=>{
+      this.singerDetail = detail;
+      this.similarSingers = similarSingers;
+      console.log(this.similarSingers);
+      console.log(this.singerDetail);
       this.listenCurrent();
     })
-    
+
    }
   ngOnDestroy(): void {
     this.destory$.next();
@@ -61,11 +65,11 @@ export class SingerDetailComponent implements OnInit,OnDestroy {
         }else{
           this.nzMessageServe.create('warning',"Can't find url");
         }
-        
+
       });
     }
   }
-  
+
   onAddSongs(songs:Song[],isPlay = false){
     this.songServe.getSongList(songs).subscribe(list=>{
       if(list.length){
@@ -75,7 +79,7 @@ export class SingerDetailComponent implements OnInit,OnDestroy {
         else{
           this.batchActionServe.insertSongs(list);
         }
-        
+
       }
     })
   }

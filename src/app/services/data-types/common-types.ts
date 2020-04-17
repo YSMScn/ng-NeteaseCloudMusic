@@ -28,6 +28,7 @@ export type SongList = {
     commentCount:number;
     subscribed:boolean;
     tracks:Song[];
+    trackCount:number;
 
 }
 

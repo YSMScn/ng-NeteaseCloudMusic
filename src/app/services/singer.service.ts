@@ -38,6 +38,6 @@ export class SingerService {
 
   getSimiSinger(id:string):Observable<Singer[]>{
     const params = new HttpParams().set('id',id);
-    return this.http.get(this.url+'simi/artist',{params}).pipe(map((res:{artist:Singer[]})=> res.artist));
+    return this.http.get(this.url+'simi/artist',{params}).pipe(map((res:{artists:Singer[]})=> res.artists));
   }
 }
