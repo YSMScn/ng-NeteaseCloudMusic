@@ -1,6 +1,6 @@
 <div class="like">
-  <div class="sheet-list">
-    <div class="header">
+  <div class="sheet-list" *ngIf="!creating else createSheet">
+    <div class="header" (click)="creating = true">
       <i nz-icon nzType="folder-add" nzTheme="outline"></i>
       <span>Create New List</span>
     </div>
@@ -19,4 +19,27 @@
       </ng-template>
     </nz-list>
   </div>
+
+  <ng-template #createSheet>
+    <div class="create-sheet">
+      <form nz-form [formGroup]="formModel" nzLayout="horizontal" (ngSubmit)="onSubmit()">
+        <nz-form-item>
+          <nz-form-label nzSpan="6" nzRequired>
+            List Name:
+          </nz-form-label>
+          <nz-form-control  nzHasFeedback="true" nzSpan="16" nzErrorTip="Please fill list name">
+            <input nz-input  placeholder="New List1" formControlName="sheetName">
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <div class="btns">
+            <button nz-button nzType="primary" class="create-btn" [disabled]="!formModel.valid">Create</button>
+            <button nz-button (click)="creating = false">Back</button>
+          </div>
+        </nz-form-item>
+      </form>
+    </div>
+  </ng-template>
+
+
 </div>

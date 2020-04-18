@@ -2,16 +2,17 @@ import { Component } from '@angular/core';
 import { SearchService } from './services/search.service';
 import { SearchResult, LoginParams, SongList } from './services/data-types/common-types';
 import { isEmptyObject } from './utils/tools';
-import { ModalTypes } from './store/reducers/member.reducer';
-import { Store } from '@ngrx/store';
+import { ModalTypes, ShareInfo } from './store/reducers/member.reducer';
+import { Store, select } from '@ngrx/store';
 import { AppStoreModule } from './store';
 import { SetModalType, SetUserId, SetModalVisiable } from './store/actions/member.action';
 import { BatchActionsService } from './store/batch-actions.service';
-import { MemberService } from './services/member.service';
+import { MemberService, likeSongParamas } from './services/member.service';
 import { User } from './services/data-types/member-types';
 import { NzMessageBaseService, NzMessageService } from 'ng-zorro-antd';
 import { codeJson } from './utils/base64';
 import { StorageService } from './services/storage.service';
+import { getMember, getLikeId, getModalVisiable, getModalType, getShareInfo } from './store/selectors/member.selector';
 
 @Component({
   selector: 'app-root',
@@ -33,6 +34,10 @@ export class AppComponent {
   user:User;
   wyRememberLogin:LoginParams;
   mySheets:SongList[];
+  likeId:string;
+  visiable = false;
+  currentModaltype = ModalTypes.default;
+  shareInfo:ShareInfo;
   constructor(private searchServe:SearchService,
     private store$:Store<AppStoreModule>,
     private batchActionsServe:BatchActionsService,
@@ -49,6 +54,7 @@ export class AppComponent {
       if(wyRememberLogin){
         this.wyRememberLogin = JSON.parse(wyRememberLogin);
       }
+      this.listenStates();
     }
   onSearch(keywords:string){
     console.log("keyword: ", keywords);
@@ -59,6 +65,14 @@ export class AppComponent {
     }else{
       this.searchResult = {};
     }
+  }
+
+  private listenStates(){
+    const appStore$ = this.store$.pipe(select(getMember));
+    appStore$.pipe(select(getLikeId)).subscribe(id=>this.watchLikeId(id));
+    appStore$.pipe(select(getModalVisiable)).subscribe(visiable=>this.watchModalVisiable(visiable));
+    appStore$.pipe(select(getModalType)).subscribe(type=>this.watchModalType(type));
+    appStore$.pipe(select(getShareInfo)).subscribe(shareInfo=>this.watchShareInfo(shareInfo));
   }
 
   private highlightKeyword(keywords:string,searchResult:SearchResult):SearchResult{
@@ -140,5 +154,55 @@ export class AppComponent {
     }else{
       this.openModal(ModalTypes.default);
     }
+  }
+
+  private watchLikeId(id:string){
+    if(id){
+      this.likeId = id;
+    }
+  }
+
+  private watchModalVisiable(visiable:boolean){
+    if(this.visiable !== visiable){
+      this.visiable = visiable;
+    }
+
+  }
+
+  private watchModalType(type:ModalTypes){
+    if(this.currentModaltype !== type){
+      if(type === ModalTypes.Like){
+        this.onLoadMySheets();
+      }
+      this.currentModaltype = type;
+    }
+  }
+
+  private watchShareInfo(shareInfo:ShareInfo){
+    if(shareInfo){
+      this.shareInfo = shareInfo;
+      console.log(shareInfo);
+    }
+
+  }
+
+  onLikeSong(args:likeSongParamas){
+    console.log("args: ",args);
+    this.memberServe.likeSong(args).subscribe(code=>{
+      console.log("code: ",code);
+      this.batchActionsServe.controlModal(false);
+      this.alertMessage('success',"It's in your Like List now");
+    },error=>{
+      this.alertMessage('error',error.msg||"Fail")
+    })
+  }
+
+  onCreateSheet(sheetName:string){
+    console.log('sheetName: ', sheetName);
+    this.memberServe.createSheet(sheetName).subscribe(pid=>{
+      this.onLikeSong({pid,tracks:this.likeId,op:'add'})
+    },error =>{
+      this.alertMessage('error','Failed')
+    })
   }
 }

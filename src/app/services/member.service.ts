@@ -12,6 +12,11 @@ export enum RecordType{
   weekData
 }
 
+export type likeSongParamas = {
+  pid:string;
+  tracks:string;
+  op : 'add';
+}
 
 @Injectable({
   providedIn: ServicesModule
@@ -59,8 +64,25 @@ export class MemberService {
     }));
   }
 
-  likeSong(pid:string,tracks,op='add'):Observable<number>{
+  likeSong({pid,tracks,op}:likeSongParamas):Observable<number>{
     const params = new HttpParams({fromString:queryString.stringify({pid,tracks,op})});
     return this.http.get(this.url + 'playlist/tracks',{params}).pipe(map((res:SimpleBack) => res.code));
   }
+  //t=1 like t=0 unlike
+  likeSheet(id:string,t:number):Observable<number>{
+    const params = new HttpParams({fromString:queryString.stringify({id,t})});
+    return this.http.get(this.url + 'playlist/subscribe',{params}).pipe(map((res:SimpleBack) => res.code));
+  }
+
+  createSheet(name:string):Observable<string>{
+    const params = new HttpParams({fromString:queryString.stringify({name})});
+    return this.http.get(this.url + 'playlist/create',{params}).pipe(map((res:SimpleBack) => res.id.toString()));
+  }
+
+  shareResource(id:string,msg:string,type='song'):Observable<number>{
+    const params = new HttpParams({fromString:queryString.stringify({id,msg,type})});
+    return this.http.get(this.url + 'share/resource',{params}).pipe(map((res:SimpleBack) => res.code));
+  }
+
+
 }

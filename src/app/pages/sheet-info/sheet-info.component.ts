@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { map, takeUntil } from 'rxjs/internal/operators';
-import { SongList, Song } from 'src/app/services/data-types/common-types';
+import { SongList, Song, Singer } from 'src/app/services/data-types/common-types';
 import { AppStoreModule } from 'src/app/store';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
@@ -11,6 +11,8 @@ import { BatchActionsService } from 'src/app/store/batch-actions.service';
 import { NzMessageBaseService, NzMessageService } from 'ng-zorro-antd';
 import { findIndex } from 'src/app/utils/array';
 import { ModalTypes } from 'src/app/store/reducers/member.reducer';
+import { MemberService } from 'src/app/services/member.service';
+import { SetShareInfo } from 'src/app/store/actions/member.action';
 
 @Component({
   selector: 'app-sheet-info',
@@ -38,7 +40,8 @@ export class SheetInfoComponent implements OnInit,OnDestroy {
     private store$:Store<AppStoreModule>,
     private songServe:SongService,
     private batchActionServe:BatchActionsService,
-    private nzMessageServe:NzMessageService
+    private nzMessageServe:NzMessageService,
+    private memberServe:MemberService
     ) {
     this.route.data.pipe(map(res => res.sheetInfo)).subscribe(res =>{
       this.songListInfo = res;
@@ -104,7 +107,7 @@ export class SheetInfoComponent implements OnInit,OnDestroy {
         if(list.length){
           this.batchActionServe.insertSong(list[0],isPlay);
         }else{
-          this.nzMessageServe.create('warning',"Can't find url");
+          this.alertMessage('warning',"Can't find url");
         }
 
       });
@@ -127,5 +130,39 @@ export class SheetInfoComponent implements OnInit,OnDestroy {
 
   onLikeSong(id:string){
     this.batchActionServe.likeSong(id);
+  }
+
+  onLikeSheet(id:string){
+    this.memberServe.likeSheet(id,1).subscribe(code=>{
+      this.alertMessage('success',"It's in your Like List now");
+    },error=>{
+      this.alertMessage('error',error.msg||"Fail")
+    })
+  }
+
+  private alertMessage(type:string,msg:string){
+    this.nzMessageServe.create(type,msg);
+  }
+
+  shareResouce(resource:Song|SongList,type='song'){
+    let txt = '';
+    if(type === 'playlist'){
+      txt = this.makeTxt('Song list',resource.name,(<SongList>resource).creator.nickname);
+    }else{
+      txt = this.makeTxt('Song',resource.name,(<Song>resource).ar);
+    }
+    this.store$.dispatch(SetShareInfo({shareInfo:{id:resource.id.toString(),type,txt}}))
+    console.log(txt);
+  }
+
+  private makeTxt(type:string,name:string,makeBy:string|Singer[]):string{
+    let makeByStr = '';
+    if(Array.isArray(makeBy)){
+      makeByStr = makeBy.map(item => item.name).join('/');
+    }
+    else{
+      makeByStr = makeBy;
+    }
+    return `${type}: ${name} -- ${makeByStr}`;
   }
 }

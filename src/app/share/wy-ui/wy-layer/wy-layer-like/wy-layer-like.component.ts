@@ -1,8 +1,8 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { SongList } from 'src/app/services/data-types/common-types';
-import { Store, select } from '@ngrx/store';
-import { AppStoreModule } from 'src/app/store';
-import { getMember, getLikeId } from 'src/app/store/selectors/member.selector';
+import { likeSongParamas } from 'src/app/services/member.service';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { timer } from 'rxjs';
 
 @Component({
   selector: 'app-wy-layer-like',
@@ -12,25 +12,41 @@ import { getMember, getLikeId } from 'src/app/store/selectors/member.selector';
 })
 export class WyLayerLikeComponent implements OnInit,OnChanges {
   @Input()mySheets:SongList[];
-  private likeId:string;
+  @Input()likeId:string;
+  @Input()visiable:boolean;
+  @Output()onLikeSong=new EventEmitter<likeSongParamas>();
+  @Output()onCreateSheet = new EventEmitter<string>();
+  creating = false;
+  formModel:FormGroup;
   constructor(
-    private store$:Store<AppStoreModule>
+    private fb:FormBuilder
   ) {
-    this.store$.pipe(select(getMember),select(getLikeId)).subscribe(id=>{
-      if(id){
-        this.likeId = id;
-      }
-
+    this.formModel = this.fb.group({
+      sheetName:['',[Validators.required]]
     })
    }
   ngOnChanges(changes: SimpleChanges): void {
-    console.log('mySheets: ',changes['mySheets'].currentValue);
+    if(changes['visiable']){
+      if(!this.visiable){
+        timer(500).subscribe(()=>{
+          this.formModel.get('sheetName').setValue('');
+          this.formModel.reset();
+          this.creating = false;
+        })
+      }
+    }
   }
 
   ngOnInit(): void {
   }
 
-  onLike(id:string){
+  onLike(pid:string){
+    this.onLikeSong.emit({pid,tracks:this.likeId,op:'add'});
+  }
 
+  onSubmit(){
+    this.onCreateSheet.emit(this.formModel.get('sheetName').value);
+    // this.onCreateSheet.emit(this.formModel.value.sheetName);
+    // console.log('onSubmit: ', this.formModel.value);
   }
 }

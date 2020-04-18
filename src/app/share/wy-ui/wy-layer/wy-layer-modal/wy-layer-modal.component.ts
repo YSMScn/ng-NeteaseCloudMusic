@@ -1,7 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, ElementRef, ChangeDetectorRef, ViewChild, AfterViewInit, Renderer2, Inject, EventEmitter, Output } from '@angular/core';
-import { AppStoreModule } from 'src/app/store';
-import { Store, select } from '@ngrx/store';
-import { getModalVisiable, getModalType, getMember } from 'src/app/store/selectors/member.selector';
+import { Component, OnInit, ChangeDetectionStrategy, ElementRef, ChangeDetectorRef, ViewChild, AfterViewInit, Renderer2, Inject, EventEmitter, Output, Input, OnChanges, SimpleChanges } from '@angular/core';
 import {Overlay ,OverlayRef,OverlayKeyboardDispatcher,BlockScrollStrategy,OverlayContainer} from '@angular/cdk/overlay';
 import { ModalTypes } from 'src/app/store/reducers/member.reducer';
 import { ESCAPE } from '@angular/cdk/keycodes';
@@ -20,9 +17,9 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
     transition('show<=>hide',animate('0.1s'))
   ])]
 })
-export class WyLayerModalComponent implements OnInit, AfterViewInit {
-  private visiable = false;
-  currentModaltype = ModalTypes.default;
+export class WyLayerModalComponent implements OnInit, AfterViewInit, OnChanges {
+  @Input() visiable:boolean;
+  @Input() currentModaltype:ModalTypes;
   private overlayRef:OverlayRef;
   showModal = 'hide';
   scrollStrategy: BlockScrollStrategy;
@@ -33,7 +30,6 @@ export class WyLayerModalComponent implements OnInit, AfterViewInit {
   constructor(
     @Inject(DOCUMENT) private doc:Document,
     @Inject(DOCUMENT) private win:Window,
-    private store$: Store<AppStoreModule>,
     private overlay: Overlay,
     private elementRef:ElementRef,
     private overlayKeyboardDispatcher: OverlayKeyboardDispatcher,
@@ -42,11 +38,13 @@ export class WyLayerModalComponent implements OnInit, AfterViewInit {
     private rd:Renderer2,
     private overlayContainerServe:OverlayContainer
   ) {
-    const appStore$ = this.store$.pipe(select(getMember));
-    appStore$.pipe(select(getModalVisiable)).subscribe(visiable=>this.watchModalVisiable(visiable));
-    appStore$.pipe(select(getModalType)).subscribe(type=>this.watchModalType(type));
     this.scrollStrategy = this.overlay.scrollStrategies.block();
    }
+  ngOnChanges(changes: SimpleChanges): void {
+    if(changes['visiable']&&!changes['visiable'].firstChange){
+      this.handleVisiableChange(this.visiable);
+    }
+  }
   ngAfterViewInit(): void {
     this.listenResizeToCentre();
     this.overlayContainerEl = this.overlayContainerServe.getContainerElement();
@@ -68,26 +66,7 @@ export class WyLayerModalComponent implements OnInit, AfterViewInit {
     }
   }
 
-  private watchModalVisiable(visiable:boolean){
-    if(this.visiable !== visiable){
-      this.visiable = visiable;
-      this.handleVisiableChange(visiable);
-    }
-
-  }
-
-  private watchModalType(type:ModalTypes){
-    if(this.currentModaltype !== type){
-      if(type === ModalTypes.Like){
-        this.onLoadMySheets.emit();
-      }
-      this.currentModaltype = type;
-      this.cdr.markForCheck();
-    }
-  }
-
   private handleVisiableChange(visiable:boolean){
-    console.log('handleVisiableChange: ',visiable);
     if(visiable){
       this.showModal = 'show';
       this.scrollStrategy.enable();

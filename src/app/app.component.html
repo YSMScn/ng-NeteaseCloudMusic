@@ -66,8 +66,8 @@
 </div>
 
 <app-wy-player></app-wy-player>
-<app-wy-layer-modal (onLoadMySheets)="onLoadMySheets()">
+<app-wy-layer-modal (onLoadMySheets)="onLoadMySheets()" [currentModaltype]="currentModaltype" [visiable]="visiable">
   <app-wy-layer-login name="login" (onChangeModalType)="onChangeModalType($event)" (onLogin)="onLogin($event)" [wyRememberLogin]="wyRememberLogin"></app-wy-layer-login>
   <app-wy-layer-default (onChangeModalType)="onChangeModalType($event)"></app-wy-layer-default>
-  <app-wy-layer-like name="like" [mySheets]="mySheets"></app-wy-layer-like>
+  <app-wy-layer-like name="like" [visiable]="visiable" [mySheets]="mySheets" [likeId]="likeId" (onLikeSong)="onLikeSong($event)" (onCreateSheet)="onCreateSheet($event)"></app-wy-layer-like>
 </app-wy-layer-modal>

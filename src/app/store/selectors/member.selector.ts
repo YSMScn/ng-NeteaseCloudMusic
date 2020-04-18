@@ -7,3 +7,4 @@ export const getModalVisiable = createSelector(selectMemberStates,(state:MemberS
 export const getModalType = createSelector(selectMemberStates,(state:MemberState)=>state.modalType);
 export const getUserId = createSelector(selectMemberStates,(state:MemberState)=>state.userId);
 export const getLikeId = createSelector(selectMemberStates,(state:MemberState)=>state.likeId);
+export const getShareInfo = createSelector(selectMemberStates,(state:MemberState)=>state.shareInfo);

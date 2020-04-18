@@ -9,6 +9,7 @@ import { shuffle, findIndex } from '../utils/array';
 import { getMember } from './selectors/member.selector';
 import { MemberState, ModalTypes } from './reducers/member.reducer';
 import { SetModalType, SetModalVisiable, SetLikeId } from './actions/member.action';
+import { timer } from 'rxjs';
 
 @Injectable({
   providedIn: AppStoreModule
@@ -100,11 +101,16 @@ export class BatchActionsService {
 
   //login and show new panel
   controlModal(visiable = true, type?:ModalTypes){
+    this.store$.dispatch(SetModalVisiable({modalVisiable:visiable}));
     if(type){
-      console.log('batchActions',typeof(type));
       this.store$.dispatch(SetModalType({modalType:type}));
     }
-    this.store$.dispatch(SetModalVisiable({modalVisiable:visiable}));
+    if(!visiable){
+      timer(500).subscribe(()=>{
+        this.store$.dispatch(SetModalType({modalType:ModalTypes.default}));
+      })
+
+    }
   }
 
   //like Songs
