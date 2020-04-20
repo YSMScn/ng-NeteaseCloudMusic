@@ -7,7 +7,7 @@ import { Store, select } from '@ngrx/store';
 import { AppStoreModule } from './store';
 import { SetModalType, SetUserId, SetModalVisiable } from './store/actions/member.action';
 import { BatchActionsService } from './store/batch-actions.service';
-import { MemberService, likeSongParamas } from './services/member.service';
+import { MemberService, likeSongParamas, shareParams } from './services/member.service';
 import { User } from './services/data-types/member-types';
 import { NzMessageBaseService, NzMessageService } from 'ng-zorro-antd';
 import { codeJson } from './utils/base64';
@@ -94,15 +94,18 @@ export class AppComponent {
   }
 
   openModal(type: any){
-    console.log(typeof(type));
     this.batchActionsServe.controlModal(true,type);
+  }
+
+  closeModal(){
+    this.batchActionsServe.controlModal(false);
   }
 
   onLogin(params:LoginParams){
     this.memberServe.login(params).subscribe(user =>{
       if(user.code === 200){
         this.user = user;
-        this.batchActionsServe.controlModal(false);
+        this.closeModal();
         this.alertMessage('success',"Log in Successed");
         this.storageServe.setStorage({
           key:'wyUserId',
@@ -181,6 +184,7 @@ export class AppComponent {
   private watchShareInfo(shareInfo:ShareInfo){
     if(shareInfo){
       this.shareInfo = shareInfo;
+      this.openModal(ModalTypes.Share);
       console.log(shareInfo);
     }
 
@@ -190,11 +194,21 @@ export class AppComponent {
     console.log("args: ",args);
     this.memberServe.likeSong(args).subscribe(code=>{
       console.log("code: ",code);
-      this.batchActionsServe.controlModal(false);
+      this.closeModal();
       this.alertMessage('success',"It's in your Like List now");
     },error=>{
       this.alertMessage('error',error.msg||"Fail")
     })
+  }
+
+  onShare(args:shareParams){
+    this.memberServe.shareResource(args).subscribe(()=>{
+      this.alertMessage('success',"Share Success");
+      this.closeModal();
+    },error=>{
+      this.alertMessage('error',error.msg||"Share Failed")
+    });
+
   }
 
   onCreateSheet(sheetName:string){
@@ -205,4 +219,5 @@ export class AppComponent {
       this.alertMessage('error','Failed')
     })
   }
+
 }

@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectionStrategy, OnDestroy, ChangeDetectorRe
 import { ActivatedRoute } from '@angular/router';
 import { User, recordVal } from 'src/app/services/data-types/member-types';
 import { map, takeUntil } from 'rxjs/internal/operators';
-import { Song } from 'src/app/services/data-types/common-types';
+import { Song, Singer } from 'src/app/services/data-types/common-types';
 import { Store, select } from '@ngrx/store';
 import { AppStoreModule } from 'src/app/store';
 import { findIndex } from 'src/app/utils/array';
@@ -12,6 +12,7 @@ import { RecordType, MemberService } from 'src/app/services/member.service';
 import { BatchActionsService } from 'src/app/store/batch-actions.service';
 import { SongService } from 'src/app/services/song.service';
 import { NzMessageService } from 'ng-zorro-antd';
+import { SetShareInfo } from 'src/app/store/actions/member.action';
 
 @Component({
   selector: 'app-record-detail',
@@ -88,5 +89,27 @@ export class RecordDetailComponent implements OnInit,OnDestroy {
       })
 
     }
+  }
+
+  onLike(id:string){
+    this.batchActionServe.likeSong(id.toString());
+  }
+
+  onShare(song:Song){
+    const txt = this.makeTxt('Song',song.name,song.ar);
+    const type = 'song'
+    this.store$.dispatch(SetShareInfo({shareInfo:{id:song.id.toString(),type,txt}}))
+    console.log(txt);
+  }
+
+  private makeTxt(type:string,name:string,makeBy:Singer[]):string{
+    let makeByStr = '';
+    if(Array.isArray(makeBy)){
+      makeByStr = makeBy.map(item => item.name).join('/');
+    }
+    else{
+      makeByStr = makeBy;
+    }
+    return `${type}: ${name} -- ${makeByStr}`;
   }
 }

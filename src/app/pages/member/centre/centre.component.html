@@ -42,6 +42,8 @@
     [currentIndex]="currentIndex"
     (onChangeType)="onChangeType($event)"
     (onAddSong)="onAddSong($event)"
+    (onLike)="onLike($event)"
+    (onShare)="onShare($event)"
     ></app-records>
     <a class="look-more" [routerLink]="['/records',user.profile.userId]">See More</a>
     <div class="wy-sec sheets">

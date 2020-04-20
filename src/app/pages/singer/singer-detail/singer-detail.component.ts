@@ -10,6 +10,7 @@ import { NzMessageService } from 'ng-zorro-antd';
 import { findIndex } from 'src/app/utils/array';
 import { getPlayer, getCurrentSong } from 'src/app/store/selectors/player.selector';
 import { Subject } from 'rxjs';
+import { SetShareInfo } from 'src/app/store/actions/member.action';
 
 @Component({
   selector: 'app-singer-detail',
@@ -82,5 +83,32 @@ export class SingerDetailComponent implements OnInit,OnDestroy {
 
       }
     })
+  }
+
+  onLikeSong(id:string){
+    this.batchActionServe.likeSong(id);
+  }
+
+  onShare(song:Song){
+    const txt = this.makeTxt('Song',song.name,song.ar);
+    const type = 'song'
+    this.store$.dispatch(SetShareInfo({shareInfo:{id:song.id.toString(),type,txt}}))
+    console.log(txt);
+  }
+
+  private makeTxt(type:string,name:string,makeBy:Singer[]):string{
+    let makeByStr = '';
+    if(Array.isArray(makeBy)){
+      makeByStr = makeBy.map(item => item.name).join('/');
+    }
+    else{
+      makeByStr = makeBy;
+    }
+    return `${type}: ${name} -- ${makeByStr}`;
+  }
+
+  onLikeSongs(songs:Song[]){
+    const ids = songs.map(item => item.id).join(',');
+    this.onLikeSong(ids);
   }
 }

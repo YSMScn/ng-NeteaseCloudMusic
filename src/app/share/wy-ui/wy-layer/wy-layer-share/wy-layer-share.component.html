@@ -1,0 +1,23 @@
+<div class="share">
+  <div class="u-txtwrap">
+    <form nz-form [formGroup]="formModel" >
+      <nz-form-item>
+        <nz-form-control nzErrorTip="Reach the limit 140">
+          <textarea  nz-input rows="6" formControlName="msg" ></textarea>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+    <div class="info">
+      <div class="text">
+        <p class="f-thide ellipsis">{{shareInfo?.txt}}</p>
+      </div>
+    </div>
+  </div>
+  <div class="tools clearfix">
+    <span class="txt-count" [class.exceed]="textCount<0">{{textCount}}</span>
+    <div class="btns">
+      <button nz-button nzType="primary" (click)="onSubmit()" [disabled]="!formModel.valid">Share</button>
+      <button nz-button (click)="onCancel.emit()">Cancel</button>
+    </div>
+  </div>
+</div>

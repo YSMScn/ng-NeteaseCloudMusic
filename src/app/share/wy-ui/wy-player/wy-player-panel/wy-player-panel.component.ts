@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter, ViewChildren, QueryList, Inject } from '@angular/core';
-import { Song } from 'src/app/services/data-types/common-types';
+import { Song, SongList } from 'src/app/services/data-types/common-types';
 import { WyScrollComponent } from '../wy-scroll/wy-scroll.component';
 import { findIndex } from 'src/app/utils/array';
 import { timer } from 'rxjs';
@@ -24,6 +24,8 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
   @Output()onDeleteSong = new EventEmitter<Song>();
   @Output()onClearSong = new EventEmitter<void>();
   @Output()onToInfo = new EventEmitter<[string,number]>();
+  @Output()onLikeSong = new EventEmitter<string>();
+  @Output()onShareSong = new EventEmitter<Song>();
   @ViewChildren(WyScrollComponent)private wyScroll:QueryList<WyScrollComponent>;
   scrollY = 0;
   currentLyric:BaseLyricLine[];
@@ -38,7 +40,7 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
         if(this.lyric){
           this.lyric.togglgPlay(this.playing);
         }
-        
+
       }
     }
     if(changes['songList']){
@@ -46,7 +48,7 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
       if(this.currentSong){
         this.updateCurrentIndex();
       }
-      
+
       // this.currentIndex = findIndex(this.songList,this.currentSong);
     }
     if(changes['currentSong']){
@@ -59,7 +61,7 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
       }else{
         this.resetLyric();
       }
-      
+
     }
     if(changes['show']){
       if(!changes['show'].firstChange&&this.show){
@@ -132,7 +134,7 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
           this.wyScroll.last.scrollTo(0,0);
         }
       }
-      
+
     })
   }
 
@@ -163,5 +165,16 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
   toInfo(evt:MouseEvent,path:[string,number]){
     evt.stopPropagation();
     this.onToInfo.emit(path);
+  }
+
+  likeSong(evt:MouseEvent,id:string){
+    evt.stopPropagation();
+    this.onLikeSong.emit(id);
+
+  }
+
+  shareSong(evt:MouseEvent,song:Song){
+    evt.stopPropagation();
+    this.onShareSong.emit(song);
   }
 }

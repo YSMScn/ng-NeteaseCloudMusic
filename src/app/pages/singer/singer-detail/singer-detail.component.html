@@ -19,7 +19,7 @@
                         </button>
                         <button class="add" nz-button nzType="primary" (click)="onAddSongs(singerDetail.hotSongs)">+</button>
                     </nz-button-group>
-                    <button class="btn like" nz-button><span>Like</span>{{singerDetail.hotSongs.length}}</button>
+                    <button class="btn like" nz-button (click)="onLikeSongs(singerDetail.hotSongs)"><span>Like </span>{{singerDetail.hotSongs.length}}</button>
                 </div>
                 <nz-table
             class="wy-table"
@@ -50,8 +50,8 @@
                         <span>{{item.dt/1000 | formatTime}}</span>
                         <p class="icons">
                             <i class="ico add" title="Add" (click)="onAddSong(item)"></i>
-                            <i class="ico like" title="Like"></i>
-                            <i class="ico share" title="Share"></i>
+                            <i class="ico like" title="Like" (click)="onLikeSong(item.id.toString())"></i>
+                            <i class="ico share" title="Share" (click)="onShare(item)"></i>
                         </p>
                     </td>
                     <td>{{item.al.name}}</td>

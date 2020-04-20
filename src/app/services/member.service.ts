@@ -15,7 +15,13 @@ export enum RecordType{
 export type likeSongParamas = {
   pid:string;
   tracks:string;
-  op : 'add';
+  op : string;
+}
+
+export type shareParams = {
+  id:string;
+  msg:string;
+  type:string;
 }
 
 @Injectable({
@@ -79,7 +85,7 @@ export class MemberService {
     return this.http.get(this.url + 'playlist/create',{params}).pipe(map((res:SimpleBack) => res.id.toString()));
   }
 
-  shareResource(id:string,msg:string,type='song'):Observable<number>{
+  shareResource({id,msg,type}:shareParams):Observable<number>{
     const params = new HttpParams({fromString:queryString.stringify({id,msg,type})});
     return this.http.get(this.url + 'share/resource',{params}).pipe(map((res:SimpleBack) => res.code));
   }
