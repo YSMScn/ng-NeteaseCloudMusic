@@ -74,6 +74,12 @@ export class MemberService {
     const params = new HttpParams({fromString:queryString.stringify({pid,tracks,op})});
     return this.http.get(this.url + 'playlist/tracks',{params}).pipe(map((res:SimpleBack) => res.code));
   }
+
+  likeSinger(id:string,t = 1):Observable<number>{
+    const params = new HttpParams({fromString:queryString.stringify({id,t})});
+    return this.http.get(this.url + 'artist/sub',{params}).pipe(map((res:SimpleBack) => res.code));
+  }
+
   //t=1 like t=0 unlike
   likeSheet(id:string,t:number):Observable<number>{
     const params = new HttpParams({fromString:queryString.stringify({id,t})});

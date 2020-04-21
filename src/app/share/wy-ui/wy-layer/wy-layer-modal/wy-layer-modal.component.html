@@ -1,6 +1,6 @@
 <div class="m-layer" [@showHide]="showModal" #modalContainer cdkDrag cdkDragBoundary=".cdk-overlay-container">
   <div class="zbar">
-    <div class="zttl f-thide" cdkDragHandle>{{currentModaltype}}</div>
+    <div class="zttl f-thide" cdkDragHandle>{{modalTitle[currentModaltype]}}</div>
   </div>
   <ng-container [ngSwitch]="currentModaltype">
     <ng-container *ngSwitchCase="'loginByPhone'">

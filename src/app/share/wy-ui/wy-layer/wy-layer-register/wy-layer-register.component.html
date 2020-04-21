@@ -1,0 +1,31 @@
+<div class="register modal-content">
+  <div class="modal-wrap">
+    <form nz-form nzLayout="vertical" [formGroup]="formModel" (ngSubmit)="onSubmit()" >
+      <nz-form-item>
+        <nz-form-label nzFor="" nzSpan="1-24" nzRequired>Phone Number</nz-form-label>
+        <nz-form-control nzSpan="1-24" nzHasFeedback="true" nzErrorTip="Please enter the right phone number">
+          <nz-input-group  nzPrefixIcon="mobile">
+            <input nz-input  placeholder="Please enter the phone number" type="tel" formControlName="phone">
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzRequired>Password</nz-form-label>
+        <nz-form-control nzSpan="1-24" nzHasFeedback="true" nzErrorTip="Please enter password">
+          <nz-input-group  nzPrefixIcon="lock">
+            <input nz-input  placeholder="Please enter your password" type="password" formControlName="password">
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <button nz-button nzBlock="true" nzType="primary" [disabled]="!formModel.valid">Next Step</button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </div>
+</div>
+
+<div class="m-footer clearfix">
+  <a (click)="onChangeModalType.emit('default')">&lt;other way to login</a>
+</div>

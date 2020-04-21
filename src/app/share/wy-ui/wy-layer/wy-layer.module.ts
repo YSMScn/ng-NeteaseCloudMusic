@@ -8,12 +8,13 @@ import { WyLayerLoginComponent } from './wy-layer-login/wy-layer-login.component
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { WyLayerLikeComponent } from './wy-layer-like/wy-layer-like.component';
 import { WyLayerShareComponent } from './wy-layer-share/wy-layer-share.component';
+import { WyLayerRegisterComponent } from './wy-layer-register/wy-layer-register.component';
 
 
 
 
 @NgModule({
-  declarations: [WyLayerModalComponent, WyLayerDefaultComponent, WyLayerLoginComponent, WyLayerLikeComponent, WyLayerShareComponent],
+  declarations: [WyLayerModalComponent, WyLayerDefaultComponent, WyLayerLoginComponent, WyLayerLikeComponent, WyLayerShareComponent, WyLayerRegisterComponent],
   imports: [
     CommonModule,
     NzButtonModule,
@@ -29,6 +30,6 @@ import { WyLayerShareComponent } from './wy-layer-share/wy-layer-share.component
     FormsModule,
     NzAlertModule
   ],
-  exports: [WyLayerModalComponent, WyLayerDefaultComponent,WyLayerLoginComponent,WyLayerLikeComponent, WyLayerShareComponent]
+  exports: [WyLayerModalComponent, WyLayerDefaultComponent,WyLayerLoginComponent,WyLayerLikeComponent, WyLayerShareComponent, WyLayerRegisterComponent]
 })
 export class WyLayerModule { }

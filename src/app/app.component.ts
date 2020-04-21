@@ -90,10 +90,12 @@ export class AppComponent {
   }
 
   onChangeModalType(type = ModalTypes.default){
+    console.log("onChangeModalType");
     this.store$.dispatch(SetModalType({modalType:type}));
   }
 
   openModal(type: any){
+    console.log("openModal ",type);
     this.batchActionsServe.controlModal(true,type);
   }
 
@@ -102,6 +104,7 @@ export class AppComponent {
   }
 
   onLogin(params:LoginParams){
+    console.log("onLogin");
     this.memberServe.login(params).subscribe(user =>{
       if(user.code === 200){
         this.user = user;
@@ -166,6 +169,7 @@ export class AppComponent {
   }
 
   private watchModalVisiable(visiable:boolean){
+    console.log("watchModalVisiable ",visiable);
     if(this.visiable !== visiable){
       this.visiable = visiable;
     }
@@ -183,9 +187,12 @@ export class AppComponent {
 
   private watchShareInfo(shareInfo:ShareInfo){
     if(shareInfo){
-      this.shareInfo = shareInfo;
-      this.openModal(ModalTypes.Share);
-      console.log(shareInfo);
+      if(this.user){
+        this.shareInfo = shareInfo;
+        this.openModal(ModalTypes.Share);
+      }else{
+        this.openModal(ModalTypes.default);
+      }
     }
 
   }

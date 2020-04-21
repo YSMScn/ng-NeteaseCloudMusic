@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, Input, EventEmitter, Output, OnChanges } from '@angular/core';
 import { ShareInfo } from 'src/app/store/reducers/member.reducer';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { shareParams } from 'src/app/services/member.service';
@@ -11,8 +11,9 @@ const MAX_MSG = 140;
   styleUrls: ['wy-layer-share.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class WyLayerShareComponent implements OnInit {
+export class WyLayerShareComponent implements OnInit,OnChanges {
   @Input() shareInfo:ShareInfo;
+  @Input() visiable=false;
   formModel:FormGroup;
   @Output()onCancel = new EventEmitter<void>();
   @Output()onShare = new EventEmitter<shareParams>();
@@ -25,6 +26,12 @@ export class WyLayerShareComponent implements OnInit {
       this.textCount = MAX_MSG - msg.length
     })
    }
+  ngOnChanges(changes: import("@angular/core").SimpleChanges): void {
+    const visiable = changes['visiable'];
+    if(visiable && !visiable.firstChange){
+      this.formModel.markAllAsTouched();
+    }
+  }
 
   ngOnInit(): void {
   }

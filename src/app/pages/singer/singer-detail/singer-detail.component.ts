@@ -11,6 +11,7 @@ import { findIndex } from 'src/app/utils/array';
 import { getPlayer, getCurrentSong } from 'src/app/store/selectors/player.selector';
 import { Subject } from 'rxjs';
 import { SetShareInfo } from 'src/app/store/actions/member.action';
+import { MemberService } from 'src/app/services/member.service';
 
 @Component({
   selector: 'app-singer-detail',
@@ -22,12 +23,14 @@ export class SingerDetailComponent implements OnInit,OnDestroy {
   currentSong:Song;
   currentIndex:number;
   similarSingers:Singer[];
+  hasLiked = false;
   private destory$ = new Subject<void>();
   constructor(private route:ActivatedRoute,
     private store$:Store<AppStoreModule>,
     private songServe:SongService,
     private batchActionServe:BatchActionsService,
-    private nzMessageServe:NzMessageService
+    private nzMessageServe:NzMessageService,
+    private memberServe:MemberService
     ) {
     this.route.data.pipe(map(res=>res.singerDetail)).subscribe(([detail,similarSingers])=>{
       this.singerDetail = detail;
@@ -110,5 +113,28 @@ export class SingerDetailComponent implements OnInit,OnDestroy {
   onLikeSongs(songs:Song[]){
     const ids = songs.map(item => item.id).join(',');
     this.onLikeSong(ids);
+  }
+
+  onLikeSinger(id:string){
+    let typeInfo = {
+      type:1,
+      msg:'Liked'
+    }
+    if(this.hasLiked){
+      typeInfo = {
+        type:2,
+        msg:'unliked'
+      }
+    }
+    this.memberServe.likeSinger(id,typeInfo.type).subscribe(code=>{
+      this.hasLiked = !this.hasLiked;
+      this.alertMessage('success',typeInfo.msg + " successed");
+    },error=>{
+      this.alertMessage('error',error.msg||typeInfo.msg + " failed")
+    })
+  }
+
+  private alertMessage(type:string,msg:string){
+    this.nzMessageServe.create(type,msg);
   }
 }

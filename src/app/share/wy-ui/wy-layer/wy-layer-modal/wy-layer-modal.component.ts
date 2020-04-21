@@ -18,6 +18,14 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
   ])]
 })
 export class WyLayerModalComponent implements OnInit, AfterViewInit, OnChanges {
+  modalTitle = {
+    register:"Register your Account",
+    loginByPhone:"Login with your Phone number",
+    share:"Share",
+    like:"Like this song and move it to your List",
+    default:''
+  }
+
   @Input() visiable:boolean;
   @Input() currentModaltype:ModalTypes;
   private overlayRef:OverlayRef;
@@ -41,8 +49,10 @@ export class WyLayerModalComponent implements OnInit, AfterViewInit, OnChanges {
     this.scrollStrategy = this.overlay.scrollStrategies.block();
    }
   ngOnChanges(changes: SimpleChanges): void {
+
     if(changes['visiable']&&!changes['visiable'].firstChange){
       this.handleVisiableChange(this.visiable);
+      console.log("changes['visiable'] ");
     }
   }
   ngAfterViewInit(): void {
