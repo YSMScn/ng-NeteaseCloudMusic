@@ -1,0 +1,30 @@
+<div class="check-code">
+  <div class="js-mobwrap">
+    <p class="s-fc3">
+      Your Phone Num
+      <strong class="s-fc1">
+        <span class="js-mob">{{phone}}</span>
+      </strong>
+    </p>
+    <p class="s-fc4">To verify your phone number, we will send you a code by text</p>
+  </div>
+
+  <div class="form">
+    <form nz-form nzLayout="vertical">
+      <nz-form-item>
+        <nz-form-control>
+          ________________________
+          <div class="send clearfix">
+            <span class="err">Wrong Code</span>
+            <span class="txt">{{timing}}s</span>
+          </div>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <button nz-button nzType="primary" nzBlock="true">Next</button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </div>
+</div>

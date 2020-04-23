@@ -96,5 +96,18 @@ export class MemberService {
     return this.http.get(this.url + 'share/resource',{params}).pipe(map((res:SimpleBack) => res.code));
   }
 
+  sendCode(phone:number):Observable<number>{
+    const params = new HttpParams({fromString:queryString.stringify({phone})});
+    return this.http.get(this.url + 'captcha/sent',{params}).pipe(map((res:SimpleBack) => res.code));
+  }
 
+  verifyCode(phone:number, captcha:number):Observable<number>{
+    const params = new HttpParams({fromString:queryString.stringify({phone,captcha})});
+    return this.http.get(this.url + 'captcha/verify',{params}).pipe(map((res:SimpleBack) => res.code));
+  }
+
+  checkExist(phone:number):Observable<number>{
+    const params = new HttpParams({fromString:queryString.stringify({phone})});
+    return this.http.get(this.url + 'cellphone/existence/check',{params}).pipe(map((res:{exist:number}) => res.exist));
+  }
 }
