@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { MemberService } from 'src/app/services/member.service';
 import { NzMessageService } from 'ng-zorro-antd';
@@ -16,11 +16,12 @@ export class WyLayerRegisterComponent implements OnInit {
   @Output()onChangeModalType = new EventEmitter<string|void>();
   formModel:FormGroup;
   timing:number;
-  showCode = true;
+  showCode = false;
   constructor(
     private fb:FormBuilder,
     private memberServe:MemberService,
-    private messageServe:NzMessageService
+    private messageServe:NzMessageService,
+    private cdr:ChangeDetectorRef
     ) {
     this.formModel = this.fb.group({
       phone:['',[Validators.required,Validators.pattern(/^1\d{10}$/)]],
@@ -45,13 +46,16 @@ export class WyLayerRegisterComponent implements OnInit {
       if(!this.showCode){
         this.showCode = true;
       }
+      this.cdr.markForCheck();
       interval(1000).pipe(take(60)).subscribe(()=>{
         this.timing--;
         console.log(this.timing);
+        this.cdr.markForCheck();
       });
     },error => {
       this.messageServe.error(error.message);
     })
+
   }
 
   changeType(){
