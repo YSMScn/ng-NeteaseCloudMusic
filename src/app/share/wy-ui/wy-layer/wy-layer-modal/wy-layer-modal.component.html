@@ -21,4 +21,6 @@
   </ng-container>
   <ng-content></ng-content>
   <div class="zcls" title="CLOSE" (click)="hide()"></div>
+  <nz-spin [nzTip]="'Loading...'" *ngIf="showSpin" class="spin"></nz-spin>
+
 </div>

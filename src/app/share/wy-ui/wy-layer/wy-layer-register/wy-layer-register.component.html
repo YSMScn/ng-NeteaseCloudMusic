@@ -26,7 +26,14 @@
   </div>
   <ng-template #code>
     <div class="modal-wrap">
-      <app-wy-check-code [phone]="'13313567891'" [timing]="timing"></app-wy-check-code>
+      <app-wy-check-code
+      [phone]="'13313567891'"
+      [timing]="timing"
+      (onCheckCode)="onCheckCode($event)"
+      (onRepeat)="sendCode()"
+      [checkPassed]="checkPassed"
+      (onCheckExist)="onCheckExist($event)">
+    </app-wy-check-code>
     </div>
   </ng-template>
 

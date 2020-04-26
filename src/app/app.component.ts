@@ -38,6 +38,7 @@ export class AppComponent {
   visiable = false;
   currentModaltype = ModalTypes.default;
   shareInfo:ShareInfo;
+  showSpin= false;
   constructor(private searchServe:SearchService,
     private store$:Store<AppStoreModule>,
     private batchActionsServe:BatchActionsService,
@@ -105,6 +106,7 @@ export class AppComponent {
 
   onLogin(params:LoginParams){
     console.log("onLogin");
+    this.showSpin=true;
     this.memberServe.login(params).subscribe(user =>{
       if(user.code === 200){
         this.user = user;
@@ -130,8 +132,10 @@ export class AppComponent {
       if(user.code === 502){
         this.alertMessage('error', "Wrong Password");
       }
+      this.showSpin = false;
     },error =>{
       this.alertMessage('error', error.message || "Login failed");
+      this.showSpin = false;
     })
   }
 
@@ -227,4 +231,7 @@ export class AppComponent {
     })
   }
 
+  onRegister(phone:string){
+    this.alertMessage('success','Register Successed');
+  }
 }

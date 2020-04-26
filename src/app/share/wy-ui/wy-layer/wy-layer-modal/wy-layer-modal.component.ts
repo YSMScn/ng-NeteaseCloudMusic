@@ -27,6 +27,7 @@ export class WyLayerModalComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   @Input() visiable:boolean;
+  @Input() showSpin:boolean;
   @Input() currentModaltype:ModalTypes;
   private overlayRef:OverlayRef;
   showModal = 'hide';

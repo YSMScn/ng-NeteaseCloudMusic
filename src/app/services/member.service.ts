@@ -101,7 +101,7 @@ export class MemberService {
     return this.http.get(this.url + 'captcha/sent',{params}).pipe(map((res:SimpleBack) => res.code));
   }
 
-  verifyCode(phone:number, captcha:number):Observable<number>{
+  verifyCode(phone:number, captcha:string):Observable<number>{
     const params = new HttpParams({fromString:queryString.stringify({phone,captcha})});
     return this.http.get(this.url + 'captcha/verify',{params}).pipe(map((res:SimpleBack) => res.code));
   }
