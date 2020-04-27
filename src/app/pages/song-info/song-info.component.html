@@ -45,7 +45,7 @@
                                 <p>{{item.txtCn}}</p>
                             </div>
                         </div>
-                        <div class="toggle-expand" (click)="onToggleExpand()">
+                        <div class="toggle-expand" (click)="onToggleExpand()" [hidden]="!lyric.length">
                             <span>{{controlLyric.label}}</span>
                             <i nz-icon [nzType]="controlLyric.iconCls" nzTheme="outline"></i>
                         </div>

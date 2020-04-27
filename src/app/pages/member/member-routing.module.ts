@@ -7,7 +7,7 @@ import { RecordResolverService } from './record-detail/record-resolve.service';
 
 
 const routes: Routes = [{
-  path:'member/:id',component:CentreComponent, data:{title:'Personal Centre'},resolve:{user:CentreResolverService}
+  path:'',component:CentreComponent, data:{title:'Personal Centre'},resolve:{user:CentreResolverService}
 },{
   path:'records/:id',component:RecordDetailComponent, data:{title:'Play History'},resolve:{user:RecordResolverService}
 }];

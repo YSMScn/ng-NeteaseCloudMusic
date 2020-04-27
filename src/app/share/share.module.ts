@@ -4,6 +4,7 @@ import { NgZorroAntdModule } from 'ng-zorro-antd';
 import { FormsModule } from '@angular/forms';
 import { WyUiModule } from './wy-ui/wy-ui.module';
 import { ClickoutsideDirective } from './directives/clickoutside.directive';
+import { ImgDefaultDirective } from './directives/img-default.directive';
 //import { FormatTimePipe } from './pipes/format-time.pipe';
 
 
@@ -20,7 +21,7 @@ import { ClickoutsideDirective } from './directives/clickoutside.directive';
     NgZorroAntdModule,
     FormsModule,
     WyUiModule,
-    ClickoutsideDirective
+    ClickoutsideDirective,
   ],
   // declarations: [ClickoutsideDirective],
   //declarations: [FormatTimePipe]

@@ -1,11 +1,12 @@
 <div id="app">
+  <nz-progress  nzStrokeWidth="5" nzShowInfo="false" nzStatus="active" [nzPercent]="loadPercent" *ngIf="loadPercent<100"></nz-progress>
     <nz-layout class="layout">
         <nz-header class="header">
             <div class="wrap">
                 <div class="left">
                     <h1>Music</h1>
                     <ul nz-menu nzTheme="dark" nzMode="horizontal">
-                        <li nz-menu-item *ngFor="let item of menu" [routerLink]="item.path">{{item.label}}</li>
+                        <li nz-menu-item *ngFor="let item of menu"  nzSelected="routTitle === item.label" [routerLink]="item.path">{{item.label}}</li>
                     </ul>
                 </div>
                 <div class="right">
@@ -73,3 +74,13 @@
   <app-wy-layer-share name="share" [visiable]="visiable" [shareInfo]="shareInfo" (onCancel)="closeModal()" (onShare)="onShare($event)"></app-wy-layer-share>
   <app-wy-layer-register name="register" [visiable]="visiable" (onChangeModalType)="onChangeModalType($event)" (onRegister)="onRegister($event)"></app-wy-layer-register>
 </app-wy-layer-modal>
+
+<nz-back-top [nzTemplate]="tpl">
+  <ng-template #tpl>
+    <div class="ant-back-top-inner">
+      <button nz-button nzType="primary" nzSize="large">
+        <i nz-icon nzType="to-top" nzTheme="outline"></i>
+      </button>
+    </div>
+  </ng-template>
+</nz-back-top>

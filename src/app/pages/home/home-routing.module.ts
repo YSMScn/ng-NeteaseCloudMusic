@@ -5,7 +5,8 @@ import { HomeResolverService } from './home-resolve.service';
 
 
 const routes: Routes = [
-  {path:'home',component: HomeComponent,data:{title:"Find"},resolve:{homeDatas:HomeResolverService}}
+  {path:'',component: HomeComponent,data:{title:"Find"},resolve:{homeDatas:HomeResolverService}}
+  // {path:'home',component: HomeComponent,data:{title:"Find"},resolve:{homeDatas:HomeResolverService}}
 ];
 
 @NgModule({

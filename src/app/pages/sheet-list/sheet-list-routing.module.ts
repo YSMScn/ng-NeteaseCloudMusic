@@ -4,7 +4,7 @@ import { SheetListComponent } from './sheet-list.component';
 
 
 const routes: Routes = [{
-  path:'sheet',
+  path:'',
   component:SheetListComponent,
   data:{title:'List'}
 }];

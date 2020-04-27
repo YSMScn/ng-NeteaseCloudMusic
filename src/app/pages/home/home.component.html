@@ -8,7 +8,7 @@
         >
             <div class="carousel-item" nz-carousel-content *ngFor="let item of banners">
                 <a [href]="item.url" target="_blank" class="banner-item">
-                    <img [src]="item.imageUrl" />
+                    <img  appImgDefault [src]="item.imageUrl" />
                 </a>
             </div>
         </nz-carousel>
@@ -51,7 +51,7 @@
                     <div class="list">
                         <div class="card" *ngFor="let item of settledSinger" [routerLink]="['/singer',item.id]">
                             <div class="pic">
-                                <img [src]="item.picUrl" [alt]="item.name">
+                                <img appImgDefault [src]="item.picUrl" [alt]="item.name">
                             </div>
                             <div class="txt">
                                 <b class="ellipsis">{{item.name}}</b>

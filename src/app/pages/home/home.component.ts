@@ -49,6 +49,7 @@ export class HomeComponent implements OnInit {
       this.hotTags =hotTags;
       this.personalizedLists =personalizedLists;
       this.settledSinger =settledSinger;
+      console.log(this.banners);
     });
     // this.getBanners();
     // this.getHotTags();

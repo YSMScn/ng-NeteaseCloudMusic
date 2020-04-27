@@ -315,3 +315,12 @@
 
 12-7:
 *11:00 Used a different way to show and hide error tip
+
+****************************************************
+Banner in home component:
+Some banners dont have url, they have target id and target type(1 for song?). Need to write a method and use route navigation.
+
+Add appImgDefault for all img element
+
+
+****************************************************

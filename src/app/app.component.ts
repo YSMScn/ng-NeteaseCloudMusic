@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject, Inject } from '@angular/core';
 import { SearchService } from './services/search.service';
 import { SearchResult, LoginParams, SongList } from './services/data-types/common-types';
 import { isEmptyObject } from './utils/tools';
@@ -13,6 +13,11 @@ import { NzMessageBaseService, NzMessageService } from 'ng-zorro-antd';
 import { codeJson } from './utils/base64';
 import { StorageService } from './services/storage.service';
 import { getMember, getLikeId, getModalVisiable, getModalType, getShareInfo } from './store/selectors/member.selector';
+import { Router, ActivatedRoute, NavigationEnd, NavigationStart } from '@angular/router';
+import { filter, map, mergeMap, takeUntil } from 'rxjs/internal/operators';
+import { Observable, interval } from 'rxjs';
+import { Title } from '@angular/platform-browser';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'app-root',
@@ -39,12 +44,20 @@ export class AppComponent {
   currentModaltype = ModalTypes.default;
   shareInfo:ShareInfo;
   showSpin= false;
+  private navEnd:Observable<NavigationEnd>;
+  routeTitle:string;
+  loadPercent = 0;
+
   constructor(private searchServe:SearchService,
     private store$:Store<AppStoreModule>,
     private batchActionsServe:BatchActionsService,
     private memberServe:MemberService,
     private message:NzMessageService,
-    private storageServe:StorageService
+    private storageServe:StorageService,
+    private router:Router,
+    private activatedRoute:ActivatedRoute,
+    private titleServe:Title,
+    //@Inject(DOCUMENT) private doc:Document
     ){
       const userId = storageServe.getStorage('wyUserId');
       if(userId){
@@ -56,7 +69,42 @@ export class AppComponent {
         this.wyRememberLogin = JSON.parse(wyRememberLogin);
       }
       this.listenStates();
+      this.router.events.pipe(filter(evt=>evt instanceof NavigationStart)).subscribe(()=>{
+        this.loadPercent = 0;
+        this.setTitle;
+      })
+      this.navEnd = <Observable<NavigationEnd>>this.router.events.pipe(filter(evt=>evt instanceof NavigationEnd));
+      this.setLoadingBar();
     }
+
+  private setLoadingBar(){
+    interval(100).pipe(takeUntil(this.navEnd)).subscribe(()=>{
+      this.loadPercent = Math.max(95,++this.loadPercent);
+      // this.loadPercent = this.loadPercent + 10;
+      console.log('this.loadPercent: ',this.loadPercent);
+    });
+    this.navEnd.subscribe(()=>{
+      this.loadPercent = 100;
+      //this.doc.documentElement.scrollTop = 0;
+    });
+  }
+
+  private setTitle(){
+    this.navEnd.pipe(
+      map(()=>this.activatedRoute),
+      map((route:ActivatedRoute)=>{
+        while(route.firstChild){
+          route=route.firstChild
+        }
+        return route;
+      }),
+      mergeMap(route => route.data)
+      ).subscribe(data => {
+        console.log('data: ',data);
+        this.routeTitle = data['title'];
+        this.titleServe.setTitle(this.routeTitle);
+      })
+  }
   onSearch(keywords:string){
     console.log("keyword: ", keywords);
     if(keywords){
