@@ -6,15 +6,14 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class FormatTimePipe implements PipeTransform {
 
   transform(time: number): any {
-    if(time){
-      //|0 has similar effect with Math.floor
-      const temp = time|0;
-      //get minute
-      const minute = temp / 60 |0;
-      const second = (temp%60).toString().padStart(2,'0');
+    if (time) {
+      // |0 has similar effect with Math.floor
+      const temp = time | 0;
+      // get minute
+      const minute = temp / 60 | 0;
+      const second = (temp % 60).toString().padStart(2, '0');
       return `${minute}:${second}`;
-    }
-    else{
+    } else {
       return '00:00';
     }
   }

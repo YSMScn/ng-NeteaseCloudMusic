@@ -4,14 +4,14 @@ import { wySliderStyle } from './wy-slider-types';
 @Component({
   selector: 'app-wy-slider-track',
   template: '<div class="wy-slider-track" [class.buffer]="wyBuffer" [ngStyle] = "style"></div>',
-  changeDetection:ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WySliderTrackComponent implements OnInit, OnChanges {
 
   @Input() wyVertical = false;
-  @Input() wyLength:number;
-  @Input() wyBuffer= false;
-  style:wySliderStyle = {};
+  @Input() wyLength: number;
+  @Input() wyBuffer = false;
+  style: wySliderStyle = {};
   constructor() { }
 
   ngOnInit(): void {
@@ -19,13 +19,12 @@ export class WySliderTrackComponent implements OnInit, OnChanges {
 
 
   ngOnChanges(changes: SimpleChanges): void {
-    if(changes['wyLength']){
-      if(this.wyVertical){
+    if (changes.wyLength) {
+      if (this.wyVertical) {
         this.style.height = this.wyLength + '%';
         this.style.left = null;
         this.style.width = null;
-      }
-      else{
+      } else {
         this.style.width = this.wyLength + '%';
         this.style.bottom = null;
         this.style.height = null;

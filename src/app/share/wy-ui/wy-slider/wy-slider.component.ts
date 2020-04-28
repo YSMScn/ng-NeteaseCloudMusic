@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, ElementRef, ViewChild, Input, Inject, ChangeDetectorRef, OnDestroy, forwardRef, Output, EventEmitter } from '@angular/core';
 import { fromEvent, merge, Observable, Subscription } from 'rxjs';
-import { filter,tap, pluck, map, distinctUntilChanged, takeUntil } from 'rxjs/internal/operators';
+import { filter, tap, pluck, map, distinctUntilChanged, takeUntil } from 'rxjs/internal/operators';
 import { SliderEventObserverConfig, SliderValue } from './wy-slider-types';
 import { DOCUMENT } from '@angular/common';
 import { sliderEvent, getElementOffset } from './wy-slider-helper';
@@ -12,145 +12,144 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
   templateUrl: './wy-slider.component.html',
   styleUrls: ['./wy-slider.component.less'],
   encapsulation: ViewEncapsulation.None,
-  changeDetection:ChangeDetectionStrategy.OnPush,
-  providers:[{
-    provide:NG_VALUE_ACCESSOR,
-    useExisting:forwardRef(()=>WySliderComponent),
-    multi:true
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [{
+    provide: NG_VALUE_ACCESSOR,
+    useExisting: forwardRef(() => WySliderComponent),
+    multi: true
   }]
 })
 export class WySliderComponent implements OnInit, OnDestroy, ControlValueAccessor {
   @Input() wyVertical = false;
   @Input() wyMin = 0;
   @Input() wyMax = 100;
-  @Input() bufferOffset:SliderValue = 0;
+  @Input() bufferOffset: SliderValue = 0;
   @Output() wyOnAfterChange = new EventEmitter<SliderValue>();
 
   private isDragging = false;
-  value:SliderValue=null;
-  offset:SliderValue = null
+  value: SliderValue = null;
+  offset: SliderValue = null;
 
 
   private sliderDom: HTMLDivElement;
-  @ViewChild("wySlider",{static:true}) private wySlider:ElementRef;
-  private dragStart$:Observable<number>;
-  private dragMove$:Observable<number>;
-  private dragEnd$:Observable<Event>;
-  private dragStart_:Subscription|null;
-  private dragMove_:Subscription|null;
-  private dragEnd_:Subscription|null;
-  constructor(@Inject(DOCUMENT) private doc: Document, private cdr:ChangeDetectorRef) { }
+  @ViewChild('wySlider', {static: true}) private wySlider: ElementRef;
+  private dragStart$: Observable<number>;
+  private dragMove$: Observable<number>;
+  private dragEnd$: Observable<Event>;
+  private dragStart_: Subscription|null;
+  private dragMove_: Subscription|null;
+  private dragEnd_: Subscription|null;
+  constructor(@Inject(DOCUMENT) private doc: Document, private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
     this.sliderDom = this.wySlider.nativeElement;
-    //console.log(this.wySlider)
+    // console.log(this.wySlider)
     this.createDraggingObservables();
     this.subscribeDrag(['start']);
   }
 
 
-  private createDraggingObservables(){
-    const orientField = this.wyVertical?'pageY':'pageX';
-    const mouse:SliderEventObserverConfig={
-      start:'mousedown',
-      move:'mousemove',
-      end:'mouseup',
+  private createDraggingObservables() {
+    const orientField = this.wyVertical ? 'pageY' : 'pageX';
+    const mouse: SliderEventObserverConfig = {
+      start: 'mousedown',
+      move: 'mousemove',
+      end: 'mouseup',
       filters: (e: MouseEvent) => e instanceof MouseEvent,
-      pluckKey:[orientField]
+      pluckKey: [orientField]
     };
-    const touch:SliderEventObserverConfig={
-      start:'touchstart',
-      move:'touchmove',
-      end:'touchend',
+    const touch: SliderEventObserverConfig = {
+      start: 'touchstart',
+      move: 'touchmove',
+      end: 'touchend',
       filters: (e: TouchEvent) => e instanceof TouchEvent,
-      pluckKey:['touches','0',orientField]
+      pluckKey: ['touches', '0', orientField]
     };
 
-    [mouse,touch].forEach(source =>{
-      const {start,move,end,filters,pluckKey} = source;
-      source.startPlucked$ = fromEvent(this.sliderDom,start)
+    [mouse, touch].forEach(source => {
+      const {start, move, end, filters, pluckKey} = source;
+      source.startPlucked$ = fromEvent(this.sliderDom, start)
       .pipe(
         filter(filters),
         tap(sliderEvent),
       pluck(...pluckKey),
-      map((position:number) => this.findClosestValue(position) )
+      map((position: number) => this.findClosestValue(position) )
       );
 
-      source.end$ = fromEvent(this.doc,end);
+      source.end$ = fromEvent(this.doc, end);
 
-      source.moveResolved$ = fromEvent(this.doc,move)
+      source.moveResolved$ = fromEvent(this.doc, move)
       .pipe(
         filter(filters),
         tap(sliderEvent),
       pluck(...pluckKey),
       distinctUntilChanged(),
-      map((position:number) => this.findClosestValue(position) ),
+      map((position: number) => this.findClosestValue(position) ),
       takeUntil(source.end$)
       );
     });
 
 
-    this.dragStart$ = merge(mouse.startPlucked$,touch.startPlucked$);
-    this.dragMove$ = merge(mouse.moveResolved$,touch.moveResolved$);
-    this.dragEnd$ = merge(mouse.end$,touch.end$);
+    this.dragStart$ = merge(mouse.startPlucked$, touch.startPlucked$);
+    this.dragMove$ = merge(mouse.moveResolved$, touch.moveResolved$);
+    this.dragEnd$ = merge(mouse.end$, touch.end$);
 
   }
 
 
-  private subscribeDrag(events:string[]=['start','move','end']){
-    if(events.indexOf('start') !== -1 && this.dragStart$ && !this.dragStart_){
+  private subscribeDrag(events: string[]= ['start', 'move', 'end']) {
+    if (events.indexOf('start') !== -1 && this.dragStart$ && !this.dragStart_) {
       this.dragStart_ = this.dragStart$.subscribe(this.onDragStart.bind(this));
     }
-    if(events.indexOf('move') !== -1 && this.dragMove$ && !this.dragMove_){
+    if (events.indexOf('move') !== -1 && this.dragMove$ && !this.dragMove_) {
       this.dragMove_ = this.dragMove$.subscribe(this.onDragMove.bind(this));
     }
-    if(events.indexOf('end') !== -1 && this.dragEnd$ && !this.dragEnd_){
-      this.dragEnd_= this.dragEnd$.subscribe(this.onDragEnd.bind(this));
+    if (events.indexOf('end') !== -1 && this.dragEnd$ && !this.dragEnd_) {
+      this.dragEnd_ = this.dragEnd$.subscribe(this.onDragEnd.bind(this));
     }
   }
 
-  private unSubscribeDrag(events:string[]=['start','move','end']){
-    if(events.indexOf('start') !== -1 && this.dragStart_){
+  private unSubscribeDrag(events: string[]= ['start', 'move', 'end']) {
+    if (events.indexOf('start') !== -1 && this.dragStart_) {
       this.dragStart_.unsubscribe();
       this.dragStart_ = null;
     }
-    if(events.indexOf('move') !== -1 && this.dragMove_){
+    if (events.indexOf('move') !== -1 && this.dragMove_) {
       this.dragMove_.unsubscribe();
       this.dragMove_ = null;
     }
-    if(events.indexOf('end') !== -1 && this.dragEnd_){
+    if (events.indexOf('end') !== -1 && this.dragEnd_) {
       this.dragEnd_.unsubscribe();
       this.dragEnd_ = null;
     }
   }
 
-  private onDragStart(value : number){
-    console.log('Startvalue: ',value);
+  private onDragStart(value: number) {
+    console.log('Startvalue: ', value);
     this.toggleDragMoving(true);
     this.setValue(value);
-    
+
   }
-  private onDragMove(value : number){
-    if(this.isDragging){
+  private onDragMove(value: number) {
+    if (this.isDragging) {
       this.setValue(value);
-      console.log('Movingvalue: ',value);
+      console.log('Movingvalue: ', value);
       this.cdr.markForCheck();
     }
   }
-  private onDragEnd(){
-    console.log('Endvalue: ',this.value);
+  private onDragEnd() {
+    console.log('Endvalue: ', this.value);
     this.wyOnAfterChange.emit(this.value);
     this.toggleDragMoving(false);
     this.cdr.markForCheck();
   }
 
-  private setValue(value:SliderValue,needCheck = false){
-    if(needCheck){
-      if(this.isDragging){return;}
-      this.value=this.formatValue(value);
+  private setValue(value: SliderValue, needCheck = false) {
+    if (needCheck) {
+      if (this.isDragging) {return; }
+      this.value = this.formatValue(value);
       this.updateTrackAndHandles();
-    }
-    else if (!this.valuesEqual(this.value, value)) {
+    } else if (!this.valuesEqual(this.value, value)) {
       this.value = value;
       this.updateTrackAndHandles();
       this.onValueChange(this.value);
@@ -174,83 +173,81 @@ export class WySliderComponent implements OnInit, OnDestroy, ControlValueAccesso
     return valA === valB;
   }
 
-  private formatValue(value:SliderValue):SliderValue{
+  private formatValue(value: SliderValue): SliderValue {
     let res = value;
-    if(this.assertValueValid(value)){
+    if (this.assertValueValid(value)) {
       res = this.wyMin;
-    }
-    else{
-      res = limitNumberInRange(value,this.wyMin,this.wyMax);
+    } else {
+      res = limitNumberInRange(value, this.wyMin, this.wyMax);
     }
     return res;
   }
 
-  private assertValueValid(value:SliderValue):boolean{
-    return isNaN(typeof value !=='number' ? parseFloat(value):value);
+  private assertValueValid(value: SliderValue): boolean {
+    return isNaN(typeof value !== 'number' ? parseFloat(value) : value);
   }
 
-  private updateTrackAndHandles(){
+  private updateTrackAndHandles() {
     this.offset = this.getValueToOffset(this.value);
     this.cdr.markForCheck();
   }
 
-  private getValueToOffset(value:SliderValue):SliderValue{
-    return getPercent(this.wyMin,this.wyMax,value);
+  private getValueToOffset(value: SliderValue): SliderValue {
+    return getPercent(this.wyMin, this.wyMax, value);
   }
 
-  private toggleDragMoving(movable:boolean){
+  private toggleDragMoving(movable: boolean) {
     this.isDragging = movable;
-    if(movable){
-      
-      this.subscribeDrag(['move','end']);
-    }
-    else{
-      this.unSubscribeDrag(['move','end']);
+    if (movable) {
+
+      this.subscribeDrag(['move', 'end']);
+    } else {
+      this.unSubscribeDrag(['move', 'end']);
     }
   }
 
 
-  private findClosestValue(position : number):number{
-    //get slider's length
+  private findClosestValue(position: number): number {
+    // get slider's length
     const sliderLength = this.getSliderLength();
 
-    //get most left or top point
+    // get most left or top point
     const sliderStart = this.getSliderStartPosition();
 
-    //current positon/slider length, because of the slider could be vertical or horizontal, the ratio need to be 1-ratio for vertical slider
-    const r = limitNumberInRange((position-sliderStart)/sliderLength,0,1);
-    const ratio = this.wyVertical?1-r:r;
+    // current positon/slider length, because of the slider could be vertical or horizontal, the ratio need to be 1-ratio for vertical slider
+    const r = limitNumberInRange((position - sliderStart) / sliderLength, 0, 1);
+    const ratio = this.wyVertical ? 1 - r : r;
 
-    return ratio *(this.wyMax-this.wyMin)+this.wyMin;
+    return ratio * (this.wyMax - this.wyMin) + this.wyMin;
 
   }
 
-  private getSliderLength():number{
-    return this.wyVertical?this.sliderDom.clientHeight : this.sliderDom.clientWidth;
+  private getSliderLength(): number {
+    return this.wyVertical ? this.sliderDom.clientHeight : this.sliderDom.clientWidth;
   }
 
-  private getSliderStartPosition():number{
+  private getSliderStartPosition(): number {
     const offset = getElementOffset(this.sliderDom);
-    return this.wyVertical?offset.top: offset.left;
+    return this.wyVertical ? offset.top : offset.left;
   }
 
   ngOnDestroy(): void {
     this.unSubscribeDrag();
   }
 
-  private onValueChange(value:SliderValue):void{
+  private onValueChange(value: SliderValue): void {
 
   }
-  private onTouched():void{
+  private onTouched(): void {
 
   }
   writeValue(value: SliderValue): void {
-    this.setValue(value,true);
+    this.setValue(value, true);
   }
-  registerOnChange(fn: (value:SliderValue)=> void): void {
-    this.onValueChange= fn;
+  registerOnChange(fn: (value: SliderValue) => void): void {
+    this.onValueChange = fn;
   }
-  registerOnTouched(fn: ()=>void): void {
-    this.onTouched=fn;
+  registerOnTouched(fn: () => void): void {
+    this.onTouched = fn;
   }
 }

@@ -31,39 +31,38 @@ export class HomeComponent implements OnInit {
   hotTags: HotTag[];
   personalizedLists: SongList[];
   settledSinger: Singer[];
-  user:User;
-  private playerState:PlayState;
-  @ViewChild(NzCarouselComponent,{static:true}) private nzCarousel:NzCarouselComponent;
+  user: User;
+  private playerState: PlayState;
+  @ViewChild(NzCarouselComponent, {static: true}) private nzCarousel: NzCarouselComponent;
   constructor(
     // private homeServe:HomeService,
     // private singerServe:SingerService,
     private route: ActivatedRoute,
     private router: Router,
-    private songListServe:SongListService,
+    private songListServe: SongListService,
     private batchActionServe: BatchActionsService,
-    private store$:Store<AppStoreModule>,
-    private memberServe:MemberService
+    private store$: Store<AppStoreModule>,
+    private memberServe: MemberService
     ) {
-    this.route.data.pipe(map(res => res.homeDatas)).subscribe(([banners,hotTags,personalizedLists,settledSinger]) => {
-      this.banners =banners;
-      this.hotTags =hotTags;
-      this.personalizedLists =personalizedLists;
-      this.settledSinger =settledSinger;
+    this.route.data.pipe(map(res => res.homeDatas)).subscribe(([banners, hotTags, personalizedLists, settledSinger]) => {
+      this.banners = banners;
+      this.hotTags = hotTags;
+      this.personalizedLists = personalizedLists;
+      this.settledSinger = settledSinger;
       console.log(this.banners);
     });
     // this.getBanners();
     // this.getHotTags();
     // this.getPersonalizedList();
     // this.getSettledSinger();
-    this.store$.pipe(select(getMember),select(getUserId)).subscribe(id=>{
+    this.store$.pipe(select(getMember), select(getUserId)).subscribe(id => {
       console.log(id);
-      if(id){
+      if (id) {
         this.getUserDetail(id);
+      } else {
+        this.user = null;
       }
-      else{
-        this.user=null;
-      }
-    })
+    });
    }
 
   // private getBanners(){
@@ -95,29 +94,29 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  private getUserDetail(id:string){
-    this.memberServe.getUserDetail(id).subscribe(user=>this.user=user);
+  private getUserDetail(id: string) {
+    this.memberServe.getUserDetail(id).subscribe(user => this.user = user);
   }
 
-  beforeChange({to}){
+  beforeChange({to}) {
     this.carouselActiveIndex = to;
   }
 
-  onChangeSlide(direction:'pre' | 'next'){
+  onChangeSlide(direction: 'pre' | 'next') {
     this.nzCarousel[direction]();
   }
 
-  onPlayList(id:number){
-    this.songListServe.playList(id).subscribe(list=>{
-      this.batchActionServe.selectPlayList({list,index:0});
-    })
+  onPlayList(id: number) {
+    this.songListServe.playList(id).subscribe(list => {
+      this.batchActionServe.selectPlayList({list, index: 0});
+    });
   }
 
-  toInfo(id:number){
-    this.router.navigate(['/sheetInfo',id]);
+  toInfo(id: number) {
+    this.router.navigate(['/sheetInfo', id]);
   }
 
-  openModal(){
-    this.batchActionServe.controlModal(true,ModalTypes.default);
+  openModal() {
+    this.batchActionServe.controlModal(true, ModalTypes.default);
   }
 }

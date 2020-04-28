@@ -10,19 +10,19 @@ import { BatchActionsService } from 'src/app/store/batch-actions.service';
   styleUrls: ['sheet-list.component.less']
 })
 export class SheetListComponent implements OnInit {
-  listParams:PlayListParams = {
-    cat:'全部',
-    order:'hot',
-    offset:1,
-    limit:35
-  }
-  orderValue='hot';
-  songList:PlayList;
+  listParams: PlayListParams = {
+    cat: '全部',
+    order: 'hot',
+    offset: 1,
+    limit: 35
+  };
+  orderValue = 'hot';
+  songList: PlayList;
   constructor(
-    private route:ActivatedRoute,
-    private router:Router,
-    private songListServe:SongListService,
-    private batchActionServe:BatchActionsService
+    private route: ActivatedRoute,
+    private router: Router,
+    private songListServe: SongListService,
+    private batchActionServe: BatchActionsService
   ) {
     this.listParams.cat = this.route.snapshot.queryParamMap.get('cat') || '全部';
     this.getList();
@@ -33,28 +33,28 @@ export class SheetListComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  private getList(){
-    this.songListServe.getSongList(this.listParams).subscribe(res=> this.songList = res);
+  private getList() {
+    this.songListServe.getSongList(this.listParams).subscribe(res => this.songList = res);
   }
 
-  onPlayList(id:number){
-    this.songListServe.playList(id).subscribe(list=>{
-      this.batchActionServe.selectPlayList({list,index:0});
-    })
+  onPlayList(id: number) {
+    this.songListServe.playList(id).subscribe(list => {
+      this.batchActionServe.selectPlayList({list, index: 0});
+    });
   }
 
-  onOrderChange(order:'new'|'hot'){
+  onOrderChange(order: 'new'|'hot') {
     this.listParams.order = order;
     this.listParams.offset = 1;
     this.getList();
   }
 
-  onPageChange(index:number){
+  onPageChange(index: number) {
     this.listParams.offset = index;
     this.getList();
   }
 
-  toInfo(id:number){
-    this.router.navigate(['/sheetInfo',id]);
+  toInfo(id: number) {
+    this.router.navigate(['/sheetInfo', id]);
   }
 }

@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { WyUiModule } from './wy-ui/wy-ui.module';
 import { ClickoutsideDirective } from './directives/clickoutside.directive';
 import { ImgDefaultDirective } from './directives/img-default.directive';
-//import { FormatTimePipe } from './pipes/format-time.pipe';
+// import { FormatTimePipe } from './pipes/format-time.pipe';
 
 
 
@@ -16,7 +16,7 @@ import { ImgDefaultDirective } from './directives/img-default.directive';
     FormsModule,
     WyUiModule
   ],
-  exports:[
+  exports: [
     CommonModule,
     NgZorroAntdModule,
     FormsModule,
@@ -24,6 +24,6 @@ import { ImgDefaultDirective } from './directives/img-default.directive';
     ClickoutsideDirective,
   ],
   // declarations: [ClickoutsideDirective],
-  //declarations: [FormatTimePipe]
+  // declarations: [FormatTimePipe]
 })
 export class ShareModule { }

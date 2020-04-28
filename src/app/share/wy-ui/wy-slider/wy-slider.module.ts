@@ -7,7 +7,7 @@ import { WySliderHandleComponent } from './wy-slider-handle.component';
 
 
 @NgModule({
-  declarations: [WySliderComponent, WySliderTrackComponent,WySliderHandleComponent],
+  declarations: [WySliderComponent, WySliderTrackComponent, WySliderHandleComponent],
   imports: [
     CommonModule
   ],

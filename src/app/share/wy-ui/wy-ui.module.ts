@@ -10,10 +10,10 @@ import { ImgDefaultDirective } from '../directives/img-default.directive';
 
 
 @NgModule({
-  declarations: [SongListComponent,PlayCountPipe,ImgDefaultDirective],
+  declarations: [SongListComponent, PlayCountPipe, ImgDefaultDirective],
   imports: [
-    CommonModule,WyPlayerModule,WySearchModule,WyLayerModule
+    CommonModule, WyPlayerModule, WySearchModule, WyLayerModule
   ],
-  exports:[SongListComponent,PlayCountPipe,WyPlayerModule,WySearchModule,WyLayerModule,ImgDefaultDirective]
+  exports: [SongListComponent, PlayCountPipe, WyPlayerModule, WySearchModule, WyLayerModule, ImgDefaultDirective]
 })
 export class WyUiModule { }

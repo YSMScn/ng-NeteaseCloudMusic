@@ -11,33 +11,33 @@ import { NzMessageService } from 'ng-zorro-antd';
 })
 export class MemberCardComponent implements OnInit {
   @Output() openModal = new EventEmitter<void>();
-  @Input() user:User;
-  point:number;
+  @Input() user: User;
+  point: number;
   showTip = false;
   tipTitle = '';
   constructor(
-    private memberServe:MemberService,
-    private message:NzMessageService,
+    private memberServe: MemberService,
+    private message: NzMessageService,
   ) { }
 
   ngOnInit(): void {
   }
 
-  onCheckin(){
-    this.memberServe.checkin().subscribe(res=>{
-      console.log('res: ',res);
+  onCheckin() {
+    this.memberServe.checkin().subscribe(res => {
+      console.log('res: ', res);
       this.tipTitle = '+' + res.point;
       this.showTip = true;
       timer(1500).subscribe(() => {
         this.showTip = false;
         this.tipTitle = '';
       });
-    },error=>{
-        this.alertMessage('error', error.message || "Checkin failed");
+    }, error => {
+        this.alertMessage('error', error.message || 'Checkin failed');
     });
   }
 
-  private alertMessage(type:string,msg:string){
-    this.message.create(type,msg);
+  private alertMessage(type: string, msg: string) {
+    this.message.create(type, msg);
   }
 }

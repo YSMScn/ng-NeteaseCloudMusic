@@ -10,7 +10,7 @@ import { memberReducer } from './reducers/member.reducer';
 @NgModule({
   declarations: [],
   imports: [
-    StoreModule.forRoot({player:playerReducer,member:memberReducer},{
+    StoreModule.forRoot({player: playerReducer, member: memberReducer}, {
       runtimeChecks: {
         strictStateImmutability: true,
         strictActionImmutability: true,
@@ -20,8 +20,8 @@ import { memberReducer } from './reducers/member.reducer';
       },
     }),
     StoreDevtoolsModule.instrument({
-      maxAge:20,
-      logOnly:environment.production
+      maxAge: 20,
+      logOnly: environment.production
     })
   ]
 })

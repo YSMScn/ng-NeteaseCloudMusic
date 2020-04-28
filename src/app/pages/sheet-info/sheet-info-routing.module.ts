@@ -5,15 +5,15 @@ import { SheetInfoResolverService } from './sheet-info-resolver.service';
 
 
 const routes: Routes = [{
-  path:'',
-  component:SheetInfoComponent,
-  data:{title:'Song List Info'},
-  resolve:{sheetInfo:SheetInfoResolverService}
+  path: '',
+  component: SheetInfoComponent,
+  data: {title: 'Song List Info'},
+  resolve: {sheetInfo: SheetInfoResolverService}
 }];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
-  providers:[SheetInfoResolverService]
+  providers: [SheetInfoResolverService]
 })
 export class SheetInfoRoutingModule { }

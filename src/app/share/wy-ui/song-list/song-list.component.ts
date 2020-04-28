@@ -13,15 +13,15 @@ export class SongListComponent implements OnInit {
   @Output()onPlay = new EventEmitter<number>();
   constructor() { }
 
-  ngOnInit(): void {  
+  ngOnInit(): void {
   }
 
-  playList(evt:MouseEvent,id:number){
+  playList(evt: MouseEvent, id: number) {
     evt.stopPropagation();
     this.onPlay.emit(id);
   }
 
-  get coverImg():string{
+  get coverImg(): string {
     return this.songList.picUrl || this.songList.coverImgUrl;
   }
 

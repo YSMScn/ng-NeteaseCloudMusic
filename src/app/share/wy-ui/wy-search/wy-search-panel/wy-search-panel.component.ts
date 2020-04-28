@@ -8,16 +8,16 @@ import { Router } from '@angular/router';
   styleUrls: ['wy-search-panel.component.less']
 })
 export class WySearchPanelComponent implements OnInit {
-  searchResult:SearchResult;
+  searchResult: SearchResult;
 
-  constructor(private router:Router) { }
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
   }
 
-  toInfo(path:[string,number]){
+  toInfo(path: [string, number]) {
     console.log('toInfo: ', path);
-    if(path[1]){
+    if (path[1]) {
       this.router.navigate(path);
     }
 

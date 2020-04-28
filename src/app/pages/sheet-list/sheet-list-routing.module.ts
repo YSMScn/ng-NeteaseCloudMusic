@@ -4,9 +4,9 @@ import { SheetListComponent } from './sheet-list.component';
 
 
 const routes: Routes = [{
-  path:'',
-  component:SheetListComponent,
-  data:{title:'List'}
+  path: '',
+  component: SheetListComponent,
+  data: {title: 'List'}
 }];
 
 @NgModule({

@@ -1,22 +1,22 @@
-import { Observable } from 'rxjs'
+import { Observable } from 'rxjs';
 
-export type wySliderStyle = {
-    width?:string | null;
-    height?:string | null;
-    left?:string | null;
-    bottom?:string | null;
+export interface wySliderStyle {
+    width?: string | null;
+    height?: string | null;
+    left?: string | null;
+    bottom?: string | null;
 
 }
 
-export type SliderEventObserverConfig = {
-    start:string;
-    move:string;
-    end:string;
+export interface SliderEventObserverConfig {
+    start: string;
+    move: string;
+    end: string;
     filters: (e: Event) => boolean;
-    pluckKey:string[];
-    startPlucked$?:Observable<number>;
-    moveResolved$?:Observable<number>;
-    end$?:Observable<Event>;
+    pluckKey: string[];
+    startPlucked$?: Observable<number>;
+    moveResolved$?: Observable<number>;
+    end$?: Observable<Event>;
 }
 
 export type SliderValue = number | null;

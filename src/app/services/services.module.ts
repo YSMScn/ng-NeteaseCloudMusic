@@ -9,13 +9,13 @@ export const WINDOW = new InjectionToken('WindowToken');
   declarations: [],
   imports: [
   ],
-  providers:[
-    {provide: API_CONFIG, useValue:'http://localhost:3000/'},
+  providers: [
+    {provide: API_CONFIG, useValue: 'http://localhost:3000/'},
     {provide: WINDOW,
-      useFactory(plateformId:object):Window|object{
-        return isPlatformBrowser(plateformId)? window:{}
+      useFactory(plateformId: object): Window|object {
+        return isPlatformBrowser(plateformId) ? window : {};
       },
-    deps:[PLATFORM_ID]
+    deps: [PLATFORM_ID]
     },
     httpInterceptorProvides
   ]

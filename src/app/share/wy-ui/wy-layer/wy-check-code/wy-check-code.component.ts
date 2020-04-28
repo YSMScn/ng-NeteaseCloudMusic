@@ -7,40 +7,40 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
   styleUrls: ['wy-check-code.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class WyCheckCodeComponent implements OnInit,OnChanges {
+export class WyCheckCodeComponent implements OnInit, OnChanges {
   private phoneHideStr = '';
-  formModel:FormGroup;
+  formModel: FormGroup;
   showRepeatBtn = false;
   truePhoneNum = '';
   @Input()checkPassed = true;
   @Input()
-  set phone(phones:string){
+  set phone(phones: string) {
     this.truePhoneNum = phones;
     const arr = phones.split('');
-    arr.splice(3,4,'****');
+    arr.splice(3, 4, '****');
     this.phoneHideStr = arr.join('');
   }
-  get phone(){
+  get phone() {
     return this.phoneHideStr;
   }
-  @Input()timing:number;
+  @Input()timing: number;
   @Output()onCheckCode = new EventEmitter<string>();
   @Output()onRepeat = new EventEmitter<void>();
   @Output()onCheckExist = new EventEmitter<string>();
   constructor() {
     this.formModel = new FormGroup({
-      code:new FormControl('',[Validators.required,Validators.pattern(/\d{4}/)])
+      code: new FormControl('', [Validators.required, Validators.pattern(/\d{4}/)])
     });
     const codeControl = this.formModel.get('code');
-    codeControl.statusChanges.subscribe(s =>{
-      if(s === 'VALID'){
+    codeControl.statusChanges.subscribe(s => {
+      if (s === 'VALID') {
         this.onCheckCode.emit(this.formModel.value.code);
       }
-    })
+    });
 
    }
   ngOnChanges(changes: SimpleChanges): void {
-    if(changes['timing']){
+    if (changes.timing) {
       this.showRepeatBtn = this.timing <= 0;
     }
 
@@ -50,8 +50,8 @@ export class WyCheckCodeComponent implements OnInit,OnChanges {
   ngOnInit(): void {
   }
 
-  onSubmit(){
-    if(this.formModel.valid && this.checkPassed){
+  onSubmit() {
+    if (this.formModel.valid && this.checkPassed) {
       this.onCheckExist.emit(this.truePhoneNum);
     }
   }

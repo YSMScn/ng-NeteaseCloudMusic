@@ -10,12 +10,12 @@ import { map } from 'rxjs/internal/operators';
 })
 export class SearchService {
 
-  constructor(private http:HttpClient, @Inject(API_CONFIG) private url:string) { }
+  constructor(private http: HttpClient, @Inject(API_CONFIG) private url: string) { }
 
-  search(keywords:string):Observable<SearchResult>{
-    const params = new HttpParams().set('keywords',keywords);
-    return this.http.get(this.url + 'search/suggest',{params})
-      .pipe(map((res:{result:SearchResult}) => res.result));
+  search(keywords: string): Observable<SearchResult> {
+    const params = new HttpParams().set('keywords', keywords);
+    return this.http.get(this.url + 'search/suggest', {params})
+      .pipe(map((res: {result: SearchResult}) => res.result));
   }
 
 }

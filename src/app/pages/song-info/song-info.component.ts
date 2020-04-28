@@ -20,53 +20,53 @@ import { SetShareInfo } from 'src/app/store/actions/member.action';
 })
 export class SongInfoComponent implements OnInit {
   controlLyric = {
-    isExpand:false,
-    label:"Show All",
-    iconCls:"down"
-  }
-  song:Song;
-  lyric:BaseLyricLine[];
-  currentSong:Song;
+    isExpand: false,
+    label: 'Show All',
+    iconCls: 'down'
+  };
+  song: Song;
+  lyric: BaseLyricLine[];
+  currentSong: Song;
   private destory$ = new Subject<void>();
-  constructor(private route:ActivatedRoute,
-    private songServe:SongService,
-    private batchActionServe:BatchActionsService,
-    private nzMessageServe:NzMessageService,
-    private store$:Store<AppStoreModule>,
+  constructor(private route: ActivatedRoute,
+              private songServe: SongService,
+              private batchActionServe: BatchActionsService,
+              private nzMessageServe: NzMessageService,
+              private store$: Store<AppStoreModule>,
     ) {
-    this.route.data.pipe(map(res => res.songInfo)).subscribe(([song,lyric]) =>{
+    this.route.data.pipe(map(res => res.songInfo)).subscribe(([song, lyric]) => {
       this.song = song;
       this.lyric = new WYLyric(lyric).lines;
       this.listenCurrent();
 
-    })
+    });
    }
 
   ngOnInit(): void {
   }
 
-  private listenCurrent(){
-    this.store$.pipe(select(getPlayer),select(getCurrentSong),takeUntil(this.destory$)).subscribe(song=>this.currentSong = song)
+  private listenCurrent() {
+    this.store$.pipe(select(getPlayer), select(getCurrentSong), takeUntil(this.destory$)).subscribe(song => this.currentSong = song);
   }
 
-  onToggleExpand(){
+  onToggleExpand() {
     this.controlLyric.isExpand = !this.controlLyric.isExpand;
-    if(this.controlLyric.isExpand){
+    if (this.controlLyric.isExpand) {
       this.controlLyric.label = 'Retract';
-      this.controlLyric.iconCls = "up";
-    }else{
+      this.controlLyric.iconCls = 'up';
+    } else {
       this.controlLyric.label = 'Show More';
-      this.controlLyric.iconCls = "down";
+      this.controlLyric.iconCls = 'down';
     }
   }
 
-  onAddSong(song:Song,isPlay = false){
-    if(!this.currentSong || this.currentSong.id != song.id){
-      this.songServe.getSongList(song).subscribe(list=>{
-        if(list.length){
-          this.batchActionServe.insertSong(list[0],isPlay);
-        }else{
-          this.nzMessageServe.create('warning',"Can't find url");
+  onAddSong(song: Song, isPlay = false) {
+    if (!this.currentSong || this.currentSong.id != song.id) {
+      this.songServe.getSongList(song).subscribe(list => {
+        if (list.length) {
+          this.batchActionServe.insertSong(list[0], isPlay);
+        } else {
+          this.nzMessageServe.create('warning', 'Can\'t find url');
         }
 
       });
@@ -78,23 +78,22 @@ export class SongInfoComponent implements OnInit {
     this.destory$.complete();
   }
 
-  onLike(){
+  onLike() {
     this.batchActionServe.likeSong(this.song.id.toString());
   }
 
-  onShare(){
-    const txt = this.makeTxt('Song',this.song.name,this.song.ar);
-    const type = 'song'
-    this.store$.dispatch(SetShareInfo({shareInfo:{id:this.song.id.toString(),type,txt}}))
+  onShare() {
+    const txt = this.makeTxt('Song', this.song.name, this.song.ar);
+    const type = 'song';
+    this.store$.dispatch(SetShareInfo({shareInfo: {id: this.song.id.toString(), type, txt}}));
     console.log(txt);
   }
 
-  private makeTxt(type:string,name:string,makeBy:Singer[]):string{
+  private makeTxt(type: string, name: string, makeBy: Singer[]): string {
     let makeByStr = '';
-    if(Array.isArray(makeBy)){
+    if (Array.isArray(makeBy)) {
       makeByStr = makeBy.map(item => item.name).join('/');
-    }
-    else{
+    } else {
       makeByStr = makeBy;
     }
     return `${type}: ${name} -- ${makeByStr}`;

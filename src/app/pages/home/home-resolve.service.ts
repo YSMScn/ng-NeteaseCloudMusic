@@ -8,9 +8,9 @@ import { first } from 'rxjs/internal/operators';
 import { MemberService } from 'src/app/services/member.service';
 import { StorageService } from 'src/app/services/storage.service';
 
-type HomeDataType=[
-  Banner[],HotTag[],SongList[],Singer[]
-]
+type HomeDataType= [
+  Banner[], HotTag[], SongList[], Singer[]
+];
 
 
 
@@ -19,13 +19,13 @@ type HomeDataType=[
 })
 export class HomeResolverService implements Resolve<HomeDataType> {
   constructor(
-    private homeServe:HomeService,
-    private singerServe:SingerService,
-    private memberServe:MemberService,
-    private storageServe:StorageService
+    private homeServe: HomeService,
+    private singerServe: SingerService,
+    private memberServe: MemberService,
+    private storageServe: StorageService
     ) {}
 
-  resolve(): Observable<HomeDataType>{
+  resolve(): Observable<HomeDataType> {
     // const userId = this.storageServe.getStorage('wyUserId');
     // let detail$ = of(null);
     // if(userId){

@@ -19,9 +19,9 @@ import { NzToolTipModule } from 'ng-zorro-antd';
     WyScrollComponent,
     ClickoutsideDirective],
   imports: [
-    CommonModule,WySliderModule,FormsModule,NzToolTipModule
+    CommonModule, WySliderModule, FormsModule, NzToolTipModule
   ],
-  exports:[WyPlayerComponent,FormatTimePipe,ClickoutsideDirective],
+  exports: [WyPlayerComponent, FormatTimePipe, ClickoutsideDirective],
 
 })
 export class WyPlayerModule { }

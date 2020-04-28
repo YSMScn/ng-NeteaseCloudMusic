@@ -6,26 +6,25 @@ import { DOCUMENT } from '@angular/common';
 })
 export class ClickoutsideDirective implements OnChanges {
 
-  private handleClick:()=>void;
+  private handleClick: () => void;
   @Input() bindFlag = false;
   @Output() onClickOutside = new EventEmitter<void>();
 
-  constructor(private el:ElementRef, private rd:Renderer2,@Inject(DOCUMENT)private doc:Document) {
+  constructor(private el: ElementRef, private rd: Renderer2, @Inject(DOCUMENT)private doc: Document) {
 
    }
   ngOnChanges(changes: SimpleChanges): void {
-    if(changes['bindFlag']&& !changes['bindFlag'].firstChange){
-      if(this.bindFlag){
-        console.log('el: ',this.el.nativeElement);
-        this.handleClick = this.rd.listen(this.doc,'click',evt =>{
-          const target = evt.target
+    if (changes.bindFlag && !changes.bindFlag.firstChange) {
+      if (this.bindFlag) {
+        console.log('el: ', this.el.nativeElement);
+        this.handleClick = this.rd.listen(this.doc, 'click', evt => {
+          const target = evt.target;
           const isContain = this.el.nativeElement.contains(target);
-          if(!isContain){
+          if (!isContain) {
             this.onClickOutside.emit(target);
           }
         });
-      }
-      else{
+      } else {
         this.handleClick();
       }
     }
