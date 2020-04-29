@@ -72,7 +72,8 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "ng-NeteaseCloudMusic:build"
+            "browserTarget": "ng-NeteaseCloudMusic:build",
+            "proxyConfig":"proxyconfig.json"
           },
           "configurations": {
             "production": {

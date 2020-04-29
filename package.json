@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build --prod --optimization --progress --extractCss",
     "test": "ng test",
     "lint": "ng lint --typeCheck --fix",
     "e2e": "ng e2e"
