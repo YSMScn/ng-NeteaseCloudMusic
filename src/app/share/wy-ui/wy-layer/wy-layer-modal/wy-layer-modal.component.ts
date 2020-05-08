@@ -1,10 +1,15 @@
-import { Component, OnInit, ChangeDetectionStrategy, ElementRef, ChangeDetectorRef, ViewChild, AfterViewInit, Renderer2, Inject, EventEmitter, Output, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ElementRef, ChangeDetectorRef, ViewChild, AfterViewInit, Renderer2, Inject, EventEmitter, Output, Input, OnChanges, SimpleChanges, PLATFORM_ID } from '@angular/core';
 import {Overlay , OverlayRef, OverlayKeyboardDispatcher, BlockScrollStrategy, OverlayContainer} from '@angular/cdk/overlay';
 import { ModalTypes } from 'src/app/store/reducers/member.reducer';
 import { ESCAPE } from '@angular/cdk/keycodes';
 import { BatchActionsService } from 'src/app/store/batch-actions.service';
-import { DOCUMENT } from '@angular/common';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { trigger, state, style, animate, transition } from '@angular/animations';
+
+interface SizeType {
+  w: number;
+  h: number;
+}
 
 @Component({
   selector: 'app-wy-layer-modal',
@@ -36,9 +41,12 @@ export class WyLayerModalComponent implements OnInit, AfterViewInit, OnChanges {
   private resizeHandler: () => void;
   private overlayContainerEl: HTMLElement;
   @Output()onLoadMySheets = new EventEmitter<void>();
+  private isBrowser: boolean;
+
+
   constructor(
     @Inject(DOCUMENT) private doc: Document,
-    @Inject(DOCUMENT) private win: Window,
+    @Inject(PLATFORM_ID)private platformId: object,
     private overlay: Overlay,
     private elementRef: ElementRef,
     private overlayKeyboardDispatcher: OverlayKeyboardDispatcher,
@@ -47,6 +55,7 @@ export class WyLayerModalComponent implements OnInit, AfterViewInit, OnChanges {
     private rd: Renderer2,
     private overlayContainerServe: OverlayContainer
   ) {
+    this.isBrowser = isPlatformBrowser(platformId);
     this.scrollStrategy = this.overlay.scrollStrategies.block();
    }
   ngOnChanges(changes: SimpleChanges): void {
@@ -105,22 +114,24 @@ export class WyLayerModalComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   private listenResizeToCentre() {
-    const modal = this.modalRef.nativeElement;
-    const modalSize = this.getHideDomSize(modal);
-    this.keepCentre(modal, modalSize);
-    this.resizeHandler = this.rd.listen('window', 'resize', () => {this.keepCentre(modal, modalSize); });
+    if (this.isBrowser) {
+      const modal = this.modalRef.nativeElement;
+      const modalSize = this.getHideDomSize(modal);
+      this.keepCentre(modal, modalSize);
+      this.resizeHandler = this.rd.listen('window', 'resize', () => {this.keepCentre(modal, modalSize); });
+    }
   }
-  private keepCentre(modal: HTMLElement, size: {w: number, h: number}) {
+  private keepCentre(modal: HTMLElement, size: SizeType) {
     const left = (this.getWindowSize().w - size.w) / 2;
     const top = (this.getWindowSize().h - size.h) / 2;
     modal.style.left = left + 'px';
     modal.style.top = top + 'px';
   }
 
-  private getWindowSize() {
+  private getWindowSize(): SizeType {
     return {
-      w: this.win.innerWidth || this.doc.documentElement.clientWidth || this.doc.body.offsetWidth,
-      h: this.win.innerHeight || this.doc.documentElement.clientHeight || this.doc.body.offsetHeight
+      w: window.innerWidth || this.doc.documentElement.clientWidth || this.doc.body.offsetWidth,
+      h: window.innerHeight || this.doc.documentElement.clientHeight || this.doc.body.offsetHeight
     };
   }
 

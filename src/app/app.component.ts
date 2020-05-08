@@ -71,7 +71,7 @@ export class AppComponent {
       this.listenStates();
       this.router.events.pipe(filter(evt => evt instanceof NavigationStart)).subscribe(() => {
         this.loadPercent = 0;
-        this.setTitle;
+        this.setTitle();
       });
       this.navEnd = this.router.events.pipe(filter(evt => evt instanceof NavigationEnd)) as Observable<NavigationEnd>;
       this.setLoadingBar();
@@ -100,13 +100,13 @@ export class AppComponent {
       }),
       mergeMap(route => route.data)
       ).subscribe(data => {
-        console.log('data: ', data);
+        // console.log('data: ', data);
         this.routeTitle = data.title;
         this.titleServe.setTitle(this.routeTitle);
       });
   }
   onSearch(keywords: string) {
-    console.log('keyword: ', keywords);
+    // console.log('keyword: ', keywords);
     if (keywords) {
       this.searchServe.search(keywords).subscribe(res => {
         this.searchResult = this.highlightKeyword(keywords, res);

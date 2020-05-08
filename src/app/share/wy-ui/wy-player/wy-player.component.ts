@@ -299,12 +299,7 @@ export class WyPlayerComponent implements OnInit {
   //   }
   // }
 
-  private unbindDocumentClickListener() {
-    if (this.winClick) {
-      this.winClick.unsubscribe();
-      this.winClick = null;
-    }
-  }
+
 
   toggleVolPanel(evt: MouseEvent) {
     // evt.stopPropagation(); Added <div class="m-player" (click)="selfClick = true"> to block, we don't need this line now

@@ -1,12 +1,11 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ShareModule } from '../share/share.module';
 import { HomeModule } from './home/home.module';
 import { SheetListModule } from './sheet-list/sheet-list.module';
 import { SheetInfoModule } from './sheet-info/sheet-info.module';
 import { SongInfoModule } from './song-info/song-info.module';
 import { SingerModule } from './singer/singer.module';
 import { MemberModule } from './member/member.module';
+import { AlbumModule } from './album/album.module';
 
 
 
@@ -19,14 +18,16 @@ import { MemberModule } from './member/member.module';
     SongInfoModule,
     SingerModule,
     MemberModule,
+    AlbumModule,
   ]
-  ,exports:[
+  , exports: [
     HomeModule,
     SheetListModule,
     SheetInfoModule,
     SongInfoModule,
     SingerModule,
     MemberModule,
+    AlbumModule,
   ]
 })
 export class PagesModule { }

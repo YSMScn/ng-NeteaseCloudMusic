@@ -2,6 +2,7 @@ import { NumberValueAccessor } from '@angular/forms';
 
 export interface Banner {
     targetId: number;
+    targetType: number;
     url: string;
     imageUrl: string;
 }
@@ -89,4 +90,20 @@ export interface SimpleBack extends AnyJson {
 
 export interface AnyJson {
   [key: string]: any;
+}
+
+export interface Album {
+  songs: Song[];
+  album: AlbumDetail;
+}
+
+export interface AlbumDetail {
+  artist: Singer;
+  picUrl: string;
+  id: number;
+  description: string;
+  company: string;
+  size: number;
+  name: string;
+  info: {shareCount: number};
 }

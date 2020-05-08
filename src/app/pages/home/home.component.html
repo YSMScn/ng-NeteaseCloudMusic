@@ -7,7 +7,10 @@
         (nzBeforeChange)="beforeChange($event)"
         >
             <div class="carousel-item" nz-carousel-content *ngFor="let item of banners">
-                <a [href]="item.url" target="_blank" class="banner-item">
+                <!-- <a [href]="item.url" target="_blank" class="banner-item">
+                    <img  appImgDefault [src]="item.imageUrl" />
+                </a> -->
+                <a target="_blank" class="banner-item" (click)="onBannerClick(item)">
                     <img  appImgDefault [src]="item.imageUrl" />
                 </a>
             </div>

@@ -1,26 +1,26 @@
-import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Album, Song, SongList, Singer } from 'src/app/services/data-types/common-types';
+import { AlbumService } from 'src/app/services/album.service';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { map, takeUntil } from 'rxjs/internal/operators';
-import { SongList, Song, Singer } from 'src/app/services/data-types/common-types';
 import { AppStoreModule } from 'src/app/store';
 import { Store, select } from '@ngrx/store';
-import { Observable, Subject } from 'rxjs';
-import { getCurrentSong, getPlayer } from 'src/app/store/selectors/player.selector';
+import { getPlayer, getCurrentSong } from 'src/app/store/selectors/player.selector';
+import { findIndex } from 'src/app/utils/array';
+import { Subject } from 'rxjs';
+import { SetShareInfo } from 'src/app/store/actions/member.action';
 import { SongService } from 'src/app/services/song.service';
 import { BatchActionsService } from 'src/app/store/batch-actions.service';
-import { NzMessageBaseService, NzMessageService } from 'ng-zorro-antd';
-import { findIndex } from 'src/app/utils/array';
-import { ModalTypes } from 'src/app/store/reducers/member.reducer';
+import { NzMessageService } from 'ng-zorro-antd';
 import { MemberService } from 'src/app/services/member.service';
-import { SetShareInfo } from 'src/app/store/actions/member.action';
 
 @Component({
-  selector: 'app-sheet-info',
-  templateUrl: './sheet-info.component.html',
-  styleUrls: ['sheet-info.component.less']
+  selector: 'app-album',
+  templateUrl: './album.component.html',
+  styleUrls: ['album.component.less']
 })
-export class SheetInfoComponent implements OnInit, OnDestroy {
-  songListInfo: SongList;
+export class AlbumComponent implements OnInit, OnDestroy {
+  album: Album;
   description = {
     short: '',
     long: ''
@@ -30,11 +30,9 @@ export class SheetInfoComponent implements OnInit, OnDestroy {
     label: 'Show More',
     iconCls: 'down'
   };
-  private appStore$: Observable<AppStoreModule>;
-  private destory$ = new Subject<void>();
   currentSong: Song;
   currentIndex: number;
-  // @Output()onLikeSong=new EventEmitter<string>();
+  destory$ = new Subject<void>();
   constructor(
     private route: ActivatedRoute,
     private store$: Store<AppStoreModule>,
@@ -42,15 +40,16 @@ export class SheetInfoComponent implements OnInit, OnDestroy {
     private batchActionServe: BatchActionsService,
     private nzMessageServe: NzMessageService,
     private memberServe: MemberService
-    ) {
-    this.route.data.pipe(map(res => res.sheetInfo)).subscribe(res => {
-      this.songListInfo = res;
-      if (res.description) {
-        this.changeDesc(res.description);
+  ) {
+    this.route.data.pipe(map(res => res.album)).subscribe(res => {
+      this.album = res;
+      console.log('album: ', this.album);
+      if (res.album.description) {
+        this.changeDesc(res.album.description);
       }
       this.listenCurrent();
     });
-  }
+   }
   ngOnDestroy(): void {
     this.destory$.next();
     this.destory$.complete();
@@ -63,7 +62,7 @@ export class SheetInfoComponent implements OnInit, OnDestroy {
     this.store$.pipe(select(getPlayer), select(getCurrentSong), takeUntil(this.destory$)).subscribe(song => {
       this.currentSong = song;
       if (song) {
-        this.currentIndex = findIndex(this.songListInfo.tracks, song);
+        this.currentIndex = findIndex(this.album.songs, song);
       } else {
         this.currentIndex = -1;
       }
@@ -108,7 +107,6 @@ export class SheetInfoComponent implements OnInit, OnDestroy {
         } else {
           this.alertMessage('warning', 'Can\'t find url');
         }
-
       });
     }
   }
@@ -129,27 +127,23 @@ export class SheetInfoComponent implements OnInit, OnDestroy {
   onLikeSong(id: string) {
     this.batchActionServe.likeSong(id);
   }
-
-  onLikeSheet(id: string) {
-    this.memberServe.likeSheet(id, 1).subscribe(code => {
-      this.alertMessage('success', 'It\'s in your Like List now');
-    }, error => {
-      this.alertMessage('error', error.msg || 'Fail');
-    });
+  onLikeSongs(songs: Song[]) {
+    const ids = songs.map(item => item.id).join(',');
+    this.onLikeSong(ids);
   }
 
   private alertMessage(type: string, msg: string) {
     this.nzMessageServe.create(type, msg);
   }
 
-  shareResouce(resource: Song|SongList, type= 'song') {
+  shareResouce(resource: Song|Album, type= 'song') {
     let txt = '';
     if (type === 'playlist') {
-      txt = this.makeTxt('Song list', resource.name, (resource as SongList).creator.nickname);
+      txt = this.makeTxt('Song list', (resource as Album).album.name, (resource as Album).album.artist.name);
     } else {
-      txt = this.makeTxt('Song', resource.name, (resource as Song).ar);
+      txt = this.makeTxt('Song', (resource as Song).name, (resource as Song).ar);
     }
-    this.store$.dispatch(SetShareInfo({shareInfo: {id: resource.id.toString(), type, txt}}));
+    this.store$.dispatch(SetShareInfo({shareInfo: {id: '', type, txt}}));
     console.log(txt);
   }
 

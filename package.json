@@ -7,7 +7,8 @@
     "build": "ng build --prod --optimization --progress --extractCss",
     "test": "ng test",
     "lint": "ng lint --typeCheck --fix",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "server": "node server.js"
   },
   "private": true,
   "dependencies": {
@@ -37,10 +38,12 @@
     "@angular/cli": "~9.0.6",
     "@angular/compiler-cli": "~9.0.6",
     "@angular/language-service": "~9.0.6",
-    "@types/node": "^12.11.1",
     "@types/jasmine": "~3.5.0",
     "@types/jasminewd2": "~2.0.3",
+    "@types/node": "^12.11.1",
     "codelyzer": "^5.1.2",
+    "express": "^4.17.1",
+    "http-proxy-middleware": "^1.0.3",
     "jasmine-core": "~3.5.0",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "~4.3.0",

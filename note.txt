@@ -324,3 +324,7 @@ Add appImgDefault for all img element
 
 
 ****************************************************
+在歌手界面创建新按钮跳转到歌手的专辑界面，sheet?id=xxxxxxxxxxxxxx
+借鉴home.component.html里的<a *ngFor="let item of hotTags" routerLink="/sheet"[queryParams]="{cat:item.name}">{{item.name}}</a>
+在sheetlist.ts里确认获取的是cat还是id，如果是id则加载
+*****************************************************

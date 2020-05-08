@@ -46,7 +46,8 @@ export class SongService {
   generateSongList(songs: Song[], urls: SongUrl[]): Song[] {
     const result = [];
     songs.forEach(song => {
-      const url = urls.find(url => url.id == song.id).url;
+      // tslint:disable-next-line:no-shadowed-variable
+      const url = urls.find(url => url.id === song.id).url;
       if (url) {
         result.push({ ...song, url});
       }

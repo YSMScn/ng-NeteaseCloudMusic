@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { HomeService } from 'src/app/services/home.service';
 import { Banner, HotTag, SongList, Singer } from 'src/app/services/data-types/common-types';
-import { NzCarouselComponent } from 'ng-zorro-antd';
+import { NzCarouselComponent, NzMessageService } from 'ng-zorro-antd';
 import { ChangeDetectionStrategy } from '@angular/compiler/src/core';
 import {SingerService} from 'src/app/services/Singer.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -42,7 +42,8 @@ export class HomeComponent implements OnInit {
     private songListServe: SongListService,
     private batchActionServe: BatchActionsService,
     private store$: Store<AppStoreModule>,
-    private memberServe: MemberService
+    private memberServe: MemberService,
+    private message: NzMessageService,
     ) {
     this.route.data.pipe(map(res => res.homeDatas)).subscribe(([banners, hotTags, personalizedLists, settledSinger]) => {
       this.banners = banners;
@@ -56,7 +57,7 @@ export class HomeComponent implements OnInit {
     // this.getPersonalizedList();
     // this.getSettledSinger();
     this.store$.pipe(select(getMember), select(getUserId)).subscribe(id => {
-      console.log(id);
+      // console.log(id);
       if (id) {
         this.getUserDetail(id);
       } else {
@@ -118,5 +119,22 @@ export class HomeComponent implements OnInit {
 
   openModal() {
     this.batchActionServe.controlModal(true, ModalTypes.default);
+  }
+
+  onBannerClick(banner: Banner) {
+    const type = banner.targetType;
+    // 1 song  10 album  3000 url 1001 dj
+    let url = '';
+    if (type === 1) {
+      url = '/songInfo/' + banner.targetId;
+      this.router.navigateByUrl(url);
+    } else if (type === 10) {
+      url = '/sheetInfo/' + banner.targetId;
+      this.router.navigateByUrl(url);
+    } else if (type === 3000) {
+      window.open(banner.url);
+    } else if (type === 1001) {
+      this.message.info('We don\'t provid dj service now, will have this dj service in the future');
+    }
   }
 }

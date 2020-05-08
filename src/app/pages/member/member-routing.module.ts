@@ -7,14 +7,14 @@ import { RecordResolverService } from './record-detail/record-resolve.service';
 
 
 const routes: Routes = [{
-  path:'',component:CentreComponent, data:{title:'Personal Centre'},resolve:{user:CentreResolverService}
-},{
-  path:'records/:id',component:RecordDetailComponent, data:{title:'Play History'},resolve:{user:RecordResolverService}
+  path: '', component: CentreComponent, data: {title: 'Personal Centre'}, resolve: {user: CentreResolverService}
+}, {
+  path: 'records/:id', component: RecordDetailComponent, data: {title: 'Play History'}, resolve: {user: RecordResolverService}
 }];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
-  providers: [CentreResolverService,RecordResolverService]
+  providers: [CentreResolverService, RecordResolverService]
 })
 export class MemberRoutingModule { }

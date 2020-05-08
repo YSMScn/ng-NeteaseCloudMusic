@@ -4,38 +4,42 @@ import { Routes, RouterModule } from '@angular/router';
 
 const routes: Routes = [
   {
-    path:'home',
-    loadChildren:()=>import('./pages/home/home.module').then(mod => mod.HomeModule)
+    path: 'home',
+    loadChildren: () => import('./pages/home/home.module').then(mod => mod.HomeModule)
   },
   {
-    path:'sheet',
-    loadChildren:()=>import('./pages/sheet-list/sheet-list.module').then(mod => mod.SheetListModule)
+    path: 'sheet',
+    loadChildren: () => import('./pages/sheet-list/sheet-list.module').then(mod => mod.SheetListModule)
   },
   {
-    path:'sheetInfo/:id',
-    loadChildren:()=>import('./pages/sheet-info/sheet-info.module').then(mod => mod.SheetInfoModule)
+    path: 'sheetInfo/:id',
+    loadChildren: () => import('./pages/sheet-info/sheet-info.module').then(mod => mod.SheetInfoModule)
   },
   {
-    path:'songInfo/:id',
-    loadChildren:()=>import('./pages/song-info/song-info.module').then(mod => mod.SongInfoModule)
+    path: 'album/:id',
+    loadChildren: () => import('./pages/album/album.module').then(mod => mod.AlbumModule)
   },
   {
-    path:'member/:id',
-    loadChildren:()=>import('./pages/member/member.module').then(mod => mod.MemberModule)
+    path: 'songInfo/:id',
+    loadChildren: () => import('./pages/song-info/song-info.module').then(mod => mod.SongInfoModule)
   },
   {
-    path:'singer/:id',
-    loadChildren:()=>import('./pages/singer/singer.module').then(mod => mod.SingerModule)
+    path: 'member/:id',
+    loadChildren: () => import('./pages/member/member.module').then(mod => mod.MemberModule)
   },
-  {path:'',redirectTo:'/home',pathMatch:'full'},
-  {path:'**',redirectTo:'/home'},
+  {
+    path: 'singer/:id',
+    loadChildren: () => import('./pages/singer/singer.module').then(mod => mod.SingerModule)
+  },
+  {path: '', redirectTo: '/home', pathMatch: 'full'},
+  {path: '**', redirectTo: '/home'},
 
 ];
 
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes,{
-    scrollPositionRestoration:"enabled"
+  imports: [RouterModule.forRoot(routes, {
+    scrollPositionRestoration: 'enabled'
   })],
   exports: [RouterModule]
 })
