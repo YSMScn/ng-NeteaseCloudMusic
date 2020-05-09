@@ -16,4 +16,9 @@ export class AlbumService {
     const params = new HttpParams().set('id', id);
     return this.http.get(this.url + 'album', {params}).pipe(map(res => res as Album));
   }
+
+  getArtistAlbum(id: string): Observable<Album[]> {
+    const params = new HttpParams().set('id', id);
+    return this.http.get(this.url + 'artist/album', {params}).pipe(map((res: {hotAlbums: Album[]}) => res.hotAlbums));
+  }
 }

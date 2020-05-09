@@ -20,6 +20,7 @@
                         <button class="add" nz-button nzType="primary" (click)="onAddSongs(singerDetail.hotSongs)">+</button>
                     </nz-button-group>
                     <button class="btn like" nz-button (click)="onLikeSongs(singerDetail.hotSongs)"><span>Like </span>{{singerDetail.hotSongs.length}}</button>
+                    <button class="btn like" nz-button [routerLink]="['/sheet']" [queryParams]="{id:singerDetail.artist.id}"><span>Albums</span></button>
                 </div>
                 <nz-table
             class="wy-table"
@@ -54,7 +55,9 @@
                             <i class="ico share" title="Share" (click)="onShare(item)"></i>
                         </p>
                     </td>
-                    <td>{{item.al.name}}</td>
+                    <td>
+                      <a [routerLink]="['/album',item.al.id]">{{item.al.name}}</a>
+                    </td>
                 </tr>
             </tbody>
             </nz-table>

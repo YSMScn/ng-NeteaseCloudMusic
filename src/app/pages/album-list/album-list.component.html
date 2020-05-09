@@ -1,0 +1,28 @@
+<div class="sheet wrap feature-wrap">
+  <div class="list-r">
+      <div class="top">
+          <div class="cat">
+              <span>{{albumList[0].artist.name}}</span>
+          </div>
+      </div>
+      <div class="list">
+          <app-song-list
+              class="sheet-item"
+              *ngFor="let item of albumList"
+              [songList] = "item"
+              (onPlay) = "onPlayList($event)"
+              (click)="toInfo(item.id)"
+              >
+          </app-song-list>
+      </div>
+      <nz-pagination
+      class="pagination"
+      [nzPageSize]="35"
+      [nzPageIndex]="1"
+      [nzTotal]="albumList.length"
+      (nzPageIndexChange)="onPageChange($event)"
+      >
+
+      </nz-pagination>
+  </div>
+</div>

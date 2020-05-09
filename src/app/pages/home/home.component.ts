@@ -129,12 +129,12 @@ export class HomeComponent implements OnInit {
       url = '/songInfo/' + banner.targetId;
       this.router.navigateByUrl(url);
     } else if (type === 10) {
-      url = '/sheetInfo/' + banner.targetId;
+      url = '/album/' + banner.targetId;
       this.router.navigateByUrl(url);
     } else if (type === 3000) {
       window.open(banner.url);
-    } else if (type === 1001) {
-      this.message.info('We don\'t provid dj service now, will have this dj service in the future');
+    } else if (type === 1001 || type === 1004) {
+      this.message.info('We don\'t provid this service now, will have this service in the future');
     }
   }
 }

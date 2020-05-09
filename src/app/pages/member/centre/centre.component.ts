@@ -22,32 +22,32 @@ import { SetShareInfo } from 'src/app/store/actions/member.action';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CentreComponent implements OnInit, OnDestroy {
-  user:User;
-  userRecord:recordVal[];
-  userSongList:UserSongList;
-  recordType=RecordType.weekData;
-  private currentSong:Song;
+  user: User;
+  userRecord: recordVal[];
+  userSongList: UserSongList;
+  recordType = RecordType.weekData;
+  private currentSong: Song;
   currentIndex = -1;
   private destory$ = new Subject();
   constructor(
-    private route:ActivatedRoute,
-    private songListServe:SongListService,
-    private batchActionServe:BatchActionsService,
-    private memberServe:MemberService,
-    private songServe:SongService,
-    private nzMessageServe:NzMessageService,
-    private store$:Store<AppStoreModule>,
-    private cdr:ChangeDetectorRef
+    private route: ActivatedRoute,
+    private songListServe: SongListService,
+    private batchActionServe: BatchActionsService,
+    private memberServe: MemberService,
+    private songServe: SongService,
+    private nzMessageServe: NzMessageService,
+    private store$: Store<AppStoreModule>,
+    private cdr: ChangeDetectorRef
     ) {
-    this.route.data.pipe(map(res =>res.user)).subscribe(([user,userRecord,userSongList]) => {
+    this.route.data.pipe(map(res => res.user)).subscribe(([user, userRecord, userSongList]) => {
       this.user = user;
-      this.userRecord = userRecord.slice(0,10);
+      this.userRecord = userRecord.slice(0, 10);
       this.userSongList = userSongList;
-      console.log('user: ',user);
-      console.log('userRecord: ',userRecord);
-      console.log('userSongList: ',userSongList);
+      console.log('user: ', user);
+      console.log('userRecord: ', userRecord);
+      console.log('userSongList: ', userSongList);
       this.listenCurrent();
-    })
+    });
    }
   ngOnDestroy(): void {
     this.destory$.next();
@@ -57,69 +57,67 @@ export class CentreComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
   }
 
-  onPlayList(id:number){
-    this.songListServe.playList(id).subscribe(list=>{
-      this.batchActionServe.selectPlayList({list,index:0});
+  onPlayList(id: number) {
+    this.songListServe.playList(id).subscribe(list => {
+      this.batchActionServe.selectPlayList({list, index: 0});
       this.cdr.markForCheck();
-    })
+    });
   }
 
-  onChangeType(type:RecordType){
-    if(this.recordType !== type){
+  onChangeType(type: RecordType) {
+    if (this.recordType !== type) {
       this.recordType = type;
-      this.memberServe.getUserRecord(this.user.profile.userId.toString(), type).subscribe(res =>{
-        this.userRecord = res.slice(0,10);
+      this.memberServe.getUserRecord(this.user.profile.userId.toString(), type).subscribe(res => {
+        this.userRecord = res.slice(0, 10);
         this.cdr.markForCheck();
-      })
+      });
     }
   }
 
-  onAddSong([song,play]){
+  onAddSong([song, play]) {
     console.log(this.userRecord);
     console.log(song);
-    if(!this.currentSong || this.currentSong.id != song.id){
-      this.songServe.getSongList(song).subscribe(list=>{
-        if(list.length){
-          this.batchActionServe.insertSong(list[0],play);
-        }else{
-          this.nzMessageServe.create('Warning',"Can't find url");
+    if (!this.currentSong || this.currentSong.id !== song.id) {
+      this.songServe.getSongList(song).subscribe(list => {
+        if (list.length) {
+          this.batchActionServe.insertSong(list[0], play);
+        } else {
+          this.nzMessageServe.create('Warning', 'Can\'t find url');
         }
-      })
+      });
 
     }
   }
 
-  private listenCurrent(){
-    this.store$.pipe(select(getPlayer),select(getCurrentSong),takeUntil(this.destory$)).subscribe(song=>{
+  private listenCurrent() {
+    this.store$.pipe(select(getPlayer), select(getCurrentSong), takeUntil(this.destory$)).subscribe(song => {
       this.currentSong = song;
-      if(song){
+      if (song) {
         const songs = this.userRecord.map(item => item.song);
-        this.currentIndex = findIndex(songs,song);
-      }
-      else{
+        this.currentIndex = findIndex(songs, song);
+      } else {
         this.currentIndex = -1;
       }
       this.cdr.markForCheck();
-    })
+    });
   }
 
-  onLike(id:string){
+  onLike(id: string) {
     this.batchActionServe.likeSong(id.toString());
   }
 
-  onShare(song:Song){
-    const txt = this.makeTxt('Song',song.name,song.ar);
-    const type = 'song'
-    this.store$.dispatch(SetShareInfo({shareInfo:{id:song.id.toString(),type,txt}}))
+  onShare(song: Song) {
+    const txt = this.makeTxt('Song', song.name, song.ar);
+    const type = 'song';
+    this.store$.dispatch(SetShareInfo({shareInfo: {id: song.id.toString(), type, txt}}));
     console.log(txt);
   }
 
-  private makeTxt(type:string,name:string,makeBy:Singer[]):string{
+  private makeTxt(type: string, name: string, makeBy: Singer[]): string {
     let makeByStr = '';
-    if(Array.isArray(makeBy)){
+    if (Array.isArray(makeBy)) {
       makeByStr = makeBy.map(item => item.name).join('/');
-    }
-    else{
+    } else {
       makeByStr = makeBy;
     }
     return `${type}: ${name} -- ${makeByStr}`;

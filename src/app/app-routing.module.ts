@@ -20,6 +20,10 @@ const routes: Routes = [
     loadChildren: () => import('./pages/album/album.module').then(mod => mod.AlbumModule)
   },
   {
+    path: 'singer/album/:id',
+    loadChildren: () => import('./pages/album-list/album-list.module').then(mod => mod.AlbumListModule)
+  },
+  {
     path: 'songInfo/:id',
     loadChildren: () => import('./pages/song-info/song-info.module').then(mod => mod.SongInfoModule)
   },

@@ -15,9 +15,9 @@ import { environment } from '../environments/environment';
   ],
   imports: [
     CoreModule,
-    //StoreModule.forRoot({}, {}),
-    //StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production })
-    //Auto added, don't need them
+    // StoreModule.forRoot({}, {}),
+    // StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production })
+    // Auto added, don't need them
   ],
 
   bootstrap: [AppComponent]

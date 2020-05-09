@@ -3,6 +3,7 @@ import { PlayListParams, SongListService } from 'src/app/services/song-list.serv
 import { ActivatedRoute, Router } from '@angular/router';
 import { PlayList } from 'src/app/services/data-types/common-types';
 import { BatchActionsService } from 'src/app/store/batch-actions.service';
+import { AlbumService } from 'src/app/services/album.service';
 
 @Component({
   selector: 'app-sheet-list',
@@ -18,15 +19,22 @@ export class SheetListComponent implements OnInit {
   };
   orderValue = 'hot';
   songList: PlayList;
+  isSingerAlbum = false;
+  artistId: string;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private songListServe: SongListService,
-    private batchActionServe: BatchActionsService
+    private batchActionServe: BatchActionsService,
+    private albumServe: AlbumService
   ) {
-    this.listParams.cat = this.route.snapshot.queryParamMap.get('cat') || '全部';
-    this.getList();
+    if (this.route.snapshot.queryParamMap.get('id')) {
+      this.artistId = this.route.snapshot.queryParamMap.get('id');
+    } else {
+      this.listParams.cat = this.route.snapshot.queryParamMap.get('cat') || '全部';
 
+    }
+    this.getList();
    }
 
 
@@ -34,7 +42,13 @@ export class SheetListComponent implements OnInit {
   }
 
   private getList() {
-    this.songListServe.getSongList(this.listParams).subscribe(res => this.songList = res);
+    if (!this.isSingerAlbum) {
+      this.songListServe.getSongList(this.listParams).subscribe(res => this.songList = res);
+    } else {
+      this.albumServe.getArtistAlbum(this.artistId).subscribe(res =>{
+        console.log(res);
+      })
+    }
   }
 
   onPlayList(id: number) {

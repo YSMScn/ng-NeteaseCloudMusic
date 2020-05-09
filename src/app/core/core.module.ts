@@ -26,18 +26,18 @@ registerLocaleData(zh);
     AppRoutingModule,
     AppStoreModule,
   ],
-  exports:[ShareModule,AppRoutingModule],
+  exports: [ShareModule, AppRoutingModule],
   providers: [{ provide: NZ_I18N, useValue: zh_CN }],
 })
 export class CoreModule {
-  constructor(@SkipSelf()@Optional()parentModule:CoreModule){
-    if(parentModule){
+  constructor(@SkipSelf()@Optional()parentModule: CoreModule) {
+    if (parentModule) {
       throw new Error('CoreModule can be imported only by app module');
     }
-    //Make sure this core module can be imported only by app module
-    //@skipself() is used to avoid infinite loop
-    //@optional() is usesd to avoid throw exception at the first time
-    //For more information:https://www.cnblogs.com/starof/p/9069181.html
-    
+    // Make sure this core module can be imported only by app module
+    // @skipself() is used to avoid infinite loop
+    // @optional() is usesd to avoid throw exception at the first time
+    // For more information:https://www.cnblogs.com/starof/p/9069181.html
+
   }
  }

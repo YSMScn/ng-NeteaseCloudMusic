@@ -108,7 +108,9 @@
                         </ng-container>
 
                     </td>
-                    <td>{{item.al.name}}</td>
+                    <td>
+                      <a [routerLink]="['/album',item.al.id]">{{item.al.name}}</a>
+                    </td>
                 </tr>
             </tbody>
             </nz-table>
