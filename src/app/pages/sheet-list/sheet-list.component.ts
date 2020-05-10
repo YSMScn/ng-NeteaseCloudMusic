@@ -14,12 +14,11 @@ export class SheetListComponent implements OnInit {
   listParams: PlayListParams = {
     cat: '全部',
     order: 'hot',
-    offset: 1,
+    offset: 0,
     limit: 35
   };
   orderValue = 'hot';
   songList: PlayList;
-  isSingerAlbum = false;
   artistId: string;
   constructor(
     private route: ActivatedRoute,
@@ -28,12 +27,7 @@ export class SheetListComponent implements OnInit {
     private batchActionServe: BatchActionsService,
     private albumServe: AlbumService
   ) {
-    if (this.route.snapshot.queryParamMap.get('id')) {
-      this.artistId = this.route.snapshot.queryParamMap.get('id');
-    } else {
-      this.listParams.cat = this.route.snapshot.queryParamMap.get('cat') || '全部';
-
-    }
+    this.listParams.cat = this.route.snapshot.queryParamMap.get('cat') || '全部';
     this.getList();
    }
 
@@ -42,13 +36,7 @@ export class SheetListComponent implements OnInit {
   }
 
   private getList() {
-    if (!this.isSingerAlbum) {
       this.songListServe.getSongList(this.listParams).subscribe(res => this.songList = res);
-    } else {
-      this.albumServe.getArtistAlbum(this.artistId).subscribe(res =>{
-        console.log(res);
-      })
-    }
   }
 
   onPlayList(id: number) {
@@ -59,12 +47,12 @@ export class SheetListComponent implements OnInit {
 
   onOrderChange(order: 'new'|'hot') {
     this.listParams.order = order;
-    this.listParams.offset = 1;
+    this.listParams.offset = 0;
     this.getList();
   }
 
   onPageChange(index: number) {
-    this.listParams.offset = index;
+    this.listParams.offset = (index - 1) * this.listParams.limit;
     this.getList();
   }
 

@@ -328,3 +328,14 @@ Add appImgDefault for all img element
 借鉴home.component.html里的<a *ngFor="let item of hotTags" routerLink="/sheet"[queryParams]="{cat:item.name}">{{item.name}}</a>
 在sheetlist.ts里确认获取的是cat还是id，如果是id则加载
 *****************************************************
+修改了歌单列表中切换页码时列表项目更新错误的问题
+
+*****************************************************
+ActivatedRoute和ActivatedRouteSnapShot不同，在守卫resolver里必须使用ActivatedRouteSnapshoot
+route.paramMap()和queryParamMap不一样
+前者用来获取singer/43215中的id，对应routerlink为['/singer', 43215],对应path为/singer/:id
+后者用来获取singer?id=43215中的id，对应routerlink为/singer[queryParams]={id: 43215},对应path为/singer
+
+
+
+******************************************************

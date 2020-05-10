@@ -2,24 +2,24 @@
   <div class="list-r">
       <div class="top">
           <div class="cat">
-              <span>{{albumList[0].artist.name}}</span>
+              <span>{{artistAlbum.artist.name}}</span>
           </div>
       </div>
       <div class="list">
-          <app-song-list
+          <app-album-cover
               class="sheet-item"
               *ngFor="let item of albumList"
-              [songList] = "item"
+              [album] = "item"
               (onPlay) = "onPlayList($event)"
               (click)="toInfo(item.id)"
               >
-          </app-song-list>
+          </app-album-cover>
       </div>
       <nz-pagination
       class="pagination"
-      [nzPageSize]="35"
-      [nzPageIndex]="1"
-      [nzTotal]="albumList.length"
+      [nzPageSize]="albumParams.limit"
+      [nzPageIndex]="albumParams.offset"
+      [nzTotal]="artistAlbum.artist.albumSize"
       (nzPageIndexChange)="onPageChange($event)"
       >
 

@@ -107,3 +107,8 @@ export interface AlbumDetail {
   name: string;
   info: {shareCount: number};
 }
+
+export interface ArtistAlbum {
+  artist: Singer;
+  hotAlbums: AlbumDetail[];
+}

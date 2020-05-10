@@ -20,7 +20,7 @@ const routes: Routes = [
     loadChildren: () => import('./pages/album/album.module').then(mod => mod.AlbumModule)
   },
   {
-    path: 'singer/album/:id',
+    path: 'singer/album',
     loadChildren: () => import('./pages/album-list/album-list.module').then(mod => mod.AlbumListModule)
   },
   {
@@ -35,8 +35,8 @@ const routes: Routes = [
     path: 'singer/:id',
     loadChildren: () => import('./pages/singer/singer.module').then(mod => mod.SingerModule)
   },
-  {path: '', redirectTo: '/home', pathMatch: 'full'},
-  {path: '**', redirectTo: '/home'},
+  // {path: '', redirectTo: '/home', pathMatch: 'full'},
+  // {path: '**', redirectTo: '/home'},
 
 ];
 

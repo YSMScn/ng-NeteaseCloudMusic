@@ -20,7 +20,8 @@
                         <button class="add" nz-button nzType="primary" (click)="onAddSongs(singerDetail.hotSongs)">+</button>
                     </nz-button-group>
                     <button class="btn like" nz-button (click)="onLikeSongs(singerDetail.hotSongs)"><span>Like </span>{{singerDetail.hotSongs.length}}</button>
-                    <button class="btn like" nz-button [routerLink]="['/sheet']" [queryParams]="{id:singerDetail.artist.id}"><span>Albums</span></button>
+                    <!-- <a routerLink="/artistAlbum"[queryParams]="{id:singerDetail.artist.id.toString()}"><span>test</span></a> -->
+                    <button class="btn like" nz-button routerLink="/singer/album"[queryParams]="{id:singerDetail.artist.id.toString()}"><span>All Album</span></button>
                 </div>
                 <nz-table
             class="wy-table"

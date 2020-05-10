@@ -1,0 +1,15 @@
+<ng-container>
+  <a class="cover">
+      <img appImgDefault [src]="album.picUrl" [alt]="album.name">
+      <div class="bottom">
+        <div class="num">
+            <i class="icon erji"></i>
+        </div>
+        <i class="icon play" (click)='playList($event,album.id.toString())'></i>
+    </div>
+      <!-- <div class="bottom">
+          <i class="icon play" (click)='playList($event,album)'></i>
+      </div> -->
+  </a>
+  <span class="dec">{{album.name}}</span>
+</ng-container>

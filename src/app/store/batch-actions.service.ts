@@ -74,7 +74,7 @@ export class BatchActionsService {
       }
       if (this.playerState.playMode.type === 'random') {
         playList = shuffle(songList);
-      } else{
+      } else {
         playList.push(song);
       }
       this.store$.dispatch(SetSongList({songList}));
