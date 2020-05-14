@@ -335,7 +335,5 @@ ActivatedRoute和ActivatedRouteSnapShot不同，在守卫resolver里必须使用
 route.paramMap()和queryParamMap不一样
 前者用来获取singer/43215中的id，对应routerlink为['/singer', 43215],对应path为/singer/:id
 后者用来获取singer?id=43215中的id，对应routerlink为/singer[queryParams]={id: 43215},对应path为/singer
-
-
-
 ******************************************************
+
